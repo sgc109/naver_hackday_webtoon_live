@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent" >
     <Button
+        android:id="@+id/main_activity_user_type_button_writer"
         android:text="작가"
         android:textSize="80sp"
         android:layout_weight="1"
@@ -13,6 +14,7 @@
         android:layout_height="match_parent" />
 
     <Button
+        android:id="@+id/main_activity_user_type_button_watcher"
         android:text="시청자"
         android:textSize="80sp"
         android:layout_weight="1"
