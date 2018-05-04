@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">WebtoonLive</string>
+    <string name="firebase_db_pos_history">pos_history</string>
+</resources>

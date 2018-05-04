@@ -1,0 +1,130 @@
+{
+  "project_info": {
+    "project_number": "492843288731",
+    "firebase_url": "https://nwebtoonlive.firebaseio.com",
+    "project_id": "nwebtoonlive",
+    "storage_bucket": "nwebtoonlive.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492843288731:android:68b583a897867e95",
+        "android_client_info": {
+          "package_name": "com.example.sgc109.webtoonlive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492843288731-b6iu478uacqha0stepbvbsmqkpkb3e8a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sgc109.webtoonlive",
+            "certificate_hash": "672dc9c9565a0829d61b96989608529a39e89e1d"
+          }
+        },
+        {
+          "client_id": "492843288731-5qslrk0cha38m7h5h7jkmv7rmb9ftuq0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrzp85WCkLHGa9VjSyDa9QmrV_zNZjxwA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "492843288731-5qslrk0cha38m7h5h7jkmv7rmb9ftuq0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492843288731:android:79fbc7c06746fe82",
+        "android_client_info": {
+          "package_name": "com.webtoonlive.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492843288731-5qslrk0cha38m7h5h7jkmv7rmb9ftuq0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrzp85WCkLHGa9VjSyDa9QmrV_zNZjxwA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492843288731:android:38f74bb60fbc158f",
+        "android_client_info": {
+          "package_name": "com.webtoonlive.android.webtoonlive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492843288731-5jt6hdo23pec6omcbqb5a8qgnj7oseii.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.webtoonlive.android.webtoonlive",
+            "certificate_hash": "6b3214fa238002fbd3c61d0ae609bf6a2b6ed9fb"
+          }
+        },
+        {
+          "client_id": "492843288731-5qslrk0cha38m7h5h7jkmv7rmb9ftuq0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCrzp85WCkLHGa9VjSyDa9QmrV_zNZjxwA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "492843288731-5qslrk0cha38m7h5h7jkmv7rmb9ftuq0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
