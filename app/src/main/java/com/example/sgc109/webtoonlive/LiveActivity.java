@@ -32,10 +32,9 @@ public class LiveActivity extends AppCompatActivity {
     private boolean mIsWriter;
     private RecyclerView mRecyclerView;
     private DatabaseReference mDatabase;
-    private List<Integer> posHistory;
     private String mLastKey;
     private Long mLastCheckedTime;
-    private int mCurPosition;
+    private int mHeight;
 
     public static Intent newIntent(Context context, boolean isWriter) {
         Intent intent = new Intent(context, LiveActivity.class);
@@ -48,13 +47,16 @@ public class LiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live);
 
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        mHeight  = displayMetrics.heightPixels;
+        Log.d("height", "height : " + mHeight);
         if (getIntent() != null) {
             mIsWriter = getIntent().getBooleanExtra(EXTRA_IS_WRITER, false);
         }
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
-        posHistory = new ArrayList<>();
         mLastCheckedTime = new Date().getTime();
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {
@@ -84,18 +86,14 @@ public class LiveActivity extends AppCompatActivity {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    mCurPosition += dy;
-//                    Log.d("scroll_debug", "onScrolled Start");
-//                    Log.d("scroll_debug", "last : " + mLastCheckedTime);
-//                    Log.d("scroll_debug", "now  : " + new Date().getTime());
-                    Log.d("scroll_debug", "curY : " + mCurPosition);
+                    int curY = mRecyclerView.computeVerticalScrollOffset();
+                    Log.d("scroll_debug", "curY : " + curY);
                     Long now = new Date().getTime();
                     if(now - mLastCheckedTime >= 500) {
-//                        Log.d("scroll_debug", "FirebaseDB Push!!");
                         DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
                         ref
                                 .push()
-                                .setValue(new VerticalPositionChanged(mCurPosition));
+                                .setValue(new VerticalPositionChanged(curY, mHeight));
                         mLastCheckedTime = now;
                     }
 //                    Log.d("scroll_debug", "onScrolled Finish");
@@ -110,10 +108,13 @@ public class LiveActivity extends AppCompatActivity {
             ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    int pos = dataSnapshot.getValue(VerticalPositionChanged.class).position;
-                    Log.d("mydebug", "pos : " + pos);
-//                    mRecyclerView.smoothScrollToPosition(pos);
-                    ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, pos);
+                    VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
+                    int pos = data.position;
+                    int height = data.height;
+                    int curY = (int)((double)pos / height * mHeight);
+                    Log.d("scroll_debug", "curY : " + curY);
+                    mRecyclerView.smoothScrollToPosition(curY);
+//                    ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, pos);
                 }
 
                 @Override
@@ -160,7 +161,7 @@ public class LiveActivity extends AppCompatActivity {
 
     public class ScrollDisablingLayoutManager extends LinearLayoutManager {
         private boolean isScrollEnabled = false;
-//        private static final float MILLISECONDS_PER_INCH = 175f; //default is 25f (bigger = slower)
+        private static final float MILLISECONDS_PER_INCH = 25f; //default is 25f (bigger = slower)
 //        public ScrollDisablingLayoutManager(Context context, int orientation, boolean reverseLayout) {
 //            super(context, orientation, reverseLayout);
 //        }
@@ -169,25 +170,25 @@ public class LiveActivity extends AppCompatActivity {
 //            super(context, attrs, defStyleAttr, defStyleRes);
 //        }
 //
-//        @Override
-//        public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
-//
-//            final LinearSmoothScroller linearSmoothScroller = new LinearSmoothScroller(recyclerView.getContext()) {
-//
-//                @Override
-//                public PointF computeScrollVectorForPosition(int targetPosition) {
-//                    return super.computeScrollVectorForPosition(targetPosition);
-//                }
-//
-//                @Override
-//                protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-//                    return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
-//                }
-//            };
-//
-//            linearSmoothScroller.setTargetPosition(position);
-//            startSmoothScroll(linearSmoothScroller);
-//        }
+        @Override
+        public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
+
+            final LinearSmoothScroller linearSmoothScroller = new LinearSmoothScroller(recyclerView.getContext()) {
+
+                @Override
+                public PointF computeScrollVectorForPosition(int targetPosition) {
+                    return super.computeScrollVectorForPosition(targetPosition);
+                }
+
+                @Override
+                protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
+                    return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
+                }
+            };
+
+            linearSmoothScroller.setTargetPosition(position);
+            startSmoothScroll(linearSmoothScroller);
+        }
 
         public ScrollDisablingLayoutManager(Context context) {
             super(context);
