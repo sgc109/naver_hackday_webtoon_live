@@ -3,6 +3,7 @@ package com.example.sgc109.webtoonlive;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PointF;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,9 +37,11 @@ public class LiveActivity extends AppCompatActivity {
     private String mLastKey;
     private Long mLastCheckedTime;
     private LinearLayoutManager mLayoutManager;
+    private Runnable  mPeriodicScrollPosCheck;
     private int mHeight;
     private int mCurY;
     private ChildEventListener mChildEventListenerHandle;
+    private Handler mHandler;
 
     public static Intent newIntent(Context context, boolean isWriter) {
         Intent intent = new Intent(context, LiveActivity.class);
@@ -84,21 +87,8 @@ public class LiveActivity extends AppCompatActivity {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    Long now = new Date().getTime();
 
-                    int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
-                    int offset = mRecyclerView.computeVerticalScrollOffset();
-
-                    double posPercent = (double)offset / totalScrollLength;
-
-                    if(now - mLastCheckedTime >= 500) {
-                        Log.d("scroll_debug", "curY : " + posPercent);
-                        DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
-                        ref
-                                .push()
-                                .setValue(new VerticalPositionChanged(posPercent));
-                        mLastCheckedTime = now;
-                    }
+                    pushScrollPosToDB();
                 }
             };
 
@@ -158,6 +148,35 @@ public class LiveActivity extends AppCompatActivity {
         if (!mIsWriter) {
             mRecyclerView.setNestedScrollingEnabled(false);
         }
+
+        mHandler = new Handler();
+        if(mIsWriter) {
+            mPeriodicScrollPosCheck = new Runnable() {
+                @Override
+                public void run() {
+                    Log.d("runnable_debug", "run()");
+                    pushScrollPosToDB();
+                    mHandler.postDelayed(this, 500);
+                }
+            };
+            mHandler.post(mPeriodicScrollPosCheck);
+        }
+    }
+
+    private void pushScrollPosToDB() {
+        Long now = new Date().getTime();
+        if(now - mLastCheckedTime >= 500) {
+            int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
+            int offset = mRecyclerView.computeVerticalScrollOffset();
+            double posPercent = (double)offset / totalScrollLength;
+
+            Log.d("scroll_debug", "curY : " + posPercent);
+            DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
+            ref
+                    .push()
+                    .setValue(new VerticalPositionChanged(posPercent));
+            mLastCheckedTime = now;
+        }
     }
 
     class SceneImageViewHolder extends RecyclerView.ViewHolder {
@@ -178,6 +197,9 @@ public class LiveActivity extends AppCompatActivity {
         super.onDestroy();
         if(mChildEventListenerHandle != null) {
             mDatabase.child(getString(R.string.firebase_db_pos_history)).removeEventListener(mChildEventListenerHandle);
+        }
+        if(mIsWriter) {
+            mHandler.removeCallbacks(mPeriodicScrollPosCheck);
         }
     }
 }
