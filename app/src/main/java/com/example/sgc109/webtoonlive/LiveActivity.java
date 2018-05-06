@@ -14,6 +14,7 @@ import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -102,7 +103,6 @@ public class LiveActivity extends AppCompatActivity {
             mRecyclerView.addOnScrollListener(scrollListener);
             mRecyclerView.setOnFlingListener(flingListener);
         } else {
-
             DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
             mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
                 @Override
@@ -161,6 +161,12 @@ public class LiveActivity extends AppCompatActivity {
             };
             mHandler.post(mPeriodicScrollPosCheck);
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(!mIsWriter) return true;
+        return super.dispatchTouchEvent(ev);
     }
 
     private void pushScrollPosToDB() {
