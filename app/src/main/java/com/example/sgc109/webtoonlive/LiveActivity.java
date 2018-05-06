@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.firebase.database.ChildEventListener;
@@ -34,7 +35,10 @@ public class LiveActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private String mLastKey;
     private Long mLastCheckedTime;
+    private LinearLayoutManager mLayoutManager;
     private int mHeight;
+    private int mCurY;
+    private ChildEventListener mChildEventListenerHandle;
 
     public static Intent newIntent(Context context, boolean isWriter) {
         Intent intent = new Intent(context, LiveActivity.class);
@@ -47,10 +51,6 @@ public class LiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live);
 
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        mHeight  = displayMetrics.heightPixels;
-        Log.d("height", "height : " + mHeight);
         if (getIntent() != null) {
             mIsWriter = getIntent().getBooleanExtra(EXTRA_IS_WRITER, false);
         }
@@ -58,6 +58,7 @@ public class LiveActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
         mLastCheckedTime = new Date().getTime();
+        mLayoutManager = new LinearLayoutManager(this);
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {
             @NonNull
@@ -78,42 +79,55 @@ public class LiveActivity extends AppCompatActivity {
             }
         };
 
-        final LinearLayoutManager layoutManager;
         if(mIsWriter) {
-            layoutManager = new LinearLayoutManager(this);
-
             RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-                    int curY = mRecyclerView.computeVerticalScrollOffset();
-                    Log.d("scroll_debug", "curY : " + curY);
                     Long now = new Date().getTime();
+
+                    int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
+                    int offset = mRecyclerView.computeVerticalScrollOffset();
+
+                    double posPercent = (double)offset / totalScrollLength;
+
                     if(now - mLastCheckedTime >= 500) {
+                        Log.d("scroll_debug", "curY : " + posPercent);
                         DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
                         ref
                                 .push()
-                                .setValue(new VerticalPositionChanged(curY, mHeight));
+                                .setValue(new VerticalPositionChanged(posPercent));
                         mLastCheckedTime = now;
                     }
-//                    Log.d("scroll_debug", "onScrolled Finish");
+                }
+            };
+
+            RecyclerView.OnFlingListener flingListener = new RecyclerView.OnFlingListener() {
+                @Override
+                public boolean onFling(int velocityX, int velocityY) {
+                    Log.d("scroll_debug", "onFling()!");
+                    return false;
                 }
             };
             mRecyclerView.addOnScrollListener(scrollListener);
-
+            mRecyclerView.setOnFlingListener(flingListener);
         } else {
-            layoutManager = new ScrollDisablingLayoutManager(this);
 
             DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
-            ref.addChildEventListener(new ChildEventListener() {
+            mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
-                    int pos = data.position;
-                    int height = data.height;
-                    int curY = (int)((double)pos / height * mHeight);
-                    Log.d("scroll_debug", "curY : " + curY);
-                    mRecyclerView.smoothScrollToPosition(curY);
+                    double percentage = data.posPercent;
+                    int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
+
+                    int curY = (int)(percentage * totalScrollLength);
+                    int dy = curY - mCurY;
+                    Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
+//                    mRecyclerView.smoothScrollBy(0, curY - mRecyclerView.computeVerticalScrollOffset());
+//                    mRecyclerView.smoothScrollToPosition(curY);
+                    mRecyclerView.smoothScrollBy(0, dy);
+                    mCurY = curY;
 //                    ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, pos);
                 }
 
@@ -139,7 +153,7 @@ public class LiveActivity extends AppCompatActivity {
             });
         }
 
-        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(adapter);
         if (!mIsWriter) {
             mRecyclerView.setNestedScrollingEnabled(false);
@@ -159,49 +173,11 @@ public class LiveActivity extends AppCompatActivity {
         }
     }
 
-    public class ScrollDisablingLayoutManager extends LinearLayoutManager {
-        private boolean isScrollEnabled = false;
-        private static final float MILLISECONDS_PER_INCH = 25f; //default is 25f (bigger = slower)
-//        public ScrollDisablingLayoutManager(Context context, int orientation, boolean reverseLayout) {
-//            super(context, orientation, reverseLayout);
-//        }
-//
-//        public ScrollDisablingLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-//            super(context, attrs, defStyleAttr, defStyleRes);
-//        }
-//
-        @Override
-        public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
-
-            final LinearSmoothScroller linearSmoothScroller = new LinearSmoothScroller(recyclerView.getContext()) {
-
-                @Override
-                public PointF computeScrollVectorForPosition(int targetPosition) {
-                    return super.computeScrollVectorForPosition(targetPosition);
-                }
-
-                @Override
-                protected float calculateSpeedPerPixel(DisplayMetrics displayMetrics) {
-                    return MILLISECONDS_PER_INCH / displayMetrics.densityDpi;
-                }
-            };
-
-            linearSmoothScroller.setTargetPosition(position);
-            startSmoothScroll(linearSmoothScroller);
-        }
-
-        public ScrollDisablingLayoutManager(Context context) {
-            super(context);
-        }
-
-        public void setScrollEnabled(boolean flag) {
-            this.isScrollEnabled = flag;
-        }
-
-        @Override
-        public boolean canScrollVertically() {
-            //Similarly you can customize "canScrollHorizontally()" for managing horizontal scroll
-            return isScrollEnabled && super.canScrollVertically();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mChildEventListenerHandle != null) {
+            mDatabase.child(getString(R.string.firebase_db_pos_history)).removeEventListener(mChildEventListenerHandle);
         }
     }
 }

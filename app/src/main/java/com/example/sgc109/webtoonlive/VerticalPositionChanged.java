@@ -1,11 +1,9 @@
 package com.example.sgc109.webtoonlive;
 
 public class VerticalPositionChanged {
-    public int position;
-    public int height;
+    public double posPercent;
     public VerticalPositionChanged(){}
-    public VerticalPositionChanged(int position, int height){
-        this.position = position;
-        this.height = height;
+    public VerticalPositionChanged(double posPercent){
+        this.posPercent = posPercent;
     }
 }
