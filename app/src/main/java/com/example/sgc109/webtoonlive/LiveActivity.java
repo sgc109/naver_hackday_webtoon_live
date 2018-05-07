@@ -45,7 +45,6 @@ public class LiveActivity extends AppCompatActivity {
     private int mCurY;
     private ChildEventListener mChildEventListenerHandle;
     private Handler mHandler;
-    private boolean mutex;
 
     public static Intent newIntent(Context context, boolean isWriter) {
         Intent intent = new Intent(context, LiveActivity.class);
@@ -121,11 +120,6 @@ public class LiveActivity extends AppCompatActivity {
             mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    if(mutex){
-                        Log.d("scroll_debug", "Shit!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                        return;
-                    }
-                    mutex = true;
                     VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
                     double percentage = data.posPercent;
                     int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
@@ -138,7 +132,6 @@ public class LiveActivity extends AppCompatActivity {
                     Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
                     mRecyclerView.smoothScrollBy(0, dy);
                     mCurY = curY;
-                    mutex = false;
                 }
 
                 @Override
