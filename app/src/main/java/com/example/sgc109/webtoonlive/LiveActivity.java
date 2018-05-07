@@ -30,19 +30,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
+
 public class LiveActivity extends AppCompatActivity {
     private static final String EXTRA_IS_WRITER = "extra_is_writer";
     private boolean mIsWriter;
     private RecyclerView mRecyclerView;
     private DatabaseReference mDatabase;
-    private String mLastKey;
     private Long mLastCheckedTime;
     private LinearLayoutManager mLayoutManager;
-    private Runnable  mPeriodicScrollPosCheck;
-    private int mHeight;
+    private Runnable mPeriodicScrollPosCheck;
     private int mCurY;
     private ChildEventListener mChildEventListenerHandle;
     private Handler mHandler;
+    private boolean mutex;
 
     public static Intent newIntent(Context context, boolean isWriter) {
         Intent intent = new Intent(context, LiveActivity.class);
@@ -83,7 +86,7 @@ public class LiveActivity extends AppCompatActivity {
             }
         };
 
-        if(mIsWriter) {
+        if (mIsWriter) {
             RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -91,15 +94,26 @@ public class LiveActivity extends AppCompatActivity {
 
                     pushScrollPosToDB();
                 }
-            };
 
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (newState == SCROLL_STATE_IDLE) {
+                        pushScrollPosToDB();
+                    } else if (newState == SCROLL_STATE_DRAGGING) {
+                        Log.d("scroll_debug", "SCROLL_STATE_DRAGGING");
+                    } else if (newState == SCROLL_STATE_SETTLING) {
+                        Log.d("scroll_debug", "SCROLL_STATE_SETTLING");
+                    }
+                }
+            };
             RecyclerView.OnFlingListener flingListener = new RecyclerView.OnFlingListener() {
                 @Override
                 public boolean onFling(int velocityX, int velocityY) {
-                    Log.d("scroll_debug", "onFling()!");
                     return false;
                 }
             };
+
             mRecyclerView.addOnScrollListener(scrollListener);
             mRecyclerView.setOnFlingListener(flingListener);
         } else {
@@ -107,18 +121,24 @@ public class LiveActivity extends AppCompatActivity {
             mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    if(mutex){
+                        Log.d("scroll_debug", "Shit!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                        return;
+                    }
+                    mutex = true;
                     VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
                     double percentage = data.posPercent;
                     int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
 
-                    int curY = (int)(percentage * totalScrollLength);
+                    if (mRecyclerView.computeVerticalScrollOffset() != mCurY) {
+                        Log.d("scroll_debug", "offset : " + mRecyclerView.computeVerticalScrollOffset() + ", mCurY : " + mCurY);
+                    }
+                    int curY = (int) (percentage * totalScrollLength);
                     int dy = curY - mCurY;
                     Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
-//                    mRecyclerView.smoothScrollBy(0, curY - mRecyclerView.computeVerticalScrollOffset());
-//                    mRecyclerView.smoothScrollToPosition(curY);
                     mRecyclerView.smoothScrollBy(0, dy);
                     mCurY = curY;
-//                    ((LinearLayoutManager)mRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, pos);
+                    mutex = false;
                 }
 
                 @Override
@@ -145,36 +165,33 @@ public class LiveActivity extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(adapter);
-        if (!mIsWriter) {
-            mRecyclerView.setNestedScrollingEnabled(false);
-        }
 
-        mHandler = new Handler();
-        if(mIsWriter) {
-            mPeriodicScrollPosCheck = new Runnable() {
-                @Override
-                public void run() {
-                    Log.d("runnable_debug", "run()");
-                    pushScrollPosToDB();
-                    mHandler.postDelayed(this, 500);
-                }
-            };
-            mHandler.post(mPeriodicScrollPosCheck);
-        }
+//        mHandler = new Handler();
+//        if (mIsWriter) {
+//            mPeriodicScrollPosCheck = new Runnable() {
+//                @Override
+//                public void run() {
+//                    Log.d("runnable_debug", "run()");
+//                    pushScrollPosToDB();
+//                    mHandler.postDelayed(this, 500);
+//                }
+//            };
+//            mHandler.post(mPeriodicScrollPosCheck);
+//        }
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if(!mIsWriter) return true;
+        if (!mIsWriter) return true;
         return super.dispatchTouchEvent(ev);
     }
 
     private void pushScrollPosToDB() {
         Long now = new Date().getTime();
-        if(now - mLastCheckedTime >= 500) {
+        if (now - mLastCheckedTime >= 500) {
             int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
             int offset = mRecyclerView.computeVerticalScrollOffset();
-            double posPercent = (double)offset / totalScrollLength;
+            double posPercent = (double) offset / totalScrollLength;
 
             Log.d("scroll_debug", "curY : " + posPercent);
             DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
@@ -201,11 +218,11 @@ public class LiveActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mChildEventListenerHandle != null) {
+        if (mChildEventListenerHandle != null) {
             mDatabase.child(getString(R.string.firebase_db_pos_history)).removeEventListener(mChildEventListenerHandle);
         }
-        if(mIsWriter) {
-            mHandler.removeCallbacks(mPeriodicScrollPosCheck);
-        }
+//        if (mIsWriter) {
+//            mHandler.removeCallbacks(mPeriodicScrollPosCheck);
+//        }
     }
 }
