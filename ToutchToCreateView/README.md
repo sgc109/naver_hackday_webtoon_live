@@ -1,6 +1,9 @@
 # 사용자 입력을 위한 View 예제입니다.
 MainActivity 위에 TouchView 가 올라와있는 구조입니다.
 
+
+
+
 ## TouchView
 - GestureDetector 를 통하여 longPress 이벤트를 받아줍니다.  이때 InputControllerView 를 TouvhView의 childView 로 등록해줍니다.
 - onTouchEvent 를 통해 다른 입력 이벤트를 감지합니다. 
@@ -29,3 +32,5 @@ MainActivity 위에 TouchView 가 올라와있는 구조입니다.
     circle_background_normal.xml
     circle_background_right.xml
     circle_background_up.xml
+
+![](https://i.imgur.com/OgR4FGF.gifv)
