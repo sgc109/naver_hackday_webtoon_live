@@ -24,3 +24,6 @@ https://github.com/NAVER-CAMPUS-HACKDAY/common/issues/5#issue-309371649
 - 새로운 아이디어 환영합니다.
 - 안드로이드 프로젝트다 보니 언어 선택이 가장 민감할 수 있어 별도 project로 구성하지 않았습니다.
 별도로 연락드리고 의견 나누어 Java, Kotlin 을 선택해서 진행 하겠습니다.
+
+
+## 프로젝트 폴더 안의 README.MD 읽어주세요~!
