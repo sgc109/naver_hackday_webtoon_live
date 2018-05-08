@@ -13,3 +13,19 @@ MainActivity 위에 TouchView 가 올라와있는 구조입니다.
 - background 와 pointer 로 나뉘어집니다.
 - 해당 InputControllerView는 상위 View인 TouchView 에 의해 동작하며, LongPress 와 ACTION_UP 사이에서 TouchView 의 child로써 화면에 보여집니다.
 
+
+## 사용법
+아래 파일들을 프로젝트에 추가하시고 원하시는 layout의 위치에 TouchView 를 삽입하시면 됩니다.
+- java
+    InputControllerView.java
+    TouchView.java
+
+- values
+    dimens.xml
+
+- drawable
+    circle_background_down.xml
+    circle_background_left.xml
+    circle_background_normal.xml
+    circle_background_right.xml
+    circle_background_up.xml
