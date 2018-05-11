@@ -91,7 +91,7 @@ public class LiveActivity extends AppCompatActivity {
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
-                    pushScrollPosToDB();
+//                    pushScrollPosToDB();
                 }
 
                 @Override
