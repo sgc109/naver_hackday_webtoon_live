@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -90,7 +91,6 @@ public class LiveActivity extends AppCompatActivity {
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-
 //                    pushScrollPosToDB();
                 }
 
@@ -98,6 +98,7 @@ public class LiveActivity extends AppCompatActivity {
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
                     if (newState == SCROLL_STATE_IDLE) {
+                        Log.d("scroll_debug", "SCROLL_STATE_IDLE");
                         pushScrollPosToDB();
                     } else if (newState == SCROLL_STATE_DRAGGING) {
                         Log.d("scroll_debug", "SCROLL_STATE_DRAGGING");
@@ -109,12 +110,23 @@ public class LiveActivity extends AppCompatActivity {
             RecyclerView.OnFlingListener flingListener = new RecyclerView.OnFlingListener() {
                 @Override
                 public boolean onFling(int velocityX, int velocityY) {
+//                    pushScrollPosToDB();
+                    return false;
+                }
+            };
+
+            RecyclerView.OnDragListener dragListener = new View.OnDragListener() {
+                @Override
+                public boolean onDrag(View view, DragEvent dragEvent) {
+                    Log.d("scroll_debug", "onDrag()");
+                    pushScrollPosToDB();
                     return false;
                 }
             };
 
             mRecyclerView.addOnScrollListener(scrollListener);
             mRecyclerView.setOnFlingListener(flingListener);
+            mRecyclerView.setOnDragListener(dragListener);
         } else {
             DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
             mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
@@ -186,7 +198,7 @@ public class LiveActivity extends AppCompatActivity {
             int offset = mRecyclerView.computeVerticalScrollOffset();
             double posPercent = (double) offset / totalScrollLength;
 
-            Log.d("scroll_debug", "curY : " + posPercent);
+//            Log.d("scroll_debug", "curY : " + posPercent);
             DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
             ref
                     .push()
