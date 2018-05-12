@@ -115,18 +115,16 @@ public class LiveActivity extends AppCompatActivity {
                 }
             };
 
-            RecyclerView.OnDragListener dragListener = new View.OnDragListener() {
-                @Override
-                public boolean onDrag(View view, DragEvent dragEvent) {
-                    Log.d("scroll_debug", "onDrag()");
-                    pushScrollPosToDB();
-                    return false;
-                }
-            };
-
+//            RecyclerView.OnDragListener dragListener = new View.OnDragListener() {
+//                @Override
+//                public boolean onDrag(View view, DragEvent dragEvent) {
+//                    Log.d("scroll_debug", "onDrag()");
+//                    return false;
+//                }
+//            };
+//            mRecyclerView.setOnDragListener(dragListener);
             mRecyclerView.addOnScrollListener(scrollListener);
             mRecyclerView.setOnFlingListener(flingListener);
-            mRecyclerView.setOnDragListener(dragListener);
         } else {
             DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
             mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
