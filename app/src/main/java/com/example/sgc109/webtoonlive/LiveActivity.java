@@ -110,7 +110,8 @@ public class LiveActivity extends AppCompatActivity {
 
                     int curY = (int) (percentage * mDeviceWidth);
                     int dy = curY - mCurY;
-                    Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
+//                    Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
+                    Log.d("scroll_debug", "mCurY : " + mCurY);
                     mRecyclerView.smoothScrollBy(0, dy);
                     mCurY = curY;
                 }
@@ -162,6 +163,7 @@ public class LiveActivity extends AppCompatActivity {
 
     private void pushScrollPosToDB() {
         int offset = mRecyclerView.computeVerticalScrollOffset();
+        Log.d("scroll_debug", "offset : " + offset);
         double posPercent = (double) offset / mDeviceWidth;
 
         DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
@@ -178,6 +180,7 @@ public class LiveActivity extends AppCompatActivity {
         }
 
         public void bindImage(int position) {
+//            Log.d("debug","cut" + (position + 1));
             Glide.with(LiveActivity.this)
                     .load(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()))
                     .into(mImageView);
