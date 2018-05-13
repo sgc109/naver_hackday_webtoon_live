@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">WebtoonLive</string>
-    <string name="firebase_db_pos_history">pos_history</string>
+    <string name="firebase_db_scroll_history">scroll_history</string>
+    <string name="firebase_db_comment_history">comment_history</string>
+    <string name="firebase_db_emotion_history">emotion_history</string>
+    <string name="firebase_db_image_size">image_size</string>
+
 </resources>

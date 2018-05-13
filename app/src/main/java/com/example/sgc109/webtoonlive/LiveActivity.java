@@ -40,12 +40,9 @@ public class LiveActivity extends AppCompatActivity {
     private boolean mIsWriter;
     private RecyclerView mRecyclerView;
     private DatabaseReference mDatabase;
-    private Long mLastCheckedTime;
     private LinearLayoutManager mLayoutManager;
-    private Runnable mPeriodicScrollPosCheck;
     private int mCurY;
     private ChildEventListener mChildEventListenerHandle;
-    private Handler mHandler;
 
     public static Intent newIntent(Context context, boolean isWriter) {
         Intent intent = new Intent(context, LiveActivity.class);
@@ -64,7 +61,6 @@ public class LiveActivity extends AppCompatActivity {
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
-        mLastCheckedTime = new Date().getTime();
         mLayoutManager = new LinearLayoutManager(this);
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {
@@ -89,44 +85,14 @@ public class LiveActivity extends AppCompatActivity {
         if (mIsWriter) {
             RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
                 @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-//                    pushScrollPosToDB();
-                }
-
-                @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                     super.onScrollStateChanged(recyclerView, newState);
                     if (newState == SCROLL_STATE_IDLE) {
-                        Log.d("scroll_debug", "SCROLL_STATE_IDLE");
                         pushScrollPosToDB();
-                    } else if (newState == SCROLL_STATE_DRAGGING) {
-                        Log.d("scroll_debug", "SCROLL_STATE_DRAGGING");
-                    } else if (newState == SCROLL_STATE_SETTLING) {
-                        Log.d("scroll_debug", "SCROLL_STATE_SETTLING");
                     }
                 }
             };
-            RecyclerView.OnFlingListener flingListener = new RecyclerView.OnFlingListener() {
-                @Override
-                public boolean onFling(int velocityX, int velocityY) {
-//                    pushScrollPosToDB();
-                    return false;
-                }
-            };
-
-            RecyclerView.OnDragListener dragListener = new View.OnDragListener() {
-                @Override
-                public boolean onDrag(View view, DragEvent dragEvent) {
-                    Log.d("scroll_debug", "onDrag()");
-                    pushScrollPosToDB();
-                    return false;
-                }
-            };
-
             mRecyclerView.addOnScrollListener(scrollListener);
-            mRecyclerView.setOnFlingListener(flingListener);
-            mRecyclerView.setOnDragListener(dragListener);
         } else {
             DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
             mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
@@ -136,9 +102,6 @@ public class LiveActivity extends AppCompatActivity {
                     double percentage = data.posPercent;
                     int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
 
-                    if (mRecyclerView.computeVerticalScrollOffset() != mCurY) {
-                        Log.d("scroll_debug", "offset : " + mRecyclerView.computeVerticalScrollOffset() + ", mCurY : " + mCurY);
-                    }
                     int curY = (int) (percentage * totalScrollLength);
                     int dy = curY - mCurY;
                     Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
@@ -193,18 +156,14 @@ public class LiveActivity extends AppCompatActivity {
 
     private void pushScrollPosToDB() {
         Long now = new Date().getTime();
-        if (now - mLastCheckedTime >= 500) {
-            int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
-            int offset = mRecyclerView.computeVerticalScrollOffset();
-            double posPercent = (double) offset / totalScrollLength;
+        int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
+        int offset = mRecyclerView.computeVerticalScrollOffset();
+        double posPercent = (double) offset / totalScrollLength;
 
-//            Log.d("scroll_debug", "curY : " + posPercent);
-            DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
-            ref
-                    .push()
-                    .setValue(new VerticalPositionChanged(posPercent));
-            mLastCheckedTime = now;
-        }
+        DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
+        ref
+                .push()
+                .setValue(new VerticalPositionChanged(posPercent));
     }
 
     class SceneImageViewHolder extends RecyclerView.ViewHolder {
