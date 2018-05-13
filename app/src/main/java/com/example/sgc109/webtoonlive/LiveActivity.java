@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,9 +19,11 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,6 +46,7 @@ public class LiveActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     private int mCurY;
     private ChildEventListener mChildEventListenerHandle;
+    private int mDeviceWidth;
 
     public static Intent newIntent(Context context, boolean isWriter) {
         Intent intent = new Intent(context, LiveActivity.class);
@@ -62,6 +66,9 @@ public class LiveActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        mDeviceWidth = displayMetrics.widthPixels;
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {
             @NonNull
@@ -78,7 +85,7 @@ public class LiveActivity extends AppCompatActivity {
 
             @Override
             public int getItemCount() {
-                return 30;
+                return 35;
             }
         };
 
@@ -94,15 +101,14 @@ public class LiveActivity extends AppCompatActivity {
             };
             mRecyclerView.addOnScrollListener(scrollListener);
         } else {
-            DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
+            DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
             mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                     VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
-                    double percentage = data.posPercent;
-                    int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
+                    double percentage = data.offsetProportion;
 
-                    int curY = (int) (percentage * totalScrollLength);
+                    int curY = (int) (percentage * mDeviceWidth);
                     int dy = curY - mCurY;
                     Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
                     mRecyclerView.smoothScrollBy(0, dy);
@@ -156,26 +162,26 @@ public class LiveActivity extends AppCompatActivity {
 
     private void pushScrollPosToDB() {
         Long now = new Date().getTime();
-        int totalScrollLength = mRecyclerView.computeVerticalScrollRange() - mRecyclerView.computeVerticalScrollExtent();
         int offset = mRecyclerView.computeVerticalScrollOffset();
-        double posPercent = (double) offset / totalScrollLength;
+        double posPercent = (double) offset / mDeviceWidth;
 
-        DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_pos_history));
-        ref
-                .push()
+        DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
+        ref.push()
                 .setValue(new VerticalPositionChanged(posPercent));
     }
 
     class SceneImageViewHolder extends RecyclerView.ViewHolder {
-        TextView mTextView;
+        ImageView mImageView;
 
         public SceneImageViewHolder(View itemView) {
             super(itemView);
-            mTextView = itemView.findViewById(R.id.list_item_scene_text_view);
+            mImageView = itemView.findViewById(R.id.list_item_scene_image_view);
         }
 
         public void bindImage(int position) {
-            mTextView.setText(Integer.toString(position));
+            Glide.with(LiveActivity.this)
+                    .load(getResources().getIdentifier("cut" + position, "drawable", getPackageName()))
+                    .into(mImageView);
         }
     }
 
@@ -183,7 +189,7 @@ public class LiveActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (mChildEventListenerHandle != null) {
-            mDatabase.child(getString(R.string.firebase_db_pos_history)).removeEventListener(mChildEventListenerHandle);
+            mDatabase.child(getString(R.string.firebase_db_scroll_history)).removeEventListener(mChildEventListenerHandle);
         }
 //        if (mIsWriter) {
 //            mHandler.removeCallbacks(mPeriodicScrollPosCheck);
