@@ -161,13 +161,12 @@ public class LiveActivity extends AppCompatActivity {
     }
 
     private void pushScrollPosToDB() {
-        Long now = new Date().getTime();
         int offset = mRecyclerView.computeVerticalScrollOffset();
         double posPercent = (double) offset / mDeviceWidth;
 
         DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
         ref.push()
-                .setValue(new VerticalPositionChanged(posPercent));
+                .setValue(new VerticalPositionChanged(posPercent, new Date()));
     }
 
     class SceneImageViewHolder extends RecyclerView.ViewHolder {
@@ -180,7 +179,7 @@ public class LiveActivity extends AppCompatActivity {
 
         public void bindImage(int position) {
             Glide.with(LiveActivity.this)
-                    .load(getResources().getIdentifier("cut" + position, "drawable", getPackageName()))
+                    .load(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()))
                     .into(mImageView);
         }
     }

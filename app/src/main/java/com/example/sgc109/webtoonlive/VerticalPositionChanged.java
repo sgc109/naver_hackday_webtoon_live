@@ -4,9 +4,10 @@ import java.util.Date;
 
 public class VerticalPositionChanged {
     public double offsetProportion;
-    public Date date;
+    public Date curDate;
     public VerticalPositionChanged(){}
-    public VerticalPositionChanged(double offsetProportion){
+    public VerticalPositionChanged(double offsetProportion, Date curDate){
         this.offsetProportion = offsetProportion;
+        curDate = curDate;
     }
 }
