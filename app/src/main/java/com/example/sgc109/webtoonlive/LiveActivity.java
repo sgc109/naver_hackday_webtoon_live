@@ -109,11 +109,9 @@ public class LiveActivity extends AppCompatActivity {
                     double percentage = data.offsetProportion;
 
                     int curY = (int) (percentage * mDeviceWidth);
-                    int dy = curY - mCurY;
 //                    Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
-                    Log.d("scroll_debug", "mCurY : " + mCurY);
-                    mRecyclerView.smoothScrollBy(0, dy);
-                    mCurY = curY;
+                    mRecyclerView.smoothScrollBy(0, curY - mRecyclerView.computeVerticalScrollOffset());
+                    Log.d("scroll_debug", "mCurY : " + mRecyclerView.computeVerticalScrollOffset());
                 }
 
                 @Override
@@ -181,6 +179,7 @@ public class LiveActivity extends AppCompatActivity {
 
         public void bindImage(int position) {
 //            Log.d("debug","cut" + (position + 1));
+//            mImageView.setImageResource(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()));
             Glide.with(LiveActivity.this)
                     .load(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()))
                     .into(mImageView);
