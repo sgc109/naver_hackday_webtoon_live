@@ -2,6 +2,7 @@ package com.example.sgc109.webtoonlive;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.DrawFilter;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -24,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
@@ -108,10 +112,11 @@ public class LiveActivity extends AppCompatActivity {
                     VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
                     double percentage = data.offsetProportion;
 
-                    int curY = (int) (percentage * mDeviceWidth);
+                    int nextY = (int) (percentage * mDeviceWidth);
 //                    Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
-                    mRecyclerView.smoothScrollBy(0, curY - mRecyclerView.computeVerticalScrollOffset());
-                    Log.d("scroll_debug", "mCurY : " + mRecyclerView.computeVerticalScrollOffset());
+                    int curY = mRecyclerView.computeVerticalScrollOffset();
+                    mRecyclerView.smoothScrollBy(0, nextY - curY);
+                    Log.d("scroll_debug", "nextY : " + nextY + ", curY : " + curY);
                 }
 
                 @Override
@@ -182,6 +187,9 @@ public class LiveActivity extends AppCompatActivity {
 //            mImageView.setImageResource(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()));
             Glide.with(LiveActivity.this)
                     .load(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()))
+                    .apply(new RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false))
                     .into(mImageView);
         }
     }
