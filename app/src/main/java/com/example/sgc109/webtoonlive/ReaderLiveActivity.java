@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -21,7 +22,8 @@ public class ReaderLiveActivity extends LiveActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_reader_live);
+
+        Log.d("DEBUG", "ReaderLiveActivity");
 
         DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
         mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
@@ -56,5 +58,10 @@ public class ReaderLiveActivity extends LiveActivity {
 
             }
         });
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        return true;
     }
 }

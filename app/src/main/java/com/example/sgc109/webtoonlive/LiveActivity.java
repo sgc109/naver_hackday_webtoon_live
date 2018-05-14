@@ -57,10 +57,6 @@ public class LiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live);
 
-        if (getIntent() != null) {
-            mIsWriter = getIntent().getBooleanExtra(EXTRA_IS_WRITER, false);
-        }
-
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
@@ -88,12 +84,6 @@ public class LiveActivity extends AppCompatActivity {
         };
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(adapter);
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (!mIsWriter) return true;
-        return super.dispatchTouchEvent(ev);
     }
 
     public void pushScrollPosToDB() {
