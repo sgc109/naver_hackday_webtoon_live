@@ -1,5 +1,6 @@
 package com.example.sgc109.webtoonlive;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,28 +21,25 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar;
 import com.example.sgc109.webtoonlive.CustomView.FixedSizeImageView;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Date;
-
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class LiveActivity extends AppCompatActivity {
     private static final String TAG = "LiveActivity";
 
     private static final String EXTRA_IS_WRITER = "extra_is_writer";
     private boolean mIsWriter;
-    private RecyclerView mRecyclerView;
-    private DatabaseReference mDatabase;
+    protected RecyclerView mRecyclerView;
+    protected DatabaseReference mDatabase;
     private LinearLayoutManager mLayoutManager;
     private int mCurY;
-    private ChildEventListener mChildEventListenerHandle;
-    private int mDeviceWidth;
 
-    private BottomEmotionBar emotionBar;
+
+    protected ChildEventListener mChildEventListenerHandle;
+    protected int mDeviceWidth;
+    protected BottomEmotionBar emotionBar;
 
     public static Intent newIntent(Context context, boolean isWriter) {
         Intent intent = new Intent(context, LiveActivity.class);
@@ -49,14 +47,11 @@ public class LiveActivity extends AppCompatActivity {
         return intent;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live);
-
-        if (getIntent() != null) {
-            mIsWriter = getIntent().getBooleanExtra(EXTRA_IS_WRITER, false);
-        }
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
@@ -76,8 +71,7 @@ public class LiveActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(@NonNull SceneImageViewHolder holder, int position) {
-                holder.bindImage(position);
-                Log.d(TAG,"position : " + position);
+                holder.bindImage(position, getItemCount() -1);
             }
 
             @Override
@@ -86,93 +80,23 @@ public class LiveActivity extends AppCompatActivity {
             }
         };
 
-        if (mIsWriter) {
-            RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (newState == SCROLL_STATE_IDLE) {
-                        pushScrollPosToDB();
-                    }
-                    emotionBar.hide();
-                }
-            };
-            mRecyclerView.addOnScrollListener(scrollListener);
-        } else {
-            DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
-            mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
-                    double percentage = data.offsetProportion;
-
-                    int nextY = (int) (percentage * mDeviceWidth);
-//                    Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
-                    int curY = mRecyclerView.computeVerticalScrollOffset();
-                    mRecyclerView.smoothScrollBy(0, nextY - curY);
-                    Log.d("scroll_debug", "nextY : " + nextY + ", curY : " + curY);
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(adapter);
-
-
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()){
                     case MotionEvent.ACTION_DOWN:
-                        emotionBar.toggle();
+                        emotionBar.toggleShowing();
                         break;
                 }
                 return false;
             }
         });
 
-
-//        mHandler = new Handler();
-//        if (mIsWriter) {
-//            mPeriodicScrollPosCheck = new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.d("runnable_debug", "run()");
-//                    pushScrollPosToDB();
-//                    mHandler.postDelayed(this, 500);
-//                }
-//            };
-//            mHandler.post(mPeriodicScrollPosCheck);
-//        }
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (!mIsWriter) return true;
-        return super.dispatchTouchEvent(ev);
-    }
-
-    private void pushScrollPosToDB() {
+    public void pushScrollPosToDB() {
         int offset = mRecyclerView.computeVerticalScrollOffset();
         Log.d("scroll_debug", "offset : " + offset);
         double posPercent = (double) offset / mDeviceWidth;
@@ -190,9 +114,10 @@ public class LiveActivity extends AppCompatActivity {
         public SceneImageViewHolder(View itemView) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.list_item_scene_image_view);
+            mImageView.setLastPosition(false);
         }
 
-        public void bindImage(int position) {
+        public void bindImage(int position, int lastPosition) {
 //            Log.d("debug","cut" + (position + 1));
 //            mImageView.setImageResource(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()));
             Glide.with(LiveActivity.this)
@@ -201,6 +126,9 @@ public class LiveActivity extends AppCompatActivity {
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .skipMemoryCache(false))
                     .into(mImageView);
+            if(position == lastPosition) {
+                mImageView.setLastPosition(true);
+            }
         }
 
     }

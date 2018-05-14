@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class BottomEmotionBar extends LinearLayout implements View.OnTouchListener {
 
 
-    private static final long TRANSITION_DURATION = 400;
     private static final String TAG = "BottomEmotionBar";
 
     private boolean isShowing;
@@ -70,28 +69,42 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
 
     }
 
-    public void toggle() {
-        Log.d(TAG, "toggle," + isShowing);
+    /**
+     * View가 보이는 상태에서는 가려주고, 안보이는 상태에선 보여준다.
+     */
+    public void toggleShowing() {
+        Log.d(TAG, "toggleShowing," + isShowing);
         if (isShowing) {
-            TransitionManager.beginDelayedTransition(this);
-            this.setVisibility(View.GONE);
-            isShowing = false;
+            hideView();
         } else {
-            TransitionManager.beginDelayedTransition(this);
-            this.setVisibility(View.VISIBLE);
-            isShowing = true;
+            showView();
         }
     }
 
-    public void hide() {
+    /**
+     * View 를 보여준다.
+     */
+    public void showView() {
+        Log.d(TAG, "show," + isShowing);
+        TransitionManager.beginDelayedTransition(this);
+        this.setVisibility(View.VISIBLE);
+        isShowing = true;
+    }
+
+    /**
+     * View 를 가려준다.
+     */
+    public void hideView() {
         Log.d(TAG, "hide," + isShowing);
-        if (isShowing) {
-            TransitionManager.beginDelayedTransition(this);
-            this.setVisibility(View.GONE);
-            isShowing = false;
-        }
+        TransitionManager.beginDelayedTransition(this);
+        this.setVisibility(View.GONE);
+        isShowing = false;
     }
 
+    /**
+     *  ToDo 미구현.
+     *  감정표현 버튼 클릭시 애니메이션 및 선택된 View 확대 등의 작업을 해야 합니다.
+     */
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         Rect rect = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
