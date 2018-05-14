@@ -8,6 +8,6 @@ public class VerticalPositionChanged {
     public VerticalPositionChanged(){}
     public VerticalPositionChanged(double offsetProportion, Date curDate){
         this.offsetProportion = offsetProportion;
-        curDate = curDate;
+        this.curDate = curDate;
     }
 }

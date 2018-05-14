@@ -52,12 +52,6 @@ public class LiveActivity extends AppCompatActivity {
     protected ChildEventListener mChildEventListenerHandle;
     protected int mDeviceWidth;
 
-    public static Intent newIntent(Context context, boolean isWriter) {
-        Intent intent = new Intent(context, LiveActivity.class);
-        intent.putExtra(EXTRA_IS_WRITER, isWriter);
-        return intent;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

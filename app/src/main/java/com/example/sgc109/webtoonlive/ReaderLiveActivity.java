@@ -1,5 +1,7 @@
 package com.example.sgc109.webtoonlive;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +12,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
 public class ReaderLiveActivity extends LiveActivity {
+
+    public static Intent newIntent(Context context) {
+        Intent intent = new Intent(context, ReaderLiveActivity.class);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

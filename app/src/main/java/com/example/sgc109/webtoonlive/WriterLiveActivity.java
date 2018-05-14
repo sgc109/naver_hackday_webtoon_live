@@ -9,8 +9,9 @@ import android.support.v7.widget.RecyclerView;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class WriterLiveActivity extends LiveActivity {
+
     public static Intent newIntent(Context context) {
-        Intent intent = new Intent(context, LiveActivity.class);
+        Intent intent = new Intent(context, WriterLiveActivity.class);
         return intent;
     }
 
