@@ -2,47 +2,36 @@ package com.example.sgc109.webtoonlive;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.DrawFilter;
-import android.graphics.PointF;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar;
+import com.example.sgc109.webtoonlive.CustomView.FixedSizeImageView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 
 public class LiveActivity extends AppCompatActivity {
+    private static final String TAG = "LiveActivity";
+
     private static final String EXTRA_IS_WRITER = "extra_is_writer";
     private boolean mIsWriter;
     private RecyclerView mRecyclerView;
@@ -51,6 +40,8 @@ public class LiveActivity extends AppCompatActivity {
     private int mCurY;
     private ChildEventListener mChildEventListenerHandle;
     private int mDeviceWidth;
+
+    private BottomEmotionBar emotionBar;
 
     public static Intent newIntent(Context context, boolean isWriter) {
         Intent intent = new Intent(context, LiveActivity.class);
@@ -73,6 +64,7 @@ public class LiveActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         mDeviceWidth = displayMetrics.widthPixels;
+        emotionBar = findViewById(R.id.emotionBar);
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {
             @NonNull
@@ -85,6 +77,7 @@ public class LiveActivity extends AppCompatActivity {
             @Override
             public void onBindViewHolder(@NonNull SceneImageViewHolder holder, int position) {
                 holder.bindImage(position);
+                Log.d(TAG,"position : " + position);
             }
 
             @Override
@@ -101,6 +94,7 @@ public class LiveActivity extends AppCompatActivity {
                     if (newState == SCROLL_STATE_IDLE) {
                         pushScrollPosToDB();
                     }
+                    emotionBar.hide();
                 }
             };
             mRecyclerView.addOnScrollListener(scrollListener);
@@ -144,6 +138,20 @@ public class LiveActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(adapter);
 
+
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        emotionBar.toggle();
+                        break;
+                }
+                return false;
+            }
+        });
+
+
 //        mHandler = new Handler();
 //        if (mIsWriter) {
 //            mPeriodicScrollPosCheck = new Runnable() {
@@ -175,7 +183,9 @@ public class LiveActivity extends AppCompatActivity {
     }
 
     class SceneImageViewHolder extends RecyclerView.ViewHolder {
-        ImageView mImageView;
+        FixedSizeImageView mImageView;
+
+
 
         public SceneImageViewHolder(View itemView) {
             super(itemView);
@@ -188,10 +198,11 @@ public class LiveActivity extends AppCompatActivity {
             Glide.with(LiveActivity.this)
                     .load(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()))
                     .apply(new RequestOptions()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .skipMemoryCache(false))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .skipMemoryCache(false))
                     .into(mImageView);
         }
+
     }
 
     @Override
