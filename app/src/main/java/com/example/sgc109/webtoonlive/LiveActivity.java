@@ -2,6 +2,7 @@ package com.example.sgc109.webtoonlive;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.DrawFilter;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -24,6 +25,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -34,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static android.provider.ContactsContract.CommonDataKinds.Website.URL;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
@@ -90,52 +94,51 @@ public class LiveActivity extends AppCompatActivity {
         };
 
         if (mIsWriter) {
-//            RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
-//                @Override
-//                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                    super.onScrollStateChanged(recyclerView, newState);
-//                    if (newState == SCROLL_STATE_IDLE) {
-//                        pushScrollPosToDB();
-//                    }
-//                }
-//            };
-//            mRecyclerView.addOnScrollListener(scrollListener);
+            RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                    if (newState == SCROLL_STATE_IDLE) {
+                        pushScrollPosToDB();
+                    }
+                }
+            };
+            mRecyclerView.addOnScrollListener(scrollListener);
         } else {
-//            DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
-//            mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
-//                @Override
-//                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-//                    VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
-//                    double percentage = data.offsetProportion;
-//
-//                    int curY = (int) (percentage * mDeviceWidth);
-//                    int dy = curY - mCurY;
-////                    Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
-//                    Log.d("scroll_debug", "mCurY : " + mCurY);
-//                    mRecyclerView.smoothScrollBy(0, dy);
-//                    mCurY = curY;
-//                }
-//
-//                @Override
-//                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-//
-//                }
-//
-//                @Override
-//                public void onChildRemoved(DataSnapshot dataSnapshot) {
-//
-//                }
-//
-//                @Override
-//                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-//
-//                }
-//
-//                @Override
-//                public void onCancelled(DatabaseError databaseError) {
-//
-//                }
-//            });
+            DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
+            mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
+                    double percentage = data.offsetProportion;
+
+                    int nextY = (int) (percentage * mDeviceWidth);
+//                    Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
+                    int curY = mRecyclerView.computeVerticalScrollOffset();
+                    mRecyclerView.smoothScrollBy(0, nextY - curY);
+                    Log.d("scroll_debug", "nextY : " + nextY + ", curY : " + curY);
+                }
+
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
         }
 
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -161,7 +164,7 @@ public class LiveActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
-    public void pushScrollPosToDB() {
+    private void pushScrollPosToDB() {
         int offset = mRecyclerView.computeVerticalScrollOffset();
         Log.d("scroll_debug", "offset : " + offset);
         double posPercent = (double) offset / mDeviceWidth;
@@ -181,8 +184,12 @@ public class LiveActivity extends AppCompatActivity {
 
         public void bindImage(int position) {
 //            Log.d("debug","cut" + (position + 1));
+//            mImageView.setImageResource(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()));
             Glide.with(LiveActivity.this)
                     .load(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()))
+                    .apply(new RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .skipMemoryCache(false))
                     .into(mImageView);
         }
     }
