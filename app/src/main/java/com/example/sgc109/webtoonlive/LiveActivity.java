@@ -45,12 +45,12 @@ import static android.support.v7.widget.RecyclerView.SCROLL_STATE_SETTLING;
 public class LiveActivity extends AppCompatActivity {
     private static final String EXTRA_IS_WRITER = "extra_is_writer";
     private boolean mIsWriter;
-    private RecyclerView mRecyclerView;
-    private DatabaseReference mDatabase;
+    protected RecyclerView mRecyclerView;
+    protected DatabaseReference mDatabase;
     private LinearLayoutManager mLayoutManager;
     private int mCurY;
-    private ChildEventListener mChildEventListenerHandle;
-    private int mDeviceWidth;
+    protected ChildEventListener mChildEventListenerHandle;
+    protected int mDeviceWidth;
 
     public static Intent newIntent(Context context, boolean isWriter) {
         Intent intent = new Intent(context, LiveActivity.class);
@@ -92,70 +92,8 @@ public class LiveActivity extends AppCompatActivity {
                 return 35;
             }
         };
-
-        if (mIsWriter) {
-            RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                    super.onScrollStateChanged(recyclerView, newState);
-                    if (newState == SCROLL_STATE_IDLE) {
-                        pushScrollPosToDB();
-                    }
-                }
-            };
-            mRecyclerView.addOnScrollListener(scrollListener);
-        } else {
-            DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
-            mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
-                    double percentage = data.offsetProportion;
-
-                    int nextY = (int) (percentage * mDeviceWidth);
-//                    Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
-                    int curY = mRecyclerView.computeVerticalScrollOffset();
-                    mRecyclerView.smoothScrollBy(0, nextY - curY);
-                    Log.d("scroll_debug", "nextY : " + nextY + ", curY : " + curY);
-                }
-
-                @Override
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                }
-
-                @Override
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-        }
-
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(adapter);
-
-//        mHandler = new Handler();
-//        if (mIsWriter) {
-//            mPeriodicScrollPosCheck = new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.d("runnable_debug", "run()");
-//                    pushScrollPosToDB();
-//                    mHandler.postDelayed(this, 500);
-//                }
-//            };
-//            mHandler.post(mPeriodicScrollPosCheck);
-//        }
     }
 
     @Override
@@ -164,7 +102,7 @@ public class LiveActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(ev);
     }
 
-    private void pushScrollPosToDB() {
+    public void pushScrollPosToDB() {
         int offset = mRecyclerView.computeVerticalScrollOffset();
         Log.d("scroll_debug", "offset : " + offset);
         double posPercent = (double) offset / mDeviceWidth;

@@ -23,12 +23,10 @@ public class ReaderLiveActivity extends LiveActivity {
                 VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
                 double percentage = data.offsetProportion;
 
-                int curY = (int) (percentage * mDeviceWidth);
-                int dy = curY - mCurY;
-//                    Log.d("scroll_debug", "prvY : " + mCurY + ", curY : " + curY + ", dy : " + dy);
-                Log.d("scroll_debug", "mCurY : " + mCurY);
-                mRecyclerView.smoothScrollBy(0, dy);
-                mCurY = curY;
+                int nextY = (int) (percentage * mDeviceWidth);
+                int curY = mRecyclerView.computeVerticalScrollOffset();
+                mRecyclerView.smoothScrollBy(0, nextY - curY);
+                Log.d("scroll_debug", "nextY : " + nextY + ", curY : " + curY);
             }
 
             @Override
