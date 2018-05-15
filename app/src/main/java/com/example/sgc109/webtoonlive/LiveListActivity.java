@@ -25,8 +25,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class LiveListActivity extends AppCompatActivity {
@@ -85,30 +87,36 @@ public class LiveListActivity extends AppCompatActivity {
     }
 
     class LiveInfoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public TextView mTextView;
-        public TextView mTextViewLive;
-        public LiveInfo mLiveInfo;
+        private TextView mTextView;
+        private TextView mTextViewLive;
+        private TextView mDateTextView;
+        private LiveInfo mLiveInfo;
         private int mPrvColor;
 
         public LiveInfoViewHolder(View itemView) {
             super(itemView);
             mTextView = itemView.findViewById(R.id.list_item_live_text_view);
             mTextViewLive = itemView.findViewById(R.id.list_item_live_text_view_live);
+            mDateTextView = itemView.findViewById(R.id.list_item_live_date_text_view);
             itemView.setOnClickListener(this);
         }
 
         public void bindLiveInfo(LiveInfo liveInfo) {
             mLiveInfo = liveInfo;
             mTextView.setText(liveInfo.title);
+//            Calendar calendar = convertLongToCalendar(liveInfo.date);
+            mDateTextView.setText(DateDisplayer.dateToStringFormat(new Date(liveInfo.date)));
             if (liveInfo.state.equals(getString(R.string.live_state_on_air))) {
                 mPrvColor = mTextView.getCurrentTextColor();
                 mTextView.setTextColor(Color.RED);
                 mTextViewLive.setVisibility(View.VISIBLE);
+                mDateTextView.setVisibility(View.GONE);
             } else {
                 if (mPrvColor != 0) {
                     mTextView.setTextColor(mPrvColor);
                 }
                 mTextViewLive.setVisibility(View.GONE);
+                mDateTextView.setVisibility(View.VISIBLE);
             }
         }
 
@@ -152,8 +160,8 @@ public class LiveListActivity extends AppCompatActivity {
 
     public void updateUI() {
         mProgressBar.setVisibility(View.VISIBLE);
-        mEmptyMsgTextView.setVisibility(View.INVISIBLE);
-        mRecyclerView.setVisibility(View.INVISIBLE);
+        mEmptyMsgTextView.setVisibility(View.GONE);
+        mRecyclerView.setVisibility(View.GONE);
         if (mPrevEventListener != null) {
             mDatabase
                     .child(getString(R.string.firebase_db_live_list))
@@ -166,7 +174,7 @@ public class LiveListActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Log.d("mydebug", "onDataChange()!");
-                                mProgressBar.setVisibility(View.INVISIBLE);
+                                mProgressBar.setVisibility(View.GONE);
                                 mLiveInfoList = new ArrayList<>();
                                 mExistOnAirLive = false;
                                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
@@ -177,7 +185,7 @@ public class LiveListActivity extends AppCompatActivity {
                                     }
                                 }
                                 if (mLiveInfoList.size() > 0) {
-                                    mEmptyMsgTextView.setVisibility(View.INVISIBLE);
+                                    mEmptyMsgTextView.setVisibility(View.GONE);
                                     mRecyclerView.setVisibility(View.VISIBLE);
                                 } else {
                                     mEmptyMsgTextView.setVisibility(View.VISIBLE);
@@ -209,4 +217,9 @@ public class LiveListActivity extends AppCompatActivity {
                             }
                         });
     }
+//    public Calendar convertLongToCalendar(Long date){
+//        Calendar calendar = Calendar.getInstance();
+//        calendar.setTimeInMillis(date);
+//        return calendar;
+//    }
 }
