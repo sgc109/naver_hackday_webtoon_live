@@ -3,6 +3,7 @@ package com.example.sgc109.webtoonlive;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.example.sgc109.webtoonlive.CustomView.CommentPointView;
@@ -39,6 +41,8 @@ import java.util.Map;
 
 public class DefaultWebtoonActivity extends AppCompatActivity {
     private CustomScrollView commentFieldScroll;
+    private CustomScrollView commentInfoScroll;
+    private RelativeLayout commentInfo;
     private RecyclerView webtoonRcv;
     private RelativeLayout commentField;
 
@@ -62,6 +66,8 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         webtoonRcv = findViewById(R.id.webtoon_rcv);
         commentField = findViewById(R.id.comment_field);
         commentFieldScroll = findViewById(R.id.comment_field_scroll);
+        commentInfoScroll = findViewById(R.id.comment_info_scroll);
+        commentInfo = findViewById(R.id.comment_info);
     }
 
     private void init(){
@@ -72,11 +78,13 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         syncScroll();
 
         commentFieldScroll.setScrollingEnabled(false);
+        commentInfoScroll.setScrollingEnabled(false);
         /*FIXME
          params height 값 메타데이터에서 얻기
          */
         FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 116865);
         commentField.setLayoutParams(layoutParams);
+        commentInfo.setLayoutParams(layoutParams);
 
         commentField.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -107,7 +115,14 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
     private void syncScroll(){
 
-
+        webtoonRcv.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                commentInfoScroll.scrollTo(0, webtoonRcv.computeVerticalScrollOffset());
+                commentFieldScroll.scrollTo(0, webtoonRcv.computeVerticalScrollOffset());
+            }
+        });
 
 
     }
@@ -135,7 +150,10 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
 
-                while (i.hasNext()) addComment(i.next().getValue(Comment.class));
+                while (i.hasNext()) {
+                    DataSnapshot tmp = i.next();
+                    addComment(tmp.getValue(Comment.class), tmp.getKey());
+                }
             }
 
             @Override
@@ -147,7 +165,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         commentRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                addComment(dataSnapshot.getValue(Comment.class));
+                addComment(dataSnapshot.getValue(Comment.class), dataSnapshot.getKey());
             }
 
             @Override
@@ -172,12 +190,15 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         });
     }
     @SuppressLint("RestrictedApi")
-    private void addComment(final Comment comment){
+    private void addComment(final Comment comment, String tmpKey){
         Comment tmp = new Comment();
         tmp = comment;
 
         final CommentPointView commentPointView = new CommentPointView(this);
+        final LinearLayout infoView = new CommentPointView(this);
+
         commentPointView.setComment(tmp.getContent());
+        commentPointView.setLikeCount(tmp.getLikeCount());
         commentPointView.setTag(comment);
 
         float widthRate = (float) deviceWidth / comment.getDeviceWidth();
@@ -185,19 +206,28 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         double rate = webtoonRcv.computeVerticalScrollRange()/comment.getScrollLength();
 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins( (int)(comment.getPosX() * widthRate)
-                ,  (int)(comment.getPosY()*rate)
+        params.setMargins( (int)(comment.getPosX() * widthRate)-30
+                ,  (int)(comment.getPosY()*rate)-30
                 ,0,0);
 
+        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(10, 40);
+        params2.setMargins( 0
+                ,  (int)(comment.getPosY()*rate)-30
+                ,0,0);
+
+        infoView.setLayoutParams(params2);
+        infoView.setBackgroundColor(Color.parseColor("#00C73C"));
         commentPointView.setLayoutParams(params);
         commentField.addView(commentPointView);
+
+        commentInfo.addView(infoView);
 
         commentPointView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Comment tmpComment = (Comment) view.getTag();
 
-                commentContentDialog = new CommentContentDialog(DefaultWebtoonActivity.this, tmpComment.getContent());
+                commentContentDialog = new CommentContentDialog(DefaultWebtoonActivity.this, tmpComment.getContent(), tmpComment.getLikeCount(), likeClickListener);
                 commentContentDialog.show();
                 commentPointView.setSelected(true);
                 commentContentDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -262,6 +292,13 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         }
     };
 
+    View.OnClickListener likeClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.writer_menu, menu);
@@ -276,9 +313,12 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             if(commentFieldScroll.getVisibility() == View.GONE) {
                 commentFieldScroll.scrollTo(0,webtoonRcv.computeVerticalScrollOffset());
                 commentFieldScroll.setVisibility(View.VISIBLE);
+                commentInfoScroll.setVisibility(View.GONE);
             }
-            else
+            else {
                 commentFieldScroll.setVisibility(View.GONE);
+                commentInfoScroll.setVisibility(View.VISIBLE);
+            }
         }
 
 

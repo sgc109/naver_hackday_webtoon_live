@@ -18,6 +18,7 @@ public class CommentPointView extends LinearLayout {
 
     private RelativeLayout point;
     private String comment;
+    private int likeCount;
 
     public CommentPointView(Context context){
         this(context, null);
@@ -44,6 +45,10 @@ public class CommentPointView extends LinearLayout {
 
     }
 
+    public void setLikeCount(int likeCount){this.likeCount = likeCount;}
+
+    public int getLikeCount(){return likeCount; }
+
     public void setComment(String comment){
         this.comment = comment;
     }
@@ -51,7 +56,5 @@ public class CommentPointView extends LinearLayout {
     public String getComment(){
         return comment;
     }
-
-
 
 }
