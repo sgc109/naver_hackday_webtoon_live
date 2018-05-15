@@ -63,7 +63,7 @@ public class LiveActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(@NonNull SceneImageViewHolder holder, int position) {
-                holder.bindImage(position, getItemCount() -1);
+                holder.bindImage(position, getItemCount() - 1);
             }
 
             @Override
@@ -75,7 +75,7 @@ public class LiveActivity extends AppCompatActivity {
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()){
+                switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         emotionBar.toggleShowing();
                         break;
@@ -90,7 +90,6 @@ public class LiveActivity extends AppCompatActivity {
 
     class SceneImageViewHolder extends RecyclerView.ViewHolder {
         FixedSizeImageView mImageView;
-
 
 
         public SceneImageViewHolder(View itemView) {
@@ -108,7 +107,7 @@ public class LiveActivity extends AppCompatActivity {
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .skipMemoryCache(false))
                     .into(mImageView);
-            if(position == lastPosition) {
+            if (position == lastPosition) {
                 mImageView.setLastPosition(true);
             }
         }

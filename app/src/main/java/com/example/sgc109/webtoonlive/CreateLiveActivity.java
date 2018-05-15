@@ -17,10 +17,11 @@ public class CreateLiveActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private EditText mTitleEditText;
 
-    public static Intent newIntent(Context context){
+    public static Intent newIntent(Context context) {
         Intent intent = new Intent(context, CreateLiveActivity.class);
         return intent;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +35,7 @@ public class CreateLiveActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_start_live:
-                if(mTitleEditText.getText().toString().equals("")){
+                if (mTitleEditText.getText().toString().equals("")) {
                     Toast.makeText(this, "제목을 입력하세요!", Toast.LENGTH_SHORT).show();
                     return true;
                 }
