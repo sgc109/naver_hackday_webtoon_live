@@ -145,6 +145,7 @@ public class LiveListActivity extends AppCompatActivity {
         }
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.live_list_activity, menu);
+        setTitle(getString(R.string.menu_title_live_list));
         return true;
     }
 
@@ -212,9 +213,4 @@ public class LiveListActivity extends AppCompatActivity {
                             }
                         });
     }
-//    public Calendar convertLongToCalendar(Long date){
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(date);
-//        return calendar;
-//    }
 }

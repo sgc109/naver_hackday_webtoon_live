@@ -27,9 +27,6 @@ public class CreateLiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_live);
 
-        if(getActionBar() != null){
-            getActionBar().setTitle("새 라이브 만들기");
-        }
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mTitleEditText = findViewById(R.id.create_live_edit_text);
     }
@@ -66,6 +63,7 @@ public class CreateLiveActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_create_live, menu);
+        setTitle(getString(R.string.menu_title_create_live));
         return true;
     }
 }
