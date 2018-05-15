@@ -101,6 +101,7 @@ public class WriterLiveActivity extends LiveActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        setTitle("　");
         getMenuInflater().inflate(R.menu.writer_menu, menu);
         return true;
     }
@@ -109,9 +110,9 @@ public class WriterLiveActivity extends LiveActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.write_comment){
-           commentWriterDialog = new CommentWriterDialog(WriterLiveActivity.this, onClickListener);
-           commentWriterDialog.show();
+        if (id == R.id.write_comment) {
+            commentWriterDialog = new CommentWriterDialog(WriterLiveActivity.this, onClickListener);
+            commentWriterDialog.show();
         }
 
 
@@ -121,7 +122,7 @@ public class WriterLiveActivity extends LiveActivity {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String content = ((EditText)commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
+            String content = ((EditText) commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
             String key;
 
             Map<String, Object> map = new HashMap<String, Object>();

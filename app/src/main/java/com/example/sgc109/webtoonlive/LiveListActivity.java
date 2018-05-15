@@ -140,12 +140,12 @@ public class LiveListActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        setTitle(getString(R.string.menu_title_live_list));
         if (!mIsWriter) {
             return super.onCreateOptionsMenu(menu);
         }
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.live_list_activity, menu);
-        setTitle(getString(R.string.menu_title_live_list));
         return true;
     }
 

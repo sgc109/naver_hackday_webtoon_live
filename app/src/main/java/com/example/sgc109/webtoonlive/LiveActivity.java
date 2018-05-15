@@ -41,6 +41,7 @@ public class LiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live);
 
+        setTitle("　");
         mLiveKey = getIntent().getStringExtra(EXTRA_LIVE_KEY);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
