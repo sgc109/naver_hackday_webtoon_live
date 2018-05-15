@@ -17,6 +17,21 @@
         </android.support.v7.widget.RecyclerView>
 
         <com.example.sgc109.webtoonlive.CustomView.CustomScrollView
+            android:id="@+id/comment_info_scroll"
+            android:scrollbars="none"
+            android:layout_width="5dp"
+            android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/comment_info"
+                    android:layout_width="5dp"
+                    android:layout_height="wrap_content">
+
+
+                </RelativeLayout>
+        </com.example.sgc109.webtoonlive.CustomView.CustomScrollView>
+
+        <com.example.sgc109.webtoonlive.CustomView.CustomScrollView
             android:id="@+id/comment_field_scroll"
             android:visibility="gone"
             android:background="#22000000"
