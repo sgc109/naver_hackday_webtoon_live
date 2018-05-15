@@ -28,13 +28,12 @@ import java.util.Date;
 
 public class LiveActivity extends AppCompatActivity {
     private static final String TAG = "LiveActivity";
+    protected static final String EXTRA_LIVE_KEY = "extra_live_key";
 
-    private static final String EXTRA_IS_WRITER = "extra_is_writer";
-    private boolean mIsWriter;
     protected RecyclerView mRecyclerView;
     protected DatabaseReference mDatabase;
     private LinearLayoutManager mLayoutManager;
-    private int mCurY;
+    protected String mLiveKey;
 
 
     protected ChildEventListener mChildEventListenerHandle;
@@ -47,6 +46,7 @@ public class LiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live);
 
+        mLiveKey = getIntent().getStringExtra(EXTRA_LIVE_KEY);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);

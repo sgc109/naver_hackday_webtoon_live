@@ -13,16 +13,15 @@ import com.google.firebase.database.DatabaseReference;
 
 public class ReaderLiveActivity extends LiveActivity {
 
-    public static Intent newIntent(Context context) {
+    public static Intent newIntent(Context context, String liveKey) {
         Intent intent = new Intent(context, ReaderLiveActivity.class);
+        intent.putExtra(EXTRA_LIVE_KEY, liveKey);
         return intent;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Log.d("DEBUG", "ReaderLiveActivity");
 
         DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
         mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
