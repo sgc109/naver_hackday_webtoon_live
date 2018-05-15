@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "492843288731-6t7poqfkurjq6cqdr30kntl13d804hq6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.sgc109.webtoonlive",
+            "certificate_hash": "d1520c495bba66fe4b4183fe2bd7ac766d379ae6"
+          }
+        },
+        {
           "client_id": "492843288731-b6iu478uacqha0stepbvbsmqkpkb3e8a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
