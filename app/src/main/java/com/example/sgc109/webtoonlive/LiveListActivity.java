@@ -3,6 +3,7 @@ package com.example.sgc109.webtoonlive;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -126,6 +127,9 @@ public class LiveListActivity extends AppCompatActivity {
         public void bindLiveInfo(LiveInfo liveInfo){
             mLiveInfo = liveInfo;
             mTextView.setText(liveInfo.title);
+            if(liveInfo.state == getString(R.string.live_state_on_air)){
+                mTextView.setTextColor(Color.RED);
+            }
         }
 
         @Override
