@@ -22,4 +22,12 @@
         android:text="독자"
         android:textSize="80sp"/>
 
+    <Button
+        android:id="@+id/main_activity_user_type_button_default"
+        android:text="실시간 댓글"
+        android:textSize="50sp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

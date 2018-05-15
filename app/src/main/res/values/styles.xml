@@ -8,4 +8,9 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <declare-styleable name="CommentPointView">
+        <attr name="text" format="reference|integer" />
+    </declare-styleable>
+
 </resources>
