@@ -1,5 +1,6 @@
 package com.example.sgc109.webtoonlive;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,6 +9,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -26,6 +29,8 @@ public class ReaderLiveActivity extends LiveActivity {
     private ValueEventListener mLiveStateChangeListener;
     private ChildEventListener mWriterCommentAddedListener;
     private Long mStartedTime;
+    private Handler mHandler;
+    private Runnable mPeriodicProgressCheck;
 
     public static Intent newIntent(Context context, String liveKey) {
         Intent intent = new Intent(context, ReaderLiveActivity.class);
@@ -40,7 +45,6 @@ public class ReaderLiveActivity extends LiveActivity {
         mStartedTime = System.currentTimeMillis();
         mSeekBar = findViewById(R.id.live_seek_bar);
         mSeekBar.setVisibility(View.VISIBLE);
-        mSeekBar.setProgress(50);
 
         mDatabase
                 .child(getString(R.string.firebase_db_live_list))
@@ -77,13 +81,13 @@ public class ReaderLiveActivity extends LiveActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Long latestTime = 0L;
-                        for(DataSnapshot child : dataSnapshot.getChildren()){
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
                             final VerticalPositionChanged scrollHistory = child.getValue(VerticalPositionChanged.class);
 //                            mScrollHistories.add(scrollHistory);
                             latestTime = Math.max(latestTime, scrollHistory.time);
                             Long passedTime = System.currentTimeMillis() - mStartedTime;
                             Long timeAfter = scrollHistory.time - passedTime;
-                            if(timeAfter < 0) {
+                            if (timeAfter < 0) {
                                 continue;
                             }
                             new Handler().postDelayed(new Runnable() {
@@ -98,6 +102,26 @@ public class ReaderLiveActivity extends LiveActivity {
                                 }
                             }, timeAfter);
                         }
+                        ObjectAnimator animation = ObjectAnimator.ofInt(mSeekBar, "progress", 10000);
+                        animation.setDuration(latestTime);
+                        animation.setInterpolator(new LinearInterpolator());
+                        animation.start();
+//                        final Long checkInterval = latestTime / 100;
+//                        mHandler = new Handler();
+//
+//                        mPeriodicProgressCheck = new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                mSeekBar.setProgress(mSeekBar.getProgress() + 1);
+//                                Log.d("mydebug", "" + mSeekBar.getProgress());
+//                                if(mSeekBar.getProgress() == 100) {
+//                                    mHandler.removeCallbacks(this);
+//                                    return;
+//                                }
+//                                mHandler.postDelayed(this, checkInterval);
+//                            }
+//                        };
+//                        mHandler.post(mPeriodicProgressCheck);
 
                     }
 
@@ -167,40 +191,40 @@ public class ReaderLiveActivity extends LiveActivity {
     }
 
 
-    private void settingCommentListeners(){
+    private void settingCommentListeners() {
 
         mWriterCommentAddedListener =
-        mDatabase.child(getString(R.string.comment_history))
-                .child(mLiveKey)
-                .addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                WriterComment writerComment = dataSnapshot.getValue(WriterComment.class);
+                mDatabase.child(getString(R.string.comment_history))
+                        .child(mLiveKey)
+                        .addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                WriterComment writerComment = dataSnapshot.getValue(WriterComment.class);
 
-                Toasty.custom(ReaderLiveActivity.this, writerComment.getContent(), null,
-                        Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
-            }
+                                Toasty.custom(ReaderLiveActivity.this, writerComment.getContent(), null,
+                                        Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
+                            }
 
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-            }
+                            }
 
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-            }
+                            }
 
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
 
-            }
+                            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
+                            }
+                        });
 
 
     }
@@ -223,13 +247,13 @@ public class ReaderLiveActivity extends LiveActivity {
                     .child(mLiveKey)
                     .removeEventListener(mLiveStateChangeListener);
         }
-        if(mWriterCommentAddedListener != null){
+        if (mWriterCommentAddedListener != null) {
             mDatabase.child(getString(R.string.comment_history))
                     .child(mLiveKey)
                     .removeEventListener(mWriterCommentAddedListener);
         }
-//        if (mIsWriter) {
-//            mHandler.removeCallbacks(mPeriodicScrollPosCheck);
-//        }
+        if (mPeriodicProgressCheck != null) {
+            mHandler.removeCallbacks(mPeriodicProgressCheck);
+        }
     }
 }

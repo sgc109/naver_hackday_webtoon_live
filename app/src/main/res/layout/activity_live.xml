@@ -11,10 +11,13 @@
         android:id="@+id/live_seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="100"
+        android:layout_marginBottom="-4dp"
+        android:layout_marginTop="-4dp"
+        android:max="10000"
         android:paddingEnd="0dp"
         android:paddingStart="0dp"
         android:progressBackgroundTint="@android:color/transparent"
+        android:progressDrawable="@drawable/seek_bar"
         android:thumbTint="@android:color/transparent"
         android:visibility="gone" />
 
