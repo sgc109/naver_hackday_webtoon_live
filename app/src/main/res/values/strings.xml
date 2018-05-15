@@ -7,5 +7,8 @@
     <string name="firebase_db_image_size">image_size</string>
     <string name="live_state_over">Over</string>
     <string name="live_state_on_air">On Air</string>
-
+    <string name="yes">예</string>
+    <string name="no">아니오</string>
+    <string name="end_live_warning_message">정말 방송을 종료하시겠습니까?</string>
+    <string name="live_info_state">state</string>
 </resources>
