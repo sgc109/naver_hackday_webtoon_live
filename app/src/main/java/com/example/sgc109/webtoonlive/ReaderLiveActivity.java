@@ -65,7 +65,7 @@ public class ReaderLiveActivity extends LiveActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 LiveInfo liveInfo = dataSnapshot.getValue(LiveInfo.class);
                                 if (liveInfo.state.equals(getString(R.string.live_state_over))) {
-                                    Toast.makeText(ReaderLiveActivity.this, "방송이 종료되었습니다!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(ReaderLiveActivity.this, "방송이 종료되었습니다!", Toast.LENGTH_LONG).show();
                                 }
                             }
 

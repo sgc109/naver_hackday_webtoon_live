@@ -15,7 +15,7 @@
 
     <Button
         android:id="@+id/main_activity_user_type_button_reader"
-        android:text="시청자"
+        android:text="독자"
         android:textSize="80sp"
         android:layout_weight="1"
         android:layout_width="match_parent"
