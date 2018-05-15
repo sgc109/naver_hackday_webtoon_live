@@ -39,7 +39,7 @@ public class LiveListActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private List<LiveInfo> mLiveInfoList;
     private boolean mIsWriter;
-    private boolean mExistOnAirLive;
+//    private boolean mExistOnAirLive;
     private ValueEventListener mPrevEventListener;
     private ProgressBar mProgressBar;
 
@@ -171,12 +171,12 @@ public class LiveListActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 mProgressBar.setVisibility(View.GONE);
                                 mLiveInfoList = new ArrayList<>();
-                                mExistOnAirLive = false;
+//                                mExistOnAirLive = false;
                                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                     LiveInfo liveInfo = snapshot.getValue(LiveInfo.class);
                                     mLiveInfoList.add(liveInfo);
                                     if (liveInfo.state.equals(getString(R.string.live_state_on_air))) {
-                                        mExistOnAirLive = true;
+//                                        mExistOnAirLive = true;
                                     }
                                 }
                                 if (mLiveInfoList.size() > 0) {
