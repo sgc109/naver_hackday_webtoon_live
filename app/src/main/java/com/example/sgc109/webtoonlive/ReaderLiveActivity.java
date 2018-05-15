@@ -29,8 +29,6 @@ public class ReaderLiveActivity extends LiveActivity {
     private ValueEventListener mLiveStateChangeListener;
     private ChildEventListener mWriterCommentAddedListener;
     private Long mStartedTime;
-    private Handler mHandler;
-    private Runnable mPeriodicProgressCheck;
 
     public static Intent newIntent(Context context, String liveKey) {
         Intent intent = new Intent(context, ReaderLiveActivity.class);
@@ -106,23 +104,6 @@ public class ReaderLiveActivity extends LiveActivity {
                         animation.setDuration(latestTime);
                         animation.setInterpolator(new LinearInterpolator());
                         animation.start();
-//                        final Long checkInterval = latestTime / 100;
-//                        mHandler = new Handler();
-//
-//                        mPeriodicProgressCheck = new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                mSeekBar.setProgress(mSeekBar.getProgress() + 1);
-//                                Log.d("mydebug", "" + mSeekBar.getProgress());
-//                                if(mSeekBar.getProgress() == 100) {
-//                                    mHandler.removeCallbacks(this);
-//                                    return;
-//                                }
-//                                mHandler.postDelayed(this, checkInterval);
-//                            }
-//                        };
-//                        mHandler.post(mPeriodicProgressCheck);
-
                     }
 
                     @Override
@@ -251,9 +232,6 @@ public class ReaderLiveActivity extends LiveActivity {
             mDatabase.child(getString(R.string.comment_history))
                     .child(mLiveKey)
                     .removeEventListener(mWriterCommentAddedListener);
-        }
-        if (mPeriodicProgressCheck != null) {
-            mHandler.removeCallbacks(mPeriodicProgressCheck);
         }
     }
 }
