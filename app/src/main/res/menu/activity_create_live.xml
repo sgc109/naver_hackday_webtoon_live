@@ -4,6 +4,6 @@
 
     <item
         android:id="@+id/menu_item_start_live"
-        android:title="Start"
+        android:title="시작"
         app:showAsAction="ifRoom|withText"/>
 </menu>

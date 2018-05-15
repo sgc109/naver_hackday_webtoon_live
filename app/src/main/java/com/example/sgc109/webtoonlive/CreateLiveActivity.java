@@ -27,6 +27,9 @@ public class CreateLiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_live);
 
+        if(getActionBar() != null){
+            getActionBar().setTitle("새 라이브 만들기");
+        }
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mTitleEditText = findViewById(R.id.create_live_edit_text);
     }
