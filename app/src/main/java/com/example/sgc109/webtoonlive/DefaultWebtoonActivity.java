@@ -110,7 +110,6 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
 
 
-
     }
 
     private void setRecyclerView(){
