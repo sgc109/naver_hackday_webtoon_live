@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -56,6 +57,19 @@ public class ReaderLiveActivity extends LiveActivity {
 
             }
         });
+
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        emotionBar.toggleShowing();
+                        break;
+                }
+                return false;
+            }
+        });
+
     }
 
     @Override
@@ -73,4 +87,8 @@ public class ReaderLiveActivity extends LiveActivity {
 //            mHandler.removeCallbacks(mPeriodicScrollPosCheck);
 //        }
     }
+
+
+
+
 }
