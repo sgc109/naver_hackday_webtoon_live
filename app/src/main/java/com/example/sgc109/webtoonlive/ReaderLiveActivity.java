@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.SeekBar;
@@ -23,6 +24,7 @@ public class ReaderLiveActivity extends LiveActivity {
     private ChildEventListener mNewScrollAddedListener;
     private ValueEventListener mLiveStateChangeListener;
     private ChildEventListener mWriterCommentAddedListener;
+    private Long mStartedTime;
 
     public static Intent newIntent(Context context, String liveKey) {
         Intent intent = new Intent(context, ReaderLiveActivity.class);
@@ -33,11 +35,13 @@ public class ReaderLiveActivity extends LiveActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("DEBUG", "onCreate() of ReaderLiveActivity");
-        mSeekBar = findViewById(R.id.seek_bar);
+
+        mStartedTime = System.currentTimeMillis();
+        mSeekBar = findViewById(R.id.live_seek_bar);
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
             }
 
             @Override
@@ -64,7 +68,7 @@ public class ReaderLiveActivity extends LiveActivity {
                         if (mLiveInfo.state.equals(STATE_ON_AIR)) {
                             addDataChangeListeners();
                         } else {
-
+                            getScrollDatas();
                         }
                     }
 
@@ -76,6 +80,42 @@ public class ReaderLiveActivity extends LiveActivity {
 
 
         settingCommentListeners();
+    }
+
+    private void getScrollDatas() {
+        mDatabase
+                .child(getString(R.string.firebase_db_scroll_history))
+                .child(mLiveKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for(DataSnapshot child : dataSnapshot.getChildren()){
+                            final VerticalPositionChanged scrollHistory = child.getValue(VerticalPositionChanged.class);
+//                            mScrollHistories.add(scrollHistory);
+                            Long passedTime = System.currentTimeMillis() - mStartedTime;
+                            Long timeAfter = scrollHistory.time - passedTime;
+                            if(timeAfter < 0) {
+                                continue;
+                            }
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Log.d("mydebug", "run()");
+                                    double percentage = scrollHistory.offsetProportion;
+
+                                    int nextY = (int) (percentage * mDeviceWidth);
+                                    int curY = mRecyclerView.computeVerticalScrollOffset();
+                                    mRecyclerView.smoothScrollBy(0, nextY - curY);
+                                }
+                            }, timeAfter);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
     }
 
     public void addDataChangeListeners() {
