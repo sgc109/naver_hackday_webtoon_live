@@ -10,6 +10,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button mWriterTypeButton;
     Button mWatcherTypeButton;
+    Button mDefaultTypeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,9 +19,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mWriterTypeButton = findViewById(R.id.main_activity_user_type_button_writer);
         mWatcherTypeButton = findViewById(R.id.main_activity_user_type_button_reader);
+        mDefaultTypeButton = findViewById(R.id.main_activity_user_type_button_default);
 
         mWriterTypeButton.setOnClickListener(this);
         mWatcherTypeButton.setOnClickListener(this);
+        mDefaultTypeButton.setOnClickListener(this);
     }
 
     @Override
@@ -35,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent = LiveListActivity.newIntent(this, false);
                 startActivity(intent);
                 break;
+            case R.id.main_activity_user_type_button_default:
+                intent = new Intent(this, DefaultWebtoonActivity.class);
+                startActivity(intent);
         }
     }
 }

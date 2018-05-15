@@ -50,6 +50,8 @@ public class ReaderLiveActivity extends LiveActivity {
                     }
                 });
 
+
+//        settingCommentListeners();
     }
 
     public void addDataChangeListeners() {
@@ -109,6 +111,12 @@ public class ReaderLiveActivity extends LiveActivity {
                             }
                         });
     }
+
+
+//    private void settingCommentListeners(){
+//
+//        mDatabase.child(getString(R.string.comment_history));
+//    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {

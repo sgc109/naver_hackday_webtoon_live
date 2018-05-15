@@ -3,15 +3,26 @@ package com.example.sgc109.webtoonlive;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import es.dmoral.toasty.Toasty;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -88,43 +99,48 @@ public class WriterLiveActivity extends LiveActivity {
                 .setValue(new VerticalPositionChanged(posPercent, System.currentTimeMillis() - mStartedTime));
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.writer_menu, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//
-//        if(id == R.id.write_comment){
-//           commentWriterDialog = new CommentWriterDialog(WriterLiveActivity.this, onClickListener);
-//           commentWriterDialog.show();
-//        }
-//
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    View.OnClickListener onClickListener = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View view) {
-//            String content = ((EditText)commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
-//            String key;
-//
-//            Map<String, Object> map = new HashMap<String, Object>();
-//            key = mDatabase.child(getString(R.string.comment_history)).push().getKey();
-//
-//            mDatabase.child(getString(R.string.comment_history)).updateChildren(map);
-//
-//            Map<String, Object> objectMap = new HashMap<String, Object>();
-//            objectMap.put("content", content);
-//            objectMap.put("time", System.currentTimeMillis() - mStartedTime);
-//
-//            mDatabase.child(getString(R.string.comment_history)).child(key).updateChildren(objectMap);
-//            commentWriterDialog.dismiss();
-//        }
-//    };
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.writer_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.write_comment){
+           commentWriterDialog = new CommentWriterDialog(WriterLiveActivity.this, onClickListener);
+           commentWriterDialog.show();
+        }
+
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    View.OnClickListener onClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String content = ((EditText)commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
+            String key;
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            key = mDatabase.child(getString(R.string.comment_history)).push().getKey();
+
+            mDatabase.child(getString(R.string.comment_history)).updateChildren(map);
+
+            Map<String, Object> objectMap = new HashMap<String, Object>();
+            objectMap.put("content", content);
+            objectMap.put("time", System.currentTimeMillis() - mStartedTime);
+
+            mDatabase.child(getString(R.string.comment_history)).child(key).updateChildren(objectMap);
+            commentWriterDialog.dismiss();
+
+            Toasty.custom(WriterLiveActivity.this, content, null,
+                    Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
+
+
+        }
+    };
 
 }
