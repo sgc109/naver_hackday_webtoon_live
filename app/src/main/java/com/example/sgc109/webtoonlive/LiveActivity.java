@@ -41,12 +41,6 @@ public class LiveActivity extends AppCompatActivity {
     protected int mDeviceWidth;
     protected BottomEmotionBar emotionBar;
 
-    public static Intent newIntent(Context context, boolean isWriter) {
-        Intent intent = new Intent(context, LiveActivity.class);
-        intent.putExtra(EXTRA_IS_WRITER, isWriter);
-        return intent;
-    }
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,14 +127,4 @@ public class LiveActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mChildEventListenerHandle != null) {
-            mDatabase.child(getString(R.string.firebase_db_scroll_history)).removeEventListener(mChildEventListenerHandle);
-        }
-//        if (mIsWriter) {
-//            mHandler.removeCallbacks(mPeriodicScrollPosCheck);
-//        }
-    }
 }

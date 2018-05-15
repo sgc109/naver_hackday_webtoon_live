@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 startActivity(intent);
                 break;
             case R.id.main_activity_user_type_button_reader:
-                intent = ReaderLiveActivity.newIntent(this);
+                intent = LiveListActivity.newIntent(this);
                 startActivity(intent);
                 break;
         }

@@ -63,4 +63,15 @@ public class ReaderLiveActivity extends LiveActivity {
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return true;
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mChildEventListenerHandle != null) {
+            mDatabase.child(getString(R.string.firebase_db_scroll_history)).removeEventListener(mChildEventListenerHandle);
+        }
+//        if (mIsWriter) {
+//            mHandler.removeCallbacks(mPeriodicScrollPosCheck);
+//        }
+    }
 }
