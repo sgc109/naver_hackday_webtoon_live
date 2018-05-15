@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.sgc109.webtoonlive.dto.WriterComment;
@@ -17,6 +18,7 @@ import com.google.firebase.database.ValueEventListener;
 import es.dmoral.toasty.Toasty;
 
 public class ReaderLiveActivity extends LiveActivity {
+    private SeekBar mSeekBar;
     private LiveInfo mLiveInfo;
     private ChildEventListener mNewScrollAddedListener;
     private ValueEventListener mLiveStateChangeListener;
@@ -32,6 +34,23 @@ public class ReaderLiveActivity extends LiveActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("DEBUG", "onCreate() of ReaderLiveActivity");
+        mSeekBar = findViewById(R.id.seek_bar);
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
         mDatabase
                 .child(getString(R.string.firebase_db_live_list))
                 .child(mLiveKey)
