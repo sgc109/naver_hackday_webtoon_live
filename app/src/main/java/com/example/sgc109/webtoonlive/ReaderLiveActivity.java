@@ -2,15 +2,19 @@ package com.example.sgc109.webtoonlive;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
+import com.example.sgc109.webtoonlive.dto.WriterComment;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+
+import es.dmoral.toasty.Toasty;
 
 public class ReaderLiveActivity extends LiveActivity {
     private LiveInfo mLiveInfo;
@@ -51,7 +55,7 @@ public class ReaderLiveActivity extends LiveActivity {
                 });
 
 
-//        settingCommentListeners();
+        settingCommentListeners();
     }
 
     public void addDataChangeListeners() {
@@ -113,10 +117,40 @@ public class ReaderLiveActivity extends LiveActivity {
     }
 
 
-//    private void settingCommentListeners(){
-//
-//        mDatabase.child(getString(R.string.comment_history));
-//    }
+    private void settingCommentListeners(){
+
+        mDatabase.child(getString(R.string.comment_history)).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                WriterComment writerComment = dataSnapshot.getValue(WriterComment.class);
+
+                Toasty.custom(ReaderLiveActivity.this, writerComment.getContent(), null,
+                        Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
