@@ -117,7 +117,5 @@ public class LiveActivity extends AppCompatActivity {
                 mImageView.setLastPosition(true);
             }
         }
-
     }
-
 }

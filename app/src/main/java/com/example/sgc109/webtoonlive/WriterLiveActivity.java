@@ -126,15 +126,23 @@ public class WriterLiveActivity extends LiveActivity {
             String key;
 
             Map<String, Object> map = new HashMap<String, Object>();
-            key = mDatabase.child(getString(R.string.comment_history)).push().getKey();
+            key = mDatabase
+                    .child(getString(R.string.comment_history))
+                    .child(mLiveKey)
+                    .push().getKey();
 
-            mDatabase.child(getString(R.string.comment_history)).updateChildren(map);
+            mDatabase.child(getString(R.string.comment_history))
+                    .child(mLiveKey)
+                    .updateChildren(map);
 
             Map<String, Object> objectMap = new HashMap<String, Object>();
             objectMap.put("content", content);
             objectMap.put("time", System.currentTimeMillis() - mStartedTime);
 
-            mDatabase.child(getString(R.string.comment_history)).child(key).updateChildren(objectMap);
+            mDatabase.child(getString(R.string.comment_history))
+                    .child(mLiveKey)
+                    .child(key).updateChildren(objectMap);
+
             commentWriterDialog.dismiss();
 
             Toasty.custom(WriterLiveActivity.this, content, null,

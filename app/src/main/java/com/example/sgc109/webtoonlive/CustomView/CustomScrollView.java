@@ -45,5 +45,4 @@ public class CustomScrollView extends ScrollView {
         if (!scrollable) return false;
         else return super.onInterceptTouchEvent(ev);
     }
-
 }
