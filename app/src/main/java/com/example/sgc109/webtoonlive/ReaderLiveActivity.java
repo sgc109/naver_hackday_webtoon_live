@@ -40,7 +40,7 @@ public class ReaderLiveActivity extends LiveActivity {
                         mLiveInfo = dataSnapshot.getValue(LiveInfo.class);
                         String STATE_ON_AIR = getString(R.string.live_state_on_air);
 
-                        if (mLiveInfo.state == STATE_ON_AIR) {
+                        if (mLiveInfo.state.equals(STATE_ON_AIR)) {
                             addDataChangeListeners();
                         } else {
 
@@ -64,7 +64,7 @@ public class ReaderLiveActivity extends LiveActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 LiveInfo liveInfo = dataSnapshot.getValue(LiveInfo.class);
-                                if (liveInfo.state == getString(R.string.live_state_over)) {
+                                if (liveInfo.state.equals(getString(R.string.live_state_over))) {
                                     Toast.makeText(ReaderLiveActivity.this, "방송이 종료되었습니다!", Toast.LENGTH_SHORT).show();
                                 }
                             }

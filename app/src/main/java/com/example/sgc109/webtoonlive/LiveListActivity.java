@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -85,7 +86,7 @@ public class LiveListActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     LiveInfo liveInfo = snapshot.getValue(LiveInfo.class);
                     mLiveInfoList.add(liveInfo);
-                    if(liveInfo.state == getString(R.string.live_state_on_air)){
+                    if(liveInfo.state.equals(getString(R.string.live_state_on_air))){
                         mExistOnAirLive = true;
                     }
                 }
@@ -95,10 +96,10 @@ public class LiveListActivity extends AppCompatActivity {
                         String STATE_OVER = getString(R.string.live_state_over);
                         String STATE_ON_AIR = getString(R.string.live_state_on_air);
 
-                        if (o1.state == STATE_OVER && o2.state == STATE_ON_AIR) {
+                        if (o1.state.equals(STATE_OVER) && o2.state.equals(STATE_ON_AIR)) {
                             return 1;
                         }
-                        if (o1.state == STATE_ON_AIR && o2.state == STATE_OVER) {
+                        if (o1.state.equals(STATE_ON_AIR) && o2.state.equals(STATE_OVER)) {
                             return -1;
                         }
                         if (o1.date < o2.date) {
@@ -127,7 +128,7 @@ public class LiveListActivity extends AppCompatActivity {
         public void bindLiveInfo(LiveInfo liveInfo){
             mLiveInfo = liveInfo;
             mTextView.setText(liveInfo.title);
-            if(liveInfo.state == getString(R.string.live_state_on_air)){
+            if(liveInfo.state.equals(getString(R.string.live_state_on_air))){
                 mTextView.setTextColor(Color.RED);
             }
         }

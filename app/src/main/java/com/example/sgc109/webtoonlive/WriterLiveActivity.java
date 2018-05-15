@@ -11,12 +11,15 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DatabaseReference;
 
 import java.io.Writer;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class WriterLiveActivity extends LiveActivity {
+
+    private Long mStartedTime;
 
     public static Intent newIntent(Context context, String liveKey) {
         Intent intent = new Intent(context, WriterLiveActivity.class);
@@ -27,8 +30,9 @@ public class WriterLiveActivity extends LiveActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.d("DEBUG", "WriterLiveActivity");
+
+        mStartedTime = System.currentTimeMillis();
         RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -71,5 +75,17 @@ public class WriterLiveActivity extends LiveActivity {
     @Override
     public void onBackPressed() {
         askEndLiveOrNot();
+    }
+
+    public void pushScrollPosToDB() {
+        int offset = mRecyclerView.computeVerticalScrollOffset();
+        Log.d("scroll_debug", "offset : " + offset);
+        double posPercent = (double) offset / mDeviceWidth;
+
+        DatabaseReference ref = mDatabase
+                .child(getString(R.string.firebase_db_scroll_history))
+                .child(mLiveKey);
+        ref.push()
+                .setValue(new VerticalPositionChanged(posPercent, System.currentTimeMillis() - mStartedTime));
     }
 }

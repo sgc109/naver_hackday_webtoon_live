@@ -88,18 +88,6 @@ public class LiveActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(adapter);
     }
 
-    public void pushScrollPosToDB() {
-        int offset = mRecyclerView.computeVerticalScrollOffset();
-        Log.d("scroll_debug", "offset : " + offset);
-        double posPercent = (double) offset / mDeviceWidth;
-
-        DatabaseReference ref = mDatabase
-                .child(getString(R.string.firebase_db_scroll_history))
-                .child(mLiveKey);
-        ref.push()
-                .setValue(new VerticalPositionChanged(posPercent));
-    }
-
     class SceneImageViewHolder extends RecyclerView.ViewHolder {
         FixedSizeImageView mImageView;
 
