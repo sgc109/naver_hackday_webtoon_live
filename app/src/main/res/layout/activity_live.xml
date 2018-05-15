@@ -8,14 +8,15 @@
     tools:context=".LiveActivity">
 
     <SeekBar
-        android:visibility="gone"
         android:id="@+id/live_seek_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:max="100"
         android:paddingEnd="0dp"
         android:paddingStart="0dp"
-        android:thumbTint="@android:color/transparent" />
+        android:progressBackgroundTint="@android:color/transparent"
+        android:thumbTint="@android:color/transparent"
+        android:visibility="gone" />
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
