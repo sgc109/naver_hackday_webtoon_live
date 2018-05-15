@@ -100,7 +100,7 @@ public class WriterLiveActivity extends LiveActivity {
 //
 //        if(id == R.id.write_comment){
 //           commentWriterDialog = new CommentWriterDialog(WriterLiveActivity.this, onClickListener);
-//
+//           commentWriterDialog.show();
 //        }
 //
 //
