@@ -95,9 +95,11 @@ public class LiveActivity extends AppCompatActivity {
         Log.d("scroll_debug", "offset : " + offset);
         double posPercent = (double) offset / mDeviceWidth;
 
-        DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
+        DatabaseReference ref = mDatabase
+                .child(getString(R.string.firebase_db_scroll_history))
+                .child(mLiveKey);
         ref.push()
-                .setValue(new VerticalPositionChanged(posPercent, new Date()));
+                .setValue(new VerticalPositionChanged(posPercent));
     }
 
     class SceneImageViewHolder extends RecyclerView.ViewHolder {

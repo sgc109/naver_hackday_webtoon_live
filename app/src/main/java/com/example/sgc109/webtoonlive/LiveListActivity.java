@@ -91,8 +91,8 @@ public class LiveListActivity extends AppCompatActivity {
                 Collections.sort(mLiveInfoList, new Comparator<LiveInfo>() {
                     @Override
                     public int compare(LiveInfo o1, LiveInfo o2) {
-                        String STATE_OVER = Resources.getSystem().getString(R.string.live_state_over);
-                        String STATE_ON_AIR = Resources.getSystem().getString(R.string.live_state_on_air);
+                        String STATE_OVER = getString(R.string.live_state_over);
+                        String STATE_ON_AIR = getString(R.string.live_state_on_air);
 
                         if (o1.state == STATE_OVER && o2.state == STATE_ON_AIR) {
                             return 1;
@@ -100,7 +100,7 @@ public class LiveListActivity extends AppCompatActivity {
                         if (o1.state == STATE_ON_AIR && o2.state == STATE_OVER) {
                             return -1;
                         }
-                        if (o1.date.getTime() < o2.date.getTime()) {
+                        if (o1.date < o2.date) {
                             return 1;
                         }
                         return -1;
@@ -115,16 +115,23 @@ public class LiveListActivity extends AppCompatActivity {
             }
         });
     }
-    class LiveInfoViewHolder extends RecyclerView.ViewHolder {
+    class LiveInfoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView mTextView;
         public LiveInfo mLiveInfo;
         public LiveInfoViewHolder(View itemView) {
             super(itemView);
             mTextView = itemView.findViewById(R.id.list_item_live_text_view);
+            itemView.setOnClickListener(this);
         }
         public void bindLiveInfo(LiveInfo liveInfo){
             mLiveInfo = liveInfo;
             mTextView.setText(liveInfo.title);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = ReaderLiveActivity.newIntent(LiveListActivity.this, mLiveInfo.key);
+            startActivity(intent);
         }
     }
 
@@ -141,11 +148,13 @@ public class LiveListActivity extends AppCompatActivity {
                     Toast.makeText(this, "There is already On-Air Live show", Toast.LENGTH_SHORT).show();
                     return true;
                 }
+                mExistOnAirLive = true;
                 LiveInfo liveInfo = new LiveInfo(key, "test", getString(R.string.live_state_on_air));
-                mDatabase
+                ref
                         .child(key)
                         .setValue(liveInfo);
-                mExistOnAirLive = true;
+                Intent intent = WriterLiveActivity.newIntent(this, liveInfo.key);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

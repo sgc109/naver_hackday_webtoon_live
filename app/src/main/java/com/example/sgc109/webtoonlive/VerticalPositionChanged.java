@@ -4,10 +4,10 @@ import java.util.Date;
 
 public class VerticalPositionChanged {
     public double offsetProportion;
-    public Date curDate;
+    public Long curDate;
     public VerticalPositionChanged(){}
-    public VerticalPositionChanged(double offsetProportion, Date curDate){
+    public VerticalPositionChanged(double offsetProportion){
         this.offsetProportion = offsetProportion;
-        this.curDate = curDate;
+        curDate = System.currentTimeMillis();
     }
 }
