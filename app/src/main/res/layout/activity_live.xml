@@ -15,7 +15,6 @@
         android:max="100"
         android:paddingEnd="0dp"
         android:paddingStart="0dp"
-        android:progress="20"
         android:thumbTint="@android:color/transparent" />
 
     <android.support.constraint.ConstraintLayout

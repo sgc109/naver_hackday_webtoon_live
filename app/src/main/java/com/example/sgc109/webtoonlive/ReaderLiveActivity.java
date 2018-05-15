@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -38,22 +39,8 @@ public class ReaderLiveActivity extends LiveActivity {
 
         mStartedTime = System.currentTimeMillis();
         mSeekBar = findViewById(R.id.live_seek_bar);
-        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
+        mSeekBar.setVisibility(View.VISIBLE);
+        mSeekBar.setProgress(50);
 
         mDatabase
                 .child(getString(R.string.firebase_db_live_list))
@@ -89,9 +76,11 @@ public class ReaderLiveActivity extends LiveActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        Long latestTime = 0L;
                         for(DataSnapshot child : dataSnapshot.getChildren()){
                             final VerticalPositionChanged scrollHistory = child.getValue(VerticalPositionChanged.class);
 //                            mScrollHistories.add(scrollHistory);
+                            latestTime = Math.max(latestTime, scrollHistory.time);
                             Long passedTime = System.currentTimeMillis() - mStartedTime;
                             Long timeAfter = scrollHistory.time - passedTime;
                             if(timeAfter < 0) {
@@ -109,6 +98,7 @@ public class ReaderLiveActivity extends LiveActivity {
                                 }
                             }, timeAfter);
                         }
+
                     }
 
                     @Override
