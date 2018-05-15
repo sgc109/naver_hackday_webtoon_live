@@ -35,8 +35,6 @@ public class LiveActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     protected String mLiveKey;
 
-
-    protected ChildEventListener mChildEventListenerHandle;
     protected int mDeviceWidth;
     protected BottomEmotionBar emotionBar;
 

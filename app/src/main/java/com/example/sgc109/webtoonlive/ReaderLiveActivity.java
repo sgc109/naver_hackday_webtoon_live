@@ -17,7 +17,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ReaderLiveActivity extends LiveActivity {
     private LiveInfo mLiveInfo;
-
+    private ChildEventListener mNewScrollAddedListener;
+    private ValueEventListener mLiveStateChangeListener;
     public static Intent newIntent(Context context, String liveKey) {
         Intent intent = new Intent(context, ReaderLiveActivity.class);
         intent.putExtra(EXTRA_LIVE_KEY, liveKey);
@@ -35,8 +36,9 @@ public class ReaderLiveActivity extends LiveActivity {
                 Log.d("DEBUG", "read LiveInfo from FirebaseDB by mLiveKey");
                 mLiveInfo = dataSnapshot.getValue(LiveInfo.class);
                 String STATE_ON_AIR = getString(R.string.live_state_on_air);
+
                 if (mLiveInfo.state == STATE_ON_AIR) {
-                    addDataChangeListener();
+                    addDataChangeListeners();
                 } else {
 
                 }
@@ -50,11 +52,30 @@ public class ReaderLiveActivity extends LiveActivity {
 
     }
 
-    public void addDataChangeListener() {
-        DatabaseReference ref = mDatabase
+    public void addDataChangeListeners() {
+        mLiveStateChangeListener =
+                mDatabase.child(getString(R.string.firebase_db_live_list))
+                .child(mLiveKey)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        LiveInfo liveInfo = dataSnapshot.getValue(LiveInfo.class);
+                        if(liveInfo.state == getString(R.string.live_state_over)){
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+        mNewScrollAddedListener =
+                mDatabase
                 .child(getString(R.string.firebase_db_scroll_history))
-                .child(mLiveKey);
-        mChildEventListenerHandle = ref.addChildEventListener(new ChildEventListener() {
+                .child(mLiveKey)
+                .addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 VerticalPositionChanged data = dataSnapshot.getValue(VerticalPositionChanged.class);
@@ -96,8 +117,15 @@ public class ReaderLiveActivity extends LiveActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mChildEventListenerHandle != null) {
-            mDatabase.child(getString(R.string.firebase_db_scroll_history)).removeEventListener(mChildEventListenerHandle);
+        if (mNewScrollAddedListener != null) {
+            mDatabase.child(getString(R.string.firebase_db_scroll_history))
+                    .child(mLiveKey)
+                    .removeEventListener(mNewScrollAddedListener);
+        }
+        if(mLiveStateChangeListener != null) {
+            mDatabase.child(getString(R.string.firebase_db_live_list))
+                    .child(mLiveKey)
+                    .removeEventListener(mLiveStateChangeListener);
         }
 //        if (mIsWriter) {
 //            mHandler.removeCallbacks(mPeriodicScrollPosCheck);
