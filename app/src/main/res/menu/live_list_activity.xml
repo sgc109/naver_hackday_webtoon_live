@@ -5,6 +5,6 @@
     <item
         android:id="@+id/menu_item_create_live"
         android:icon="@drawable/ic_video_cam"
-        android:title="방송하기"
+        android:title="라이브 하기"
         app:showAsAction="ifRoom|withText"/>
 </menu>

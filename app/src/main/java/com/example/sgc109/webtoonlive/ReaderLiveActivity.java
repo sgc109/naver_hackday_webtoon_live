@@ -56,8 +56,10 @@ public class ReaderLiveActivity extends LiveActivity {
 
                         if (mLiveInfo.state.equals(STATE_ON_AIR)) {
                             addDataChangeListeners();
+                            mSeekBar.setVisibility(View.GONE);
                         } else {
                             getScrollDatas();
+                            emotionBar.setVisibility(View.GONE);
                         }
                     }
 
@@ -91,7 +93,6 @@ public class ReaderLiveActivity extends LiveActivity {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.d("mydebug", "run()");
                                     double percentage = scrollHistory.offsetProportion;
 
                                     int nextY = (int) (percentage * mDeviceWidth);

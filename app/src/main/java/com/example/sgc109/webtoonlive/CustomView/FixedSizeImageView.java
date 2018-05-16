@@ -12,6 +12,7 @@ public class FixedSizeImageView extends android.support.v7.widget.AppCompatImage
     private static final String TAG = "FixedSizeImageView";
     private static final float IMAGE_WIDTH = 690;
     private static final float IMAGE_HEIGHT = 1600;
+    private static final float IMAGE_HEIGHT_LAST = 1576;
 
     private boolean isLastPosition = false;
 
@@ -35,9 +36,13 @@ public class FixedSizeImageView extends android.support.v7.widget.AppCompatImage
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         Log.d(TAG, "onMeasure");
+        int width = getMeasuredWidth();
         if (!isLastPosition) {
-            int width = getMeasuredWidth();
+            Log.d("mydebug", "not last!!");
             setMeasuredDimension(width, ((int) (width * (IMAGE_HEIGHT / IMAGE_WIDTH))));
+        } else {
+            Log.d("mydebug", "last!!");
+            setMeasuredDimension(width, ((int) (width * (IMAGE_HEIGHT_LAST / IMAGE_WIDTH))));
         }
     }
 

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -105,8 +106,6 @@ public class LiveActivity extends AppCompatActivity {
         }
 
         public void bindImage(int position, int lastPosition) {
-//            Log.d("debug","cut" + (position + 1));
-//            mImageView.setImageResource(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()));
             Glide.with(LiveActivity.this)
                     .load(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()))
                     .apply(new RequestOptions()
@@ -114,7 +113,9 @@ public class LiveActivity extends AppCompatActivity {
                             .skipMemoryCache(false))
                     .into(mImageView);
             if (position == lastPosition) {
+                Log.d("mydebug", "last item bind! set true");
                 mImageView.setLastPosition(true);
+
             }
         }
     }

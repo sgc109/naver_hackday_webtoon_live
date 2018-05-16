@@ -13,7 +13,6 @@ public class LiveInfo {
     public String title;
     public String state;
     public Long date;
-    public Long runningTime;
 
     LiveInfo() {
     }
