@@ -118,8 +118,13 @@ public class LiveListActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            Intent intent = ReaderLiveActivity.newIntent(LiveListActivity.this, mLiveInfo.key);
-            startActivity(intent);
+            if(mLiveInfo.state.equals(getString(R.string.live_state_on_air)) && mIsWriter) {
+                Intent intent = WriterLiveActivity.newIntent(LiveListActivity.this, mLiveInfo.key);
+                startActivity(intent);
+            } else {
+                Intent intent = ReaderLiveActivity.newIntent(LiveListActivity.this, mLiveInfo.key);
+                startActivity(intent);
+            }
         }
     }
 

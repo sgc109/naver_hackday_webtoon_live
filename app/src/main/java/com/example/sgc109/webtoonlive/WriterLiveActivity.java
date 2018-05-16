@@ -62,10 +62,13 @@ public class WriterLiveActivity extends LiveActivity {
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
+                        Map<String, Object> objectMap = new HashMap<String, Object>();
+                        objectMap.put(getString(R.string.firebase_db_live_info_state), getString(R.string.live_state_over));
+                        objectMap.put(getString(R.string.firebase_db_live_info_date), System.currentTimeMillis());
+
                         mDatabase.child(getString(R.string.firebase_db_live_list))
                                 .child(mLiveKey)
-                                .child(getString(R.string.live_info_state))
-                                .setValue(getString(R.string.live_state_over))
+                                .updateChildren(objectMap)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
