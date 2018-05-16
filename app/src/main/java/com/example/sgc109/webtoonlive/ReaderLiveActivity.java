@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -30,7 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 import es.dmoral.toasty.Toasty;
 
 public class ReaderLiveActivity extends LiveActivity {
-    private SeekBar mSeekBar;
+    private ProgressBar mSeekBar;
     private LiveInfo mLiveInfo;
     private ChildEventListener mNewScrollAddedListener;
     private ValueEventListener mLiveStateChangeListener;
@@ -49,7 +50,7 @@ public class ReaderLiveActivity extends LiveActivity {
         super.onCreate(savedInstanceState);
 
         mStartedTime = System.currentTimeMillis();
-        mSeekBar = findViewById(R.id.live_seek_bar);
+        mSeekBar = findViewById(R.id.live_progress_bar);
         mSeekBar.setVisibility(View.VISIBLE);
 
         // 감정표현 입력 레이아웃 초기화
