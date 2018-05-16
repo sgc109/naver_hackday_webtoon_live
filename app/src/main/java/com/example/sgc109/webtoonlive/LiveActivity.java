@@ -1,6 +1,7 @@
 package com.example.sgc109.webtoonlive;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,9 @@ import com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar;
 import com.example.sgc109.webtoonlive.CustomView.FixedSizeImageView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+
+import es.dmoral.toasty.Toasty;
 
 public class LiveActivity extends AppCompatActivity {
     private static final String TAG = "LiveActivity";
@@ -37,6 +41,7 @@ public class LiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live);
 
+        setTitle("　");
         mLiveKey = getIntent().getStringExtra(EXTRA_LIVE_KEY);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
@@ -45,6 +50,8 @@ public class LiveActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         mDeviceWidth = displayMetrics.widthPixels;
         emotionBar = findViewById(R.id.emotionBar);
+
+        setToasty();
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {
             @NonNull
@@ -67,6 +74,12 @@ public class LiveActivity extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(adapter);
+    }
+
+    private void setToasty(){
+        Toasty.Config.getInstance()
+                .setTextColor(Color.WHITE)
+                .apply();
     }
 
     class SceneImageViewHolder extends RecyclerView.ViewHolder {
@@ -92,7 +105,5 @@ public class LiveActivity extends AppCompatActivity {
                 mImageView.setLastPosition(true);
             }
         }
-
     }
-
 }

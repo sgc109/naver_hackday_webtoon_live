@@ -40,6 +40,10 @@ public class CommentWriterDialog extends Dialog {
                 dismiss();
             }
         });
+
+        /*FIXME
+            다이얼로그 xml 수정 필요.
+         */
     }
 
 

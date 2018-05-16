@@ -63,6 +63,7 @@ public class CreateLiveActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_create_live, menu);
+        setTitle(getString(R.string.menu_title_create_live));
         return true;
     }
 }

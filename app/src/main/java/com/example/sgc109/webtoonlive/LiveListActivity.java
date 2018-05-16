@@ -39,7 +39,7 @@ public class LiveListActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private List<LiveInfo> mLiveInfoList;
     private boolean mIsWriter;
-    private boolean mExistOnAirLive;
+//    private boolean mExistOnAirLive;
     private ValueEventListener mPrevEventListener;
     private ProgressBar mProgressBar;
 
@@ -91,7 +91,6 @@ public class LiveListActivity extends AppCompatActivity {
         private TextView mTextViewLive;
         private TextView mDateTextView;
         private LiveInfo mLiveInfo;
-        private int mPrvColor;
 
         public LiveInfoViewHolder(View itemView) {
             super(itemView);
@@ -107,14 +106,11 @@ public class LiveListActivity extends AppCompatActivity {
 //            Calendar calendar = convertLongToCalendar(liveInfo.date);
             mDateTextView.setText(DateDisplayer.dateToStringFormat(new Date(liveInfo.date)));
             if (liveInfo.state.equals(getString(R.string.live_state_on_air))) {
-                mPrvColor = mTextView.getCurrentTextColor();
                 mTextView.setTextColor(Color.RED);
                 mTextViewLive.setVisibility(View.VISIBLE);
                 mDateTextView.setVisibility(View.GONE);
             } else {
-                if (mPrvColor != 0) {
-                    mTextView.setTextColor(mPrvColor);
-                }
+                mTextView.setTextColor(mDateTextView.getCurrentTextColor());
                 mTextViewLive.setVisibility(View.GONE);
                 mDateTextView.setVisibility(View.VISIBLE);
             }
@@ -144,6 +140,7 @@ public class LiveListActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        setTitle(getString(R.string.menu_title_live_list));
         if (!mIsWriter) {
             return super.onCreateOptionsMenu(menu);
         }
@@ -173,15 +170,14 @@ public class LiveListActivity extends AppCompatActivity {
                         .addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                Log.d("mydebug", "onDataChange()!");
                                 mProgressBar.setVisibility(View.GONE);
                                 mLiveInfoList = new ArrayList<>();
-                                mExistOnAirLive = false;
+//                                mExistOnAirLive = false;
                                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                                     LiveInfo liveInfo = snapshot.getValue(LiveInfo.class);
                                     mLiveInfoList.add(liveInfo);
                                     if (liveInfo.state.equals(getString(R.string.live_state_on_air))) {
-                                        mExistOnAirLive = true;
+//                                        mExistOnAirLive = true;
                                     }
                                 }
                                 if (mLiveInfoList.size() > 0) {
@@ -217,9 +213,4 @@ public class LiveListActivity extends AppCompatActivity {
                             }
                         });
     }
-//    public Calendar convertLongToCalendar(Long date){
-//        Calendar calendar = Calendar.getInstance();
-//        calendar.setTimeInMillis(date);
-//        return calendar;
-//    }
 }
