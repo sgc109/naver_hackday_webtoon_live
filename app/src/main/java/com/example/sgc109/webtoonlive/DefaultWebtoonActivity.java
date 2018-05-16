@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -171,11 +170,14 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                Log.d("like_change", dataSnapshot.getValue(Comment.class).getLikeCount()+" ");
+                int likeCount = dataSnapshot.getValue(Comment.class).getLikeCount();
+                String key = dataSnapshot.getKey();
 
                 ((CommentPointView)commentField
-                        .findViewWithTag(dataSnapshot.getKey()))
-                        .setLikeCount(dataSnapshot.getValue(Comment.class).getLikeCount());
+                        .findViewWithTag(key)).setLikeCount(likeCount);
+                ((CommentPointView)commentField
+                        .findViewWithTag(key)).setPointColor(likeCount);
+
             }
 
             @Override
