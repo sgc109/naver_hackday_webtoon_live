@@ -8,24 +8,24 @@ public class Comment {
 
     private String writer;
     private String content;
-    private int likeCount;
     private int posX;
     private int posY;
     private int deviceWidth;
     private int deviceHeight;
+    private int time;
     private double scrollLength;
 
     public Comment() {
     }
 
-    public Comment(String writer, String content, int likeCount, int posX, int posY, int deviceWidth, int deviceHeight, double scrollLength) {
+    public Comment(String writer, String content, int posX, int posY, int deviceWidth, int deviceHeight, int time, double scrollLength) {
         this.writer = writer;
         this.content = content;
-        this.likeCount = likeCount;
         this.posX = posX;
         this.posY = posY;
         this.deviceWidth = deviceWidth;
         this.deviceHeight = deviceHeight;
+        this.time = time;
         this.scrollLength = scrollLength;
     }
 
@@ -43,14 +43,6 @@ public class Comment {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public int getLikeCount() {
-        return likeCount;
-    }
-
-    public void setLikeCount(int likeCount) {
-        this.likeCount = likeCount;
     }
 
     public int getPosX() {
@@ -83,6 +75,14 @@ public class Comment {
 
     public void setDeviceHeight(int deviceHeight) {
         this.deviceHeight = deviceHeight;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
     }
 
     public double getScrollLength() {

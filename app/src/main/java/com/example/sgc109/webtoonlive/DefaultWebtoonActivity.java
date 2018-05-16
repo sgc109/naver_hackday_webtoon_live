@@ -1,9 +1,7 @@
 package com.example.sgc109.webtoonlive;
 
-import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -124,7 +122,6 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
     private void setRecyclerView(){
@@ -170,13 +167,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                int likeCount = dataSnapshot.getValue(Comment.class).getLikeCount();
-                String key = dataSnapshot.getKey();
 
-                ((CommentPointView)commentField
-                        .findViewWithTag(key)).setLikeCount(likeCount);
-                ((CommentPointView)commentField
-                        .findViewWithTag(key)).setPointColor(likeCount);
 
             }
 
@@ -196,35 +187,34 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             }
         });
     }
-    @SuppressLint("RestrictedApi")
     private void addComment(final Comment comment, final String tmpKey){
         Comment tmp = new Comment();
         tmp = comment;
 
         final CommentPointView commentPointView = new CommentPointView(this);
-        final LinearLayout infoView = new CommentPointView(this);
-
-        commentPointView.setComment(tmp.getContent());
-        commentPointView.setLikeCount(tmp.getLikeCount());
-        commentPointView.setTag(tmpKey);
-
+        final RelativeLayout infoView = new RelativeLayout(this);
         float widthRate = (float) deviceWidth / comment.getDeviceWidth();
-
         double rate = webtoonRcv.computeVerticalScrollRange()/comment.getScrollLength();
 
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins( (int)(comment.getPosX() * widthRate)-30
+        commentPointView.setComment(tmp.getContent());
+        commentPointView.setTag(tmpKey);
+
+        RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        commentPointParams.setMargins( (int)(comment.getPosX() * widthRate)-30
                 ,  (int)(comment.getPosY()*rate)-30
                 ,0,0);
 
-        RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(10, 40);
-        params2.setMargins( 0
+        LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(10, 40);
+        infoViewParams.setMargins( 0
                 ,  (int)(comment.getPosY()*rate)-30
                 ,0,0);
 
-        infoView.setLayoutParams(params2);
-        infoView.setBackgroundColor(Color.parseColor("#00C73C"));
-        commentPointView.setLayoutParams(params);
+        infoView.setLayoutParams(infoViewParams);
+        infoView.setTag(tmpKey);
+
+//        setInfoColor(tmpKey, tmp.getLikeCount());
+
+        commentPointView.setLayoutParams(commentPointParams);
         commentField.addView(commentPointView);
 
         commentInfo.addView(infoView);
@@ -304,6 +294,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             commentWriterDialog.dismiss();
         }
     };
+
 
 
     @Override
