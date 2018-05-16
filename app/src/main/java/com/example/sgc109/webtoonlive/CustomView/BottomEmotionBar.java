@@ -32,6 +32,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
     private boolean isShowing = false;
 
     private String mLiveKey = null;
+    private long mStartedTime = -1;
 
     private View convertView;
     private ArrayList<LottieAnimationView> itemLottie = new ArrayList<>();
@@ -113,6 +114,9 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         isShowing = false;
     }
 
+    public void setStartedTime(long startedTime){
+        mStartedTime = startedTime;
+    }
     /**
      * 감정표현 버튼 클릭시 애니메이션 및 선택된 View 확대 등의 작업을 해야 합니다.
      */
@@ -201,7 +205,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
     //Todo Sampling 해야함
     private void pushToFirebase(EmotionType emotionType) {
         if (mLiveKey != null) {
-            EmotionModel emotionModel = new EmotionModel(emotionType);
+            EmotionModel emotionModel = new EmotionModel(System.currentTimeMillis() - mStartedTime , emotionType);
             DatabaseReference ref = mDatabase.child(getContext().getString(R.string.firebase_db_emotion_history)).child(mLiveKey);
             ref.push().setValue(emotionModel);
         }
