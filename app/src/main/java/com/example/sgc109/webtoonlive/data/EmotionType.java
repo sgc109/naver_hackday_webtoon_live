@@ -1,5 +1,7 @@
 package com.example.sgc109.webtoonlive.data;
 
+import com.example.sgc109.webtoonlive.R;
+
 /**
  * Created by SeungKoo on 2018. 5. 15..
  */
@@ -39,6 +41,22 @@ public enum EmotionType {
             default:
                 return NONE;
         }
+    }
+
+    public static int getResource(EmotionType type){
+        switch (type){
+            case LOVE:
+                return R.raw.like;
+            case TONGUE:
+                return R.raw.emoji_tongue;
+            case WINK:
+                return R.raw.emoji_wink;
+            case SHOCK:
+                return R.raw.emoji_shock;
+            case STAR:
+                return R.raw.favourite_app_icon;
+        }
+        return 0;
     }
 
 }

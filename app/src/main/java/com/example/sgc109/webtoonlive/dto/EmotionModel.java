@@ -25,4 +25,7 @@ public class EmotionModel {
         return timeStamp;
     }
 
+    public EmotionType getType() {
+        return type;
+    }
 }

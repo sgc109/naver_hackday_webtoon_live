@@ -13,6 +13,8 @@ import android.view.animation.LinearInterpolator;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.example.sgc109.webtoonlive.data.EmotionType;
+import com.example.sgc109.webtoonlive.dto.EmotionModel;
 import com.example.sgc109.webtoonlive.dto.WriterComment;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +44,8 @@ public class ReaderLiveActivity extends LiveActivity {
         mStartedTime = System.currentTimeMillis();
         mSeekBar = findViewById(R.id.live_seek_bar);
         mSeekBar.setVisibility(View.VISIBLE);
+
+        emotionBar.setLiveKey(mLiveKey);
 
         mDatabase
                 .child(getString(R.string.firebase_db_live_list))
@@ -74,6 +78,12 @@ public class ReaderLiveActivity extends LiveActivity {
 
         settingCommentListeners();
         setRecyclerView();
+        test();
+    }
+
+
+    private void test(){
+        emotionView.showEmotion(new EmotionModel(EmotionType.fromCode(4)));
     }
 
     private void getScrollDatas() {
