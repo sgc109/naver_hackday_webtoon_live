@@ -17,10 +17,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar;
+import com.example.sgc109.webtoonlive.CustomView.EmotionView;
 import com.example.sgc109.webtoonlive.CustomView.FixedSizeImageView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
 
 import es.dmoral.toasty.Toasty;
 
@@ -35,6 +35,7 @@ public class LiveActivity extends AppCompatActivity {
 
     protected int mDeviceWidth;
     protected BottomEmotionBar emotionBar;
+    protected EmotionView emotionView;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -51,7 +52,7 @@ public class LiveActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         mDeviceWidth = displayMetrics.widthPixels;
         emotionBar = findViewById(R.id.emotionBar);
-
+        emotionView = findViewById(R.id.emotionView);
         setToasty();
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {

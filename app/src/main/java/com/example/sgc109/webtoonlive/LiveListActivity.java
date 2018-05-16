@@ -103,7 +103,7 @@ public class LiveListActivity extends AppCompatActivity {
         public void bindLiveInfo(LiveInfo liveInfo) {
             mLiveInfo = liveInfo;
             mTextView.setText(liveInfo.title);
-//            Calendar calendar = convertLongToCalendar(liveInfo.date);
+//            Calendar calendar = convertLongToCalendar(liveInfo.timeStamp);
             mDateTextView.setText(DateDisplayer.dateToStringFormat(new Date(liveInfo.date)));
             if (liveInfo.state.equals(getString(R.string.live_state_on_air))) {
                 mTextView.setTextColor(Color.RED);

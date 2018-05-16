@@ -14,7 +14,9 @@ import android.widget.LinearLayout;
 import com.airbnb.lottie.LottieAnimationView;
 import com.example.sgc109.webtoonlive.R;
 import com.example.sgc109.webtoonlive.data.EmotionType;
-import com.example.sgc109.webtoonlive.model.EmotionModel;
+import com.example.sgc109.webtoonlive.dto.EmotionModel;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -28,9 +30,12 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
     private static final String TAG = "BottomEmotionBar";
     private static final float SCLAE_VAL = 1.2f;
     private boolean isShowing = false;
+
+
     private View convertView;
     private ArrayList<LottieAnimationView> itemLottie = new ArrayList<>();
 
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
     /**
      * Constructor
@@ -66,12 +71,13 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         itemLottie.add((LottieAnimationView) convertView.findViewById(R.id.lottie_04));
         //itemButton.add((Button) convertView.findViewById(R.id.itemButton3));
         //itemButton.add((Button) convertView.findViewById(R.id.itemButton4));
-        for (LottieAnimationView lottieAnimationView : itemLottie) {
-            lottieAnimationView.setOnTouchListener(this);
+        for(int i = 0 ; i < itemLottie.size() ; i ++){
+            itemLottie.get(i).setTag(i);
+            itemLottie.get(i).setOnTouchListener(this);
         }
 
-
     }
+
 
     /**
      * View가 보이는 상태에서는 가려주고, 안보이는 상태에선 보여준다.
@@ -106,39 +112,48 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
     }
 
     /**
-     *  ToDo 미구현.
-     *  감정표현 버튼 클릭시 애니메이션 및 선택된 View 확대 등의 작업을 해야 합니다.
+     * 감정표현 버튼 클릭시 애니메이션 및 선택된 View 확대 등의 작업을 해야 합니다.
      */
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
         boolean isLottieView = false;
         LottieAnimationView lottieAnimationView = null;
-        if(view instanceof LottieAnimationView){
+        if (view instanceof LottieAnimationView) {
             isLottieView = true;
-            lottieAnimationView = (LottieAnimationView)view;
+            lottieAnimationView = (LottieAnimationView) view;
         }
         Rect rect = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (isLottieView){
+                if (isLottieView) {
                     playAnimation(lottieAnimationView);
                 }
                 return true;
+
             case MotionEvent.ACTION_UP:
-                if (isLottieView){
+                if (isLottieView) {
                     stopAnimation(lottieAnimationView);
                 }
-                return true;
-            case MotionEvent.ACTION_MOVE:
-                if (!rect.contains(view.getLeft() + (int) motionEvent.getX(), view.getTop() + (int) motionEvent.getY())) {
-                    //view.setScaleX(1.0f);
-                    //view.setScaleY(1.0f);
+
+                // 영역 안에서 손을 뗏을 경우
+                if (rect.contains(view.getLeft() + (int) motionEvent.getX(), view.getTop() + (int) motionEvent.getY())) {
+                    //push top Firebase // sampling하고 보내야 한다
+                    pushToFirebase(EmotionType.fromCode((int) view.getTag()));
+                    hideView();
                     return true;
                 }
                 return true;
+
+            case MotionEvent.ACTION_MOVE:
+                if (!rect.contains(view.getLeft() + (int) motionEvent.getX(), view.getTop() + (int) motionEvent.getY())) {
+                    //stopAnimation(lottieAnimationView);
+                    return true;
+                }
+                return true;
+
             case MotionEvent.ACTION_OUTSIDE:
             case MotionEvent.ACTION_CANCEL:
-                if (isLottieView){
+                if (isLottieView) {
                     stopAnimation(lottieAnimationView);
                 }
                 return true;
@@ -149,9 +164,10 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
     /**
      * lottieView 의 크기를 키워주고 애니메이션을 실행합니다.
      * xml에 default 로 자동 반복재생을 하도록 해 두었습니다.
+     *
      * @param view
      */
-    private void playAnimation(LottieAnimationView view){
+    private void playAnimation(LottieAnimationView view) {
         android.view.ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width *= SCLAE_VAL;
         params.height *= SCLAE_VAL;
@@ -160,11 +176,13 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         //view.setScaleY(1.5f);
         view.playAnimation();
     }
+
     /**
      * lottieView 의 크기를 원상복구하고 애니메이션을 멈춥니다.
+     *
      * @param view
      */
-    private void stopAnimation(LottieAnimationView view){
+    private void stopAnimation(LottieAnimationView view) {
         android.view.ViewGroup.LayoutParams params = view.getLayoutParams();
         params.width /= SCLAE_VAL;
         params.height /= SCLAE_VAL;
@@ -173,21 +191,14 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         view.setFrame(0);
     }
 
-    private void sampling(int emotionType){
+    private void sampling(int emotionType) {
         EmotionType.fromCode(emotionType);
     }
 
-    public void pushToFirebase(EmotionType emotionType) {
-        new EmotionModel(emotionType);
+    private void pushToFirebase(EmotionType emotionType) {
+        EmotionModel emotionModel = new EmotionModel(emotionType);
+        DatabaseReference ref = mDatabase.child(getContext().getString(R.string.firebase_db_emotion_history));
+        ref.push().setValue(emotionModel);
 
-/*
-        int offset = mRecyclerView.computeVerticalScrollOffset();
-        Log.d("scroll_debug", "offset : " + offset);
-        double posPercent = (double) offset / mDeviceWidth;
-
-        DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
-        ref.push()
-                .setValue(new VerticalPositionChanged(posPercent, new Date()));
-                */
     }
 }

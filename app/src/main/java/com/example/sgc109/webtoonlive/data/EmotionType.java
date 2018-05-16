@@ -6,11 +6,11 @@ package com.example.sgc109.webtoonlive.data;
 
 public enum EmotionType {
 
-    LIKE(0),
-    LOVE(1),
-    DISLIKE(2),
-    FOO(3),
-    BOO(4),
+    LOVE(0),
+    TONGUE(1),
+    WINK(2),
+    SHOCK(3),
+    STAR(4),
     NONE(100);
 
 
@@ -27,15 +27,15 @@ public enum EmotionType {
     public static EmotionType fromCode(int code){
         switch (code){
             case 0:
-                return LIKE;
-            case 1:
                 return LOVE;
+            case 1:
+                return TONGUE;
             case 2:
-                return DISLIKE;
+                return WINK;
             case 3:
-                return FOO;
+                return SHOCK;
             case 4:
-                return BOO;
+                return STAR;
             default:
                 return NONE;
         }

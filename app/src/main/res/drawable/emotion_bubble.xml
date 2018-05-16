@@ -5,7 +5,4 @@
     <solid
         android:color="#aa1ec545"
         />
-    <padding
-        android:bottom="-8dp"
-        android:top="-8dp"/>
 </shape>
