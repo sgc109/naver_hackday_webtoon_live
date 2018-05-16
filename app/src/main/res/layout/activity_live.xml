@@ -35,7 +35,7 @@
         <com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar
             android:id="@+id/emotionBar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/bottom_emotion_bar_height"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

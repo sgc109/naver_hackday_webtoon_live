@@ -9,9 +9,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.example.sgc109.webtoonlive.R;
 import com.example.sgc109.webtoonlive.data.EmotionType;
 import com.example.sgc109.webtoonlive.model.EmotionModel;
@@ -29,7 +29,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
 
     private boolean isShowing = false;
     private View convertView;
-    private ArrayList<Button> itemButton = new ArrayList<>();
+    private ArrayList<LottieAnimationView> itemLottie = new ArrayList<>();
 
 
     /**
@@ -59,14 +59,17 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(infService);
         convertView = li.inflate(R.layout.bottom_emotion_bar, this, false);
         addView(convertView);
-        itemButton.add((Button) convertView.findViewById(R.id.itemButton0));
-        itemButton.add((Button) convertView.findViewById(R.id.itemButton1));
-        itemButton.add((Button) convertView.findViewById(R.id.itemButton2));
-        itemButton.add((Button) convertView.findViewById(R.id.itemButton3));
-        itemButton.add((Button) convertView.findViewById(R.id.itemButton4));
-        for (Button button : itemButton) {
-            button.setOnTouchListener(this);
+        itemLottie.add((LottieAnimationView) convertView.findViewById(R.id.lottie_00));
+        itemLottie.add((LottieAnimationView) convertView.findViewById(R.id.lottie_01));
+        itemLottie.add((LottieAnimationView) convertView.findViewById(R.id.lottie_02));
+        itemLottie.add((LottieAnimationView) convertView.findViewById(R.id.lottie_03));
+        itemLottie.add((LottieAnimationView) convertView.findViewById(R.id.lottie_04));
+        //itemButton.add((Button) convertView.findViewById(R.id.itemButton3));
+        //itemButton.add((Button) convertView.findViewById(R.id.itemButton4));
+        for (LottieAnimationView lottieAnimationView : itemLottie) {
+            lottieAnimationView.setOnTouchListener(this);
         }
+
 
     }
 
@@ -108,30 +111,51 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
      */
     @Override
     public boolean onTouch(View view, MotionEvent motionEvent) {
+        boolean isLottieView = false;
+        LottieAnimationView lottieAnimationView = null;
+        if(view instanceof LottieAnimationView){
+            isLottieView = true;
+            lottieAnimationView = (LottieAnimationView)view;
+        }
         Rect rect = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                view.setScaleX(1.8f);
-                view.setScaleY(1.8f);
+                if (isLottieView){
+                    playAnimation(lottieAnimationView);
+                }
                 return true;
             case MotionEvent.ACTION_UP:
-                view.setScaleX(1.0f);
-                view.setScaleY(1.0f);
+                if (isLottieView){
+                    stopAnimation(lottieAnimationView);
+                }
                 return true;
             case MotionEvent.ACTION_MOVE:
                 if (!rect.contains(view.getLeft() + (int) motionEvent.getX(), view.getTop() + (int) motionEvent.getY())) {
-                    view.setScaleX(1.0f);
-                    view.setScaleY(1.0f);
+                    //view.setScaleX(1.0f);
+                    //view.setScaleY(1.0f);
                     return true;
                 }
                 return true;
             case MotionEvent.ACTION_OUTSIDE:
             case MotionEvent.ACTION_CANCEL:
-                view.setScaleX(1.0f);
-                view.setScaleY(1.0f);
+                if (isLottieView){
+                    stopAnimation(lottieAnimationView);
+                }
                 return true;
         }
         return false;
+    }
+
+    private void playAnimation(LottieAnimationView view){
+        view.setScaleX(1.5f);
+        view.setScaleY(1.5f);
+        view.playAnimation();
+    }
+
+    private void stopAnimation(LottieAnimationView view){
+        view.setScaleX(1.0f);
+        view.setScaleY(1.0f);
+        view.pauseAnimation();
     }
 
     private void sampling(int emotionType){

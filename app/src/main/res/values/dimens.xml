@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="bottom_emotion_bar_height">70dp</dimen>
-    <dimen name="bottom_emotion_bar_item_size">40dp</dimen>
+    <dimen name="bottom_emotion_bar_height">100dp</dimen>
+    <dimen name="bottom_emotion_bar_item_size">60dp</dimen>
 </resources>

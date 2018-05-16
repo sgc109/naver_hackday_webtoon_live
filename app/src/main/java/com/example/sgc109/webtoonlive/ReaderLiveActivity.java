@@ -53,13 +53,16 @@ public class ReaderLiveActivity extends LiveActivity {
                         mLiveInfo = dataSnapshot.getValue(LiveInfo.class);
                         String STATE_ON_AIR = getString(R.string.live_state_on_air);
 
-                        if (mLiveInfo.state.equals(STATE_ON_AIR)) {
-                            addDataChangeListeners();
-                            mSeekBar.setVisibility(View.GONE);
-                        } else {
-                            getScrollDatas();
-                            emotionBar.setVisibility(View.GONE);
+                        if (mLiveInfo != null) {
+                            if (mLiveInfo.state.equals(STATE_ON_AIR)) {
+                                addDataChangeListeners();
+                                mSeekBar.setVisibility(View.GONE);
+                            } else {
+                                getScrollDatas();
+                                emotionBar.setVisibility(View.GONE);
+                            }
                         }
+
                     }
 
                     @Override
