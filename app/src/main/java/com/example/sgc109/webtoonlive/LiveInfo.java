@@ -12,7 +12,8 @@ public class LiveInfo {
     public String key;
     public String title;
     public String state;
-    public Long date;
+    public Long startDate;
+    public Long endDate;
 
     LiveInfo() {
     }
@@ -21,6 +22,6 @@ public class LiveInfo {
         this.key = key;
         this.title = title;
         this.state = state;
-        this.date = System.currentTimeMillis();
+        this.startDate = System.currentTimeMillis();
     }
 }

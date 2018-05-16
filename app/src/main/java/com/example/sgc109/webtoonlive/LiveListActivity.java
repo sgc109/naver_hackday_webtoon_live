@@ -104,7 +104,7 @@ public class LiveListActivity extends AppCompatActivity {
             mLiveInfo = liveInfo;
             mTextView.setText(liveInfo.title);
 //            Calendar calendar = convertLongToCalendar(liveInfo.timeStamp);
-            mDateTextView.setText(DateDisplayer.dateToStringFormat(new Date(liveInfo.date)));
+            mDateTextView.setText(DateDisplayer.dateToStringFormat(new Date(liveInfo.endDate)));
             if (liveInfo.state.equals(getString(R.string.live_state_on_air))) {
                 mTextView.setTextColor(Color.RED);
                 mTextViewLive.setVisibility(View.VISIBLE);
@@ -203,10 +203,18 @@ public class LiveListActivity extends AppCompatActivity {
                                         if (o1.state.equals(STATE_ON_AIR) && o2.state.equals(STATE_OVER)) {
                                             return -1;
                                         }
-                                        if (o1.date < o2.date) {
-                                            return 1;
+                                        if(o1.state.equals(STATE_ON_AIR) && o2.state.equals(STATE_ON_AIR)){
+                                            if(o1.startDate < o2.startDate) {
+                                                return 1;
+                                            } else {
+                                                return -1;
+                                            }
                                         }
-                                        return -1;
+                                        if(o1.endDate < o2.endDate) {
+                                            return 1;
+                                        } else {
+                                            return -1;
+                                        }
                                     }
                                 });
                                 mAdapter.notifyDataSetChanged();

@@ -64,7 +64,7 @@ public class WriterLiveActivity extends LiveActivity {
                     case DialogInterface.BUTTON_POSITIVE:
                         Map<String, Object> objectMap = new HashMap<String, Object>();
                         objectMap.put(getString(R.string.firebase_db_live_info_state), getString(R.string.live_state_over));
-                        objectMap.put(getString(R.string.firebase_db_live_info_date), System.currentTimeMillis());
+                        objectMap.put(getString(R.string.firebase_db_live_info_end_date), System.currentTimeMillis());
 
                         mDatabase.child(getString(R.string.firebase_db_live_list))
                                 .child(mLiveKey)

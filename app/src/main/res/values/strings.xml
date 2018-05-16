@@ -12,7 +12,8 @@
     <string name="no">아니오</string>
     <string name="end_live_warning_message">정말 방송을 종료하시겠습니까?</string>
     <string name="firebase_db_live_info_state">state</string>
-    <string name="firebase_db_live_info_date">date</string>
+    <string name="firebase_db_live_info_end_date">endDate</string>
+    <string name="firebase_db_live_info_start_date">startDate</string>
     <string name="live_list_empty_message">웹툰 라이브가 없습니다!</string>
     <string name="menu_title_live_list">라이브 목록</string>
     <string name="menu_title_create_live">새 라이브 만들기</string>

@@ -83,11 +83,9 @@ public class ReaderLiveActivity extends LiveActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Long latestTime = 0L;
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             final VerticalPositionChanged scrollHistory = child.getValue(VerticalPositionChanged.class);
 //                            mScrollHistories.add(scrollHistory);
-                            latestTime = Math.max(latestTime, scrollHistory.time);
                             Long passedTime = System.currentTimeMillis() - mStartedTime;
                             Long timeAfter = scrollHistory.time - passedTime;
                             if (timeAfter < 0) {
@@ -104,6 +102,7 @@ public class ReaderLiveActivity extends LiveActivity {
                                 }
                             }, timeAfter);
                         }
+                        Long latestTime = mLiveInfo.endDate - mLiveInfo.startDate;
                         ObjectAnimator animation = ObjectAnimator.ofInt(mSeekBar, "progress", 10000);
                         animation.setDuration(latestTime);
                         animation.setInterpolator(new LinearInterpolator());
