@@ -8,6 +8,9 @@ public class CommentClick {
     private String commentId;
     private int time;
 
+    public CommentClick() {
+    }
+
     public CommentClick(String commentId, int time) {
         this.commentId = commentId;
         this.time = time;
