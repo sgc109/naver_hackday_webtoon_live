@@ -45,7 +45,10 @@ public class CommentPointView extends LinearLayout {
 
     }
 
-    public void setLikeCount(int likeCount){this.likeCount = likeCount;}
+    public void setLikeCount(int likeCount){
+        this.likeCount = likeCount;
+        setPointColor(likeCount);
+    }
 
     public int getLikeCount(){return likeCount; }
 
@@ -55,6 +58,32 @@ public class CommentPointView extends LinearLayout {
 
     public String getComment(){
         return comment;
+    }
+
+    public void setPointColor(int likeCount){
+
+        if(likeCount < 10) {
+            point.setBackgroundResource(R.drawable.comment_point_unselected);
+            return;
+        }
+
+        if(10 <= likeCount && likeCount < 100 ) {
+            point.setBackgroundResource(R.drawable.comment_point_like_level1);
+            return;
+        }
+
+        if(100 <= likeCount && likeCount < 500) {
+            point.setBackgroundResource(R.drawable.comment_point_like_level2);
+            return;
+        }
+
+        if(500 <= likeCount && likeCount < 1000) {
+            point.setBackgroundResource(R.drawable.comment_point_like_level3);
+            return;
+        }
+
+        if(1000 <= likeCount)
+            point.setBackgroundResource(R.drawable.comment_point_like_level4);
     }
 
 }
