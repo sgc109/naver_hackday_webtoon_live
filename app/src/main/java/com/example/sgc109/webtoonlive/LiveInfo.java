@@ -20,5 +20,6 @@ public class LiveInfo {
         this.title = title;
         this.state = state;
         this.startDate = System.currentTimeMillis();
+        this.endDate = 0L;
     }
 }
