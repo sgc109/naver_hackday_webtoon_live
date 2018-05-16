@@ -31,12 +31,8 @@ public class EmotionView extends FrameLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    private void init(){
-
-    }
 
     public void showEmotion(EmotionModel emotionModel){
-
         int size = (int)getContext().getResources().getDimension(R.dimen.bottom_emotion_bar_item_size);
         final LottieAnimationView lottieAnimationView = new LottieAnimationView(getContext());
         ViewGroup.LayoutParams params = new LayoutParams(size, size);

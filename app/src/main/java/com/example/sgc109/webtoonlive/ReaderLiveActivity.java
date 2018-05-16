@@ -13,7 +13,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-import com.example.sgc109.webtoonlive.data.EmotionType;
 import com.example.sgc109.webtoonlive.dto.EmotionModel;
 import com.example.sgc109.webtoonlive.dto.WriterComment;
 import com.google.firebase.database.ChildEventListener;
@@ -48,6 +47,7 @@ public class ReaderLiveActivity extends LiveActivity {
         // 감정표현 입력 레이아웃 초기화
         emotionBar.setLiveKey(mLiveKey);
         emotionBar.setStartedTime(mStartedTime);
+        emotionBar.setEmotionView(mEmotionView);
 
         mDatabase
                 .child(getString(R.string.firebase_db_live_list))
@@ -84,7 +84,7 @@ public class ReaderLiveActivity extends LiveActivity {
 
 
     private void test(EmotionModel emotion){
-        emotionView.showEmotion(emotion);
+        mEmotionView.showEmotion(emotion);
     }
 
     private void getRecordingDatas() {
@@ -177,7 +177,6 @@ public class ReaderLiveActivity extends LiveActivity {
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    EmotionType type = emotionHistory.type;
                                     test(emotionHistory);
                                 }
                             }, timeAfter);

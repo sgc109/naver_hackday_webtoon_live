@@ -35,7 +35,7 @@ public class LiveActivity extends AppCompatActivity {
 
     protected int mDeviceWidth;
     protected BottomEmotionBar emotionBar;
-    protected EmotionView emotionView;
+    protected EmotionView mEmotionView;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -52,7 +52,7 @@ public class LiveActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         mDeviceWidth = displayMetrics.widthPixels;
         emotionBar = findViewById(R.id.emotionBar);
-        emotionView = findViewById(R.id.emotionView);
+        mEmotionView = findViewById(R.id.emotionView);
         setToasty();
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {

@@ -34,6 +34,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
     private String mLiveKey = null;
     private long mStartedTime = -1;
 
+    private EmotionView emotionView;
     private View convertView;
     private ArrayList<LottieAnimationView> itemLottie = new ArrayList<>();
 
@@ -81,6 +82,16 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
 
     }
 
+    public void setStartedTime(long startedTime){
+        mStartedTime = startedTime;
+    }
+
+    public void setLiveKey(String liveKey) {
+        mLiveKey = liveKey;
+    }
+
+    public void setEmotionView(EmotionView emotionView){ this.emotionView = emotionView; }
+
 
     /**
      * View가 보이는 상태에서는 가려주고, 안보이는 상태에선 보여준다.
@@ -114,9 +125,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         isShowing = false;
     }
 
-    public void setStartedTime(long startedTime){
-        mStartedTime = startedTime;
-    }
+
     /**
      * 감정표현 버튼 클릭시 애니메이션 및 선택된 View 확대 등의 작업을 해야 합니다.
      */
@@ -141,6 +150,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
                     stopAnimation(lottieAnimationView);
                 }
 
+                // Todo 입력했을 경우에도 화면에 보여줘야 한다. mEmotionView 인스턴스를 들고있어야할듯?
                 // 영역 안에서 손을 뗏을 경우
                 if (rect.contains(view.getLeft() + (int) motionEvent.getX(), view.getTop() + (int) motionEvent.getY())) {
                     //push top Firebase // sampling하고 보내야 한다
@@ -165,11 +175,6 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
                 return true;
         }
         return false;
-    }
-
-
-    public void setLiveKey(String liveKey) {
-        mLiveKey = liveKey;
     }
 
     /**
@@ -208,6 +213,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
             EmotionModel emotionModel = new EmotionModel(System.currentTimeMillis() - mStartedTime , emotionType);
             DatabaseReference ref = mDatabase.child(getContext().getString(R.string.firebase_db_emotion_history)).child(mLiveKey);
             ref.push().setValue(emotionModel);
+            emotionView.showEmotion(emotionModel);
         }
 
     }
