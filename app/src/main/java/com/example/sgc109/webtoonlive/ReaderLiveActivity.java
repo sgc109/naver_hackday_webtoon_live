@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -54,11 +53,16 @@ public class ReaderLiveActivity extends LiveActivity {
                         mLiveInfo = dataSnapshot.getValue(LiveInfo.class);
                         String STATE_ON_AIR = getString(R.string.live_state_on_air);
 
-                        if (mLiveInfo.state.equals(STATE_ON_AIR)) {
-                            addDataChangeListeners();
-                        } else {
+                        if (mLiveInfo.state != null) {
+                            if (mLiveInfo.state.equals(STATE_ON_AIR)) {
+                                addDataChangeListeners();
+                            } else {
+                                getScrollDatas();
+                            }
+                        }else{
                             getScrollDatas();
                         }
+
                     }
 
                     @Override
@@ -69,6 +73,7 @@ public class ReaderLiveActivity extends LiveActivity {
 
 
         settingCommentListeners();
+        setRecyclerView();
     }
 
     private void getScrollDatas() {
@@ -82,9 +87,13 @@ public class ReaderLiveActivity extends LiveActivity {
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             final VerticalPositionChanged scrollHistory = child.getValue(VerticalPositionChanged.class);
 //                            mScrollHistories.add(scrollHistory);
-                            latestTime = Math.max(latestTime, scrollHistory.time);
+                            long scrolHistoryTime = 0;
+                            if (scrollHistory.time != null) {
+                                scrolHistoryTime = scrollHistory.time;
+                            }
+                            latestTime = Math.max(latestTime, scrolHistoryTime);
                             Long passedTime = System.currentTimeMillis() - mStartedTime;
-                            Long timeAfter = scrollHistory.time - passedTime;
+                            Long timeAfter = scrolHistoryTime - passedTime;
                             if (timeAfter < 0) {
                                 continue;
                             }
@@ -210,10 +219,12 @@ public class ReaderLiveActivity extends LiveActivity {
 
     }
 
+    /*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return true;
     }
+    */
 
     @Override
     protected void onDestroy() {
@@ -235,5 +246,18 @@ public class ReaderLiveActivity extends LiveActivity {
         }
     }
 
+    private void setRecyclerView(){
+        //mRecyclerView.setEnabled(false);
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    emotionBar.toggleShowing();
+                }
+                return true;
+            }
+        });
+
+    }
 
 }
