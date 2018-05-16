@@ -60,9 +60,10 @@ public class ReaderLiveActivity extends LiveActivity {
                         if (mLiveInfo != null) {
                             if (mLiveInfo.state.equals(STATE_ON_AIR)) {
                                 addDataChangeListeners();
+                                settingCommentListeners();
                                 mSeekBar.setVisibility(View.GONE);
                             } else {
-                                getScrollDatas();
+                                getRecordingDatas();
                                 emotionBar.setVisibility(View.GONE);
                             }
                         }
@@ -76,7 +77,6 @@ public class ReaderLiveActivity extends LiveActivity {
                 });
 
 
-        settingCommentListeners();
         setRecyclerView();
         test();
     }
@@ -86,7 +86,7 @@ public class ReaderLiveActivity extends LiveActivity {
         emotionView.showEmotion(new EmotionModel(EmotionType.fromCode(4)));
     }
 
-    private void getScrollDatas() {
+    private void getRecordingDatas() {
         mDatabase
                 .child(getString(R.string.firebase_db_scroll_history))
                 .child(mLiveKey)
@@ -118,6 +118,37 @@ public class ReaderLiveActivity extends LiveActivity {
                         animation.setDuration(latestTime);
                         animation.setInterpolator(new LinearInterpolator());
                         animation.start();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+        mDatabase
+                .child(getString(R.string.comment_history))
+                .child(mLiveKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Long latestTime = 0L;
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            final WriterComment commentHistory = child.getValue(WriterComment.class);
+                            latestTime = Math.max(latestTime, commentHistory.getTime());
+                            Long passedTime = System.currentTimeMillis() - mStartedTime;
+                            Long timeAfter = commentHistory.getTime() - passedTime;
+                            if (timeAfter < 0) {
+                                continue;
+                            }
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toasty.custom(ReaderLiveActivity.this, commentHistory.getContent(), null,
+                                            Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
+                                }
+                            }, timeAfter);
+                        }
                     }
 
                     @Override
