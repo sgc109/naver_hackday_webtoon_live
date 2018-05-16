@@ -26,7 +26,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
 
 
     private static final String TAG = "BottomEmotionBar";
-
+    private static final float SCLAE_VAL = 1.2f;
     private boolean isShowing = false;
     private View convertView;
     private ArrayList<LottieAnimationView> itemLottie = new ArrayList<>();
@@ -146,16 +146,31 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         return false;
     }
 
+    /**
+     * lottieView 의 크기를 키워주고 애니메이션을 실행합니다.
+     * xml에 default 로 자동 반복재생을 하도록 해 두었습니다.
+     * @param view
+     */
     private void playAnimation(LottieAnimationView view){
-        view.setScaleX(1.5f);
-        view.setScaleY(1.5f);
+        android.view.ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.width *= SCLAE_VAL;
+        params.height *= SCLAE_VAL;
+        view.setLayoutParams(params);
+        //view.setScaleX(1.5f);
+        //view.setScaleY(1.5f);
         view.playAnimation();
     }
-
+    /**
+     * lottieView 의 크기를 원상복구하고 애니메이션을 멈춥니다.
+     * @param view
+     */
     private void stopAnimation(LottieAnimationView view){
-        view.setScaleX(1.0f);
-        view.setScaleY(1.0f);
-        view.pauseAnimation();
+        android.view.ViewGroup.LayoutParams params = view.getLayoutParams();
+        params.width /= SCLAE_VAL;
+        params.height /= SCLAE_VAL;
+        view.setLayoutParams(params);
+        view.cancelAnimation();
+        view.setFrame(0);
     }
 
     private void sampling(int emotionType){

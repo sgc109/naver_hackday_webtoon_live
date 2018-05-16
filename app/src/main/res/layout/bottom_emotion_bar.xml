@@ -2,83 +2,62 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@drawable/emotion_bubble"
-    android:gravity="center"
+    android:gravity="center_horizontal|bottom"
     android:orientation="horizontal">
-
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
-
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_00"
+        android:layout_marginStart="-6dp"
+        android:layout_marginEnd="-6dp"
         android:layout_width="@dimen/bottom_emotion_bar_item_size"
         android:layout_height="@dimen/bottom_emotion_bar_item_size"
         app:lottie_autoPlay="false"
-        app:lottie_rawRes="@raw/like"
-        app:lottie_loop="true" />
-
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/like" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_01"
+        android:layout_marginStart="-6dp"
+        android:layout_marginEnd="-6dp"
         android:layout_width="@dimen/bottom_emotion_bar_item_size"
         android:layout_height="@dimen/bottom_emotion_bar_item_size"
         app:lottie_autoPlay="false"
-        app:lottie_rawRes="@raw/emoji_tongue"
-        app:lottie_loop="true" />
-
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/emoji_tongue" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_02"
+        android:layout_marginStart="-6dp"
+        android:layout_marginEnd="-6dp"
         android:layout_width="@dimen/bottom_emotion_bar_item_size"
         android:layout_height="@dimen/bottom_emotion_bar_item_size"
         app:lottie_autoPlay="false"
-        app:lottie_rawRes="@raw/emoji_wink"
-        app:lottie_loop="true" />
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/emoji_wink" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_03"
+        android:layout_marginStart="-6dp"
+        android:layout_marginEnd="-6dp"
         android:layout_width="@dimen/bottom_emotion_bar_item_size"
         android:layout_height="@dimen/bottom_emotion_bar_item_size"
         app:lottie_autoPlay="false"
-        app:lottie_rawRes="@raw/emoji_shock"
-        app:lottie_loop="true" />
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/emoji_shock" />
 
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_04"
+        android:layout_marginStart="-6dp"
+        android:layout_marginEnd="-6dp"
         android:layout_width="@dimen/bottom_emotion_bar_item_size"
         android:layout_height="@dimen/bottom_emotion_bar_item_size"
         app:lottie_autoPlay="false"
-        app:lottie_rawRes="@raw/favourite_app_icon"
-        app:lottie_loop="true" />
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/favourite_app_icon" />
 
-
-    <Button
-        android:id="@+id/itemButton3"
-        android:layout_width="@dimen/bottom_emotion_bar_item_size"
-        android:layout_height="@dimen/bottom_emotion_bar_item_size"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/itemButton4"
-        android:layout_width="@dimen/bottom_emotion_bar_item_size"
-        android:layout_height="@dimen/bottom_emotion_bar_item_size"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Space
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1" />
 
 </LinearLayout>
