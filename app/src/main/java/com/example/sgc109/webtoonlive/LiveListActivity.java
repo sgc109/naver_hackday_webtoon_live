@@ -3,12 +3,11 @@ package com.example.sgc109.webtoonlive;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,7 +23,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -39,7 +36,7 @@ public class LiveListActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private List<LiveInfo> mLiveInfoList;
     private boolean mIsWriter;
-//    private boolean mExistOnAirLive;
+    //    private boolean mExistOnAirLive;
     private ValueEventListener mPrevEventListener;
     private ProgressBar mProgressBar;
 
@@ -103,7 +100,7 @@ public class LiveListActivity extends AppCompatActivity {
         public void bindLiveInfo(LiveInfo liveInfo) {
             mLiveInfo = liveInfo;
             mTextView.setText(liveInfo.title);
-//            Calendar calendar = convertLongToCalendar(liveInfo.timeStamp);
+//            Calendar calendar = convertLongToCalendar(liveInfo.date);
             mDateTextView.setText(DateDisplayer.dateToStringFormat(new Date(liveInfo.date)));
             if (liveInfo.state.equals(getString(R.string.live_state_on_air))) {
                 mTextView.setTextColor(Color.RED);

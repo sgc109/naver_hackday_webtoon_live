@@ -35,7 +35,6 @@
                 android:layout_height="match_parent"
                 tools:listitem="@android:layout/simple_list_item_checked" />
 
-
             <com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar
                 android:id="@+id/emotionBar"
                 android:layout_width="match_parent"
