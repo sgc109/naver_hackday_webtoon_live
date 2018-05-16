@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,6 +20,7 @@ import com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar;
 import com.example.sgc109.webtoonlive.CustomView.FixedSizeImageView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 
 import es.dmoral.toasty.Toasty;
 
@@ -72,18 +72,6 @@ public class LiveActivity extends AppCompatActivity {
                 return 35;
             }
         };
-
-        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        emotionBar.toggleShowing();
-                        break;
-                }
-                return false;
-            }
-        });
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(adapter);

@@ -31,11 +31,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Intent intent;
         switch (v.getId()) {
             case R.id.main_activity_user_type_button_writer:
-                intent = LiveListActivity.newIntent(this, true);
+                intent = WriterLiveActivity.newIntent(this, "");
                 startActivity(intent);
                 break;
             case R.id.main_activity_user_type_button_reader:
-                intent = LiveListActivity.newIntent(this, false);
+                intent = ReaderLiveActivity.newIntent(this, "");
                 startActivity(intent);
                 break;
             case R.id.main_activity_user_type_button_default:

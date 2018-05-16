@@ -1,7 +1,5 @@
 package com.example.sgc109.webtoonlive;
 
-import java.util.Date;
-
 public class VerticalPositionChanged {
     public double offsetProportion;
     public Long time;
@@ -13,4 +11,5 @@ public class VerticalPositionChanged {
         this.offsetProportion = offsetProportion;
         this.time = time;
     }
+
 }

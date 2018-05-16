@@ -50,11 +50,10 @@ public class WriterLiveActivity extends LiveActivity {
                 if (newState == SCROLL_STATE_IDLE) {
                     pushScrollPosToDB();
                 }
-
-                emotionBar.hideView();
             }
         };
         mRecyclerView.addOnScrollListener(scrollListener);
+
     }
 
     private void askEndLiveOrNot() {

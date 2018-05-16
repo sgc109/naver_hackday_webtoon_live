@@ -13,6 +13,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.example.sgc109.webtoonlive.R;
+import com.example.sgc109.webtoonlive.data.EmotionType;
+import com.example.sgc109.webtoonlive.model.EmotionModel;
 
 import java.util.ArrayList;
 
@@ -25,7 +27,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
 
     private static final String TAG = "BottomEmotionBar";
 
-    private boolean isShowing;
+    private boolean isShowing = false;
     private View convertView;
     private ArrayList<Button> itemButton = new ArrayList<>();
 
@@ -62,7 +64,6 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         itemButton.add((Button) convertView.findViewById(R.id.itemButton2));
         itemButton.add((Button) convertView.findViewById(R.id.itemButton3));
         itemButton.add((Button) convertView.findViewById(R.id.itemButton4));
-        isShowing = true;
         for (Button button : itemButton) {
             button.setOnTouchListener(this);
         }
@@ -131,5 +132,23 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
                 return true;
         }
         return false;
+    }
+
+    private void sampling(int emotionType){
+        EmotionType.fromCode(emotionType);
+    }
+
+    public void pushToFirebase(EmotionType emotionType) {
+        new EmotionModel(emotionType);
+
+/*
+        int offset = mRecyclerView.computeVerticalScrollOffset();
+        Log.d("scroll_debug", "offset : " + offset);
+        double posPercent = (double) offset / mDeviceWidth;
+
+        DatabaseReference ref = mDatabase.child(getString(R.string.firebase_db_scroll_history));
+        ref.push()
+                .setValue(new VerticalPositionChanged(posPercent, new Date()));
+                */
     }
 }

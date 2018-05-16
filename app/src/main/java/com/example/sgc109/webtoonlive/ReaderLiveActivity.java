@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -71,6 +70,7 @@ public class ReaderLiveActivity extends LiveActivity {
 
 
         settingCommentListeners();
+        setRecyclerView();
     }
 
     private void getScrollDatas() {
@@ -211,10 +211,12 @@ public class ReaderLiveActivity extends LiveActivity {
 
     }
 
+    /*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         return true;
     }
+    */
 
     @Override
     protected void onDestroy() {
@@ -235,4 +237,19 @@ public class ReaderLiveActivity extends LiveActivity {
                     .removeEventListener(mWriterCommentAddedListener);
         }
     }
+
+    private void setRecyclerView(){
+        //mRecyclerView.setEnabled(false);
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    emotionBar.toggleShowing();
+                }
+                return true;
+            }
+        });
+
+    }
+
 }
