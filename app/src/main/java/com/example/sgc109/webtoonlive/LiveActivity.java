@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,11 +16,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar;
 import com.example.sgc109.webtoonlive.CustomView.FixedSizeImageView;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Date;
 
 public class LiveActivity extends AppCompatActivity {
     private static final String TAG = "LiveActivity";
@@ -32,8 +28,6 @@ public class LiveActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     protected String mLiveKey;
 
-
-    protected ChildEventListener mChildEventListenerHandle;
     protected int mDeviceWidth;
     protected BottomEmotionBar emotionBar;
 
@@ -62,7 +56,7 @@ public class LiveActivity extends AppCompatActivity {
 
             @Override
             public void onBindViewHolder(@NonNull SceneImageViewHolder holder, int position) {
-                holder.bindImage(position, getItemCount() -1);
+                holder.bindImage(position, getItemCount() - 1);
             }
 
             @Override
@@ -71,26 +65,12 @@ public class LiveActivity extends AppCompatActivity {
             }
         };
 
-
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(adapter);
     }
 
-    public void pushScrollPosToDB() {
-        int offset = mRecyclerView.computeVerticalScrollOffset();
-        Log.d("scroll_debug", "offset : " + offset);
-        double posPercent = (double) offset / mDeviceWidth;
-
-        DatabaseReference ref = mDatabase
-                .child(getString(R.string.firebase_db_scroll_history))
-                .child(mLiveKey);
-        ref.push()
-                .setValue(new VerticalPositionChanged(posPercent));
-    }
-
     class SceneImageViewHolder extends RecyclerView.ViewHolder {
         FixedSizeImageView mImageView;
-
 
 
         public SceneImageViewHolder(View itemView) {
@@ -108,7 +88,7 @@ public class LiveActivity extends AppCompatActivity {
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .skipMemoryCache(false))
                     .into(mImageView);
-            if(position == lastPosition) {
+            if (position == lastPosition) {
                 mImageView.setLastPosition(true);
             }
         }

@@ -11,12 +11,14 @@ import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
-import java.io.Writer;
+import com.google.firebase.database.DatabaseReference;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class WriterLiveActivity extends LiveActivity {
+
+    private Long mStartedTime;
+    private CommentWriterDialog commentWriterDialog;
 
     public static Intent newIntent(Context context, String liveKey) {
         Intent intent = new Intent(context, WriterLiveActivity.class);
@@ -27,8 +29,9 @@ public class WriterLiveActivity extends LiveActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Log.d("DEBUG", "WriterLiveActivity");
+
+        mStartedTime = System.currentTimeMillis();
         RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -71,4 +74,57 @@ public class WriterLiveActivity extends LiveActivity {
     public void onBackPressed() {
         askEndLiveOrNot();
     }
+
+    public void pushScrollPosToDB() {
+        int offset = mRecyclerView.computeVerticalScrollOffset();
+        Log.d("scroll_debug", "offset : " + offset);
+        double posPercent = (double) offset / mDeviceWidth;
+
+        DatabaseReference ref = mDatabase
+                .child(getString(R.string.firebase_db_scroll_history))
+                .child(mLiveKey);
+        ref.push()
+                .setValue(new VerticalPositionChanged(posPercent, System.currentTimeMillis() - mStartedTime));
+    }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.writer_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        int id = item.getItemId();
+//
+//        if(id == R.id.write_comment){
+//           commentWriterDialog = new CommentWriterDialog(WriterLiveActivity.this, onClickListener);
+//
+//
+//        }
+//
+//
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    View.OnClickListener onClickListener = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View view) {
+//            String content = ((EditText)commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
+//            String key;
+//
+//            Map<String, Object> map = new HashMap<String, Object>();
+//            key = mDatabase.child(getString(R.string.comment_history)).push().getKey();
+//
+//            mDatabase.child(getString(R.string.comment_history)).updateChildren(map);
+//
+//            Map<String, Object> objectMap = new HashMap<String, Object>();
+//            objectMap.put("content", content);
+//            objectMap.put("time", System.currentTimeMillis() - mStartedTime);
+//
+//            mDatabase.child(getString(R.string.comment_history)).child(key).updateChildren(objectMap);
+//            commentWriterDialog.dismiss();
+//        }
+//    };
+
 }

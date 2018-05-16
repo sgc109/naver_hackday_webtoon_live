@@ -8,14 +8,14 @@
     tools:context=".LiveActivity">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/activity_live_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@android:layout/simple_list_item_checked" />
+    <android.support.v7.widget.RecyclerView
+    android:id="@+id/activity_live_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:listitem="@android:layout/simple_list_item_checked" />
 
 
         <com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar
@@ -31,3 +31,4 @@
     </android.support.constraint.ConstraintLayout>
 
 </LinearLayout>
+
