@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -47,7 +48,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
     private RelativeLayout commentField;
 
     private int curX, curY;
-    private String key;
+    private String key, likeKey;
     private int deviceWidth, deviceHeight;
     private DatabaseReference commentRef;
 
@@ -170,7 +171,11 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Log.d("like_change", dataSnapshot.getValue(Comment.class).getLikeCount()+" ");
 
+                ((CommentPointView)commentField
+                        .findViewWithTag(dataSnapshot.getKey()))
+                        .setLikeCount(dataSnapshot.getValue(Comment.class).getLikeCount());
             }
 
             @Override
@@ -190,7 +195,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         });
     }
     @SuppressLint("RestrictedApi")
-    private void addComment(final Comment comment, String tmpKey){
+    private void addComment(final Comment comment, final String tmpKey){
         Comment tmp = new Comment();
         tmp = comment;
 
@@ -199,7 +204,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
         commentPointView.setComment(tmp.getContent());
         commentPointView.setLikeCount(tmp.getLikeCount());
-        commentPointView.setTag(comment);
+        commentPointView.setTag(tmpKey);
 
         float widthRate = (float) deviceWidth / comment.getDeviceWidth();
 
@@ -225,9 +230,15 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         commentPointView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Comment tmpComment = (Comment) view.getTag();
+                likeKey = view.getTag().toString();
 
-                commentContentDialog = new CommentContentDialog(DefaultWebtoonActivity.this, tmpComment.getContent(), tmpComment.getLikeCount(), likeClickListener);
+                CommentPointView tmp = ((CommentPointView)commentField
+                        .findViewWithTag(likeKey));
+
+                commentContentDialog = new CommentContentDialog(DefaultWebtoonActivity.this
+                        ,tmp.getComment(),tmp.getLikeCount()
+                        , likeKey);
+
                 commentContentDialog.show();
                 commentPointView.setSelected(true);
                 commentContentDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
@@ -265,7 +276,6 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         }
     };
 
-    @SuppressLint("RestrictedApi")
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -286,18 +296,13 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             objectMap.put("posY", curY);
             objectMap.put("deviceWidth", deviceWidth);
             objectMap.put("deviceHeight", deviceHeight);
+            objectMap.put("likeCount", 0);
 
             commentRef.child(key).updateChildren(objectMap);
             commentWriterDialog.dismiss();
         }
     };
 
-    View.OnClickListener likeClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-        }
-    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

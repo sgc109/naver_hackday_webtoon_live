@@ -8,6 +8,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 /**
  * Created by jyoung on 2018. 5. 9..
  */
@@ -16,15 +19,20 @@ public class CommentContentDialog extends Dialog {
     private TextView commentText;
     private Button likeBtn, cancelBtn;
 
-    private int likeCount;
-    private View.OnClickListener likeClickListener;
 
+    private boolean likeFlag = false;
+    private int likeCount;
+    private String likeKey;
     private String content;
-    public CommentContentDialog(Context context, String content, int likeCount, View.OnClickListener likeClickListener){
+
+    private DatabaseReference commentRef;
+
+    public CommentContentDialog(Context context, String content, int likeCount, String likeKey){
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
         this.content = content;
         this.likeCount = likeCount;
-        this.likeClickListener = likeClickListener;
+        this.likeKey = likeKey;
+
     }
 
     @Override
@@ -35,11 +43,13 @@ public class CommentContentDialog extends Dialog {
         lpWindow.dimAmount = 0.1f;
         getWindow().setAttributes(lpWindow);
         setContentView(R.layout.dialog_comment_content);
+        commentRef = FirebaseDatabase.getInstance().getReference().child("comment");
+
         commentText = findViewById(R.id.comment_text);
         likeBtn = findViewById(R.id.like_btn);
         cancelBtn = findViewById(R.id.cancel_btn);
         commentText.setText(content);
-
+        likeBtn.setText(String.valueOf(likeCount));
 
         setClickListener();
     }
@@ -52,8 +62,23 @@ public class CommentContentDialog extends Dialog {
             }
         });
 
-        likeBtn.setText(likeCount);
-        likeBtn.setOnClickListener(likeClickListener);
+        likeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!likeFlag){
+                    likeCount +=1;
+                    likeBtn.setText(String.valueOf(likeCount));
+                    likeFlag = true;
+                }
+                else{
+                    likeCount -=1;
+                    likeBtn.setText(String.valueOf(likeCount));
+                    likeFlag = false;
+                }
+
+                commentRef.child(likeKey).child("likeCount").setValue(likeCount);
+            }
+        });
     }
 
 
