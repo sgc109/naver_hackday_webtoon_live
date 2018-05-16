@@ -31,6 +31,8 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
     private static final float SCLAE_VAL = 1.2f;
     private boolean isShowing = false;
 
+    private String mLiveKey = null;
+    private long mStartedTime = -1;
 
     private View convertView;
     private ArrayList<LottieAnimationView> itemLottie = new ArrayList<>();
@@ -55,6 +57,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         init();
     }
 
+
     /**
      * initialize
      */
@@ -71,7 +74,7 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         itemLottie.add((LottieAnimationView) convertView.findViewById(R.id.lottie_04));
         //itemButton.add((Button) convertView.findViewById(R.id.itemButton3));
         //itemButton.add((Button) convertView.findViewById(R.id.itemButton4));
-        for(int i = 0 ; i < itemLottie.size() ; i ++){
+        for (int i = 0; i < itemLottie.size(); i++) {
             itemLottie.get(i).setTag(i);
             itemLottie.get(i).setOnTouchListener(this);
         }
@@ -111,6 +114,9 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         isShowing = false;
     }
 
+    public void setStartedTime(long startedTime){
+        mStartedTime = startedTime;
+    }
     /**
      * 감정표현 버튼 클릭시 애니메이션 및 선택된 View 확대 등의 작업을 해야 합니다.
      */
@@ -161,6 +167,11 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         return false;
     }
 
+
+    public void setLiveKey(String liveKey) {
+        mLiveKey = liveKey;
+    }
+
     /**
      * lottieView 의 크기를 키워주고 애니메이션을 실행합니다.
      * xml에 default 로 자동 반복재생을 하도록 해 두었습니다.
@@ -191,14 +202,13 @@ public class BottomEmotionBar extends LinearLayout implements View.OnTouchListen
         view.setFrame(0);
     }
 
-    private void sampling(int emotionType) {
-        EmotionType.fromCode(emotionType);
-    }
-
+    //Todo Sampling 해야함
     private void pushToFirebase(EmotionType emotionType) {
-        EmotionModel emotionModel = new EmotionModel(emotionType);
-        DatabaseReference ref = mDatabase.child(getContext().getString(R.string.firebase_db_emotion_history));
-        ref.push().setValue(emotionModel);
+        if (mLiveKey != null) {
+            EmotionModel emotionModel = new EmotionModel(System.currentTimeMillis() - mStartedTime , emotionType);
+            DatabaseReference ref = mDatabase.child(getContext().getString(R.string.firebase_db_emotion_history)).child(mLiveKey);
+            ref.push().setValue(emotionModel);
+        }
 
     }
 }

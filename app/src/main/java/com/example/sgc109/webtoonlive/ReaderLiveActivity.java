@@ -13,6 +13,8 @@ import android.view.animation.LinearInterpolator;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
+import com.example.sgc109.webtoonlive.data.EmotionType;
+import com.example.sgc109.webtoonlive.dto.EmotionModel;
 import com.example.sgc109.webtoonlive.dto.WriterComment;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +44,10 @@ public class ReaderLiveActivity extends LiveActivity {
         mStartedTime = System.currentTimeMillis();
         mSeekBar = findViewById(R.id.live_seek_bar);
         mSeekBar.setVisibility(View.VISIBLE);
+
+        // 감정표현 입력 레이아웃 초기화
+        emotionBar.setLiveKey(mLiveKey);
+        emotionBar.setStartedTime(mStartedTime);
 
         mDatabase
                 .child(getString(R.string.firebase_db_live_list))
@@ -74,6 +80,11 @@ public class ReaderLiveActivity extends LiveActivity {
 
 
         setRecyclerView();
+    }
+
+
+    private void test(EmotionModel emotion){
+        emotionView.showEmotion(emotion);
     }
 
     private void getRecordingDatas() {
@@ -138,6 +149,43 @@ public class ReaderLiveActivity extends LiveActivity {
                                 }
                             }, timeAfter);
                         }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+        // 감정표현 화면 표시 관련 코드입니다
+
+        mDatabase
+                .child(getString(R.string.firebase_db_emotion_history))
+                .child(mLiveKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Long latestTime = 0L;
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            final EmotionModel emotionHistory = child.getValue(EmotionModel.class);
+                        //    latestTime = Math.max(latestTime, emotionHistory.timeStamp);
+                        //    Long passedTime = System.currentTimeMillis() - mStartedTime;
+                            Long timeAfter = emotionHistory.timeStamp;
+                            if (timeAfter < 0) {
+                                continue;
+                            }
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    EmotionType type = emotionHistory.type;
+                                    test(emotionHistory);
+                                }
+                            }, timeAfter);
+                        }
+                        ObjectAnimator animation = ObjectAnimator.ofInt(mSeekBar, "progress", 10000);
+                        animation.setDuration(latestTime);
+                        animation.setInterpolator(new LinearInterpolator());
+                        animation.start();
                     }
 
                     @Override
