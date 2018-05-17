@@ -58,6 +58,9 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webtoon_default);
+        if(getActionBar() != null) {
+            getActionBar().setTitle("유미의 세포들");
+        }
         init();
     }
 
