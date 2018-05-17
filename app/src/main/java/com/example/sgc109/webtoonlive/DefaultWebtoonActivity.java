@@ -18,8 +18,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.example.sgc109.webtoonlive.CustomView.CommentPointView;
-import com.example.sgc109.webtoonlive.CustomView.CustomScrollView;
+import com.example.sgc109.webtoonlive.custom_view.CommentPointView;
+import com.example.sgc109.webtoonlive.custom_view.CustomScrollView;
 import com.example.sgc109.webtoonlive.adapter.WebtoonAdapter;
 import com.example.sgc109.webtoonlive.dto.Comment;
 import com.example.sgc109.webtoonlive.util.SharedPreferencesService;

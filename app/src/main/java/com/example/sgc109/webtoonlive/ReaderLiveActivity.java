@@ -16,8 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-
-import com.example.sgc109.webtoonlive.CustomView.CommentPointView;
+import com.example.sgc109.webtoonlive.custom_view.CommentPointView;
+import com.example.sgc109.webtoonlive.dialog.LiveEndConfirmDialog;
 import com.example.sgc109.webtoonlive.dto.Comment;
 import com.example.sgc109.webtoonlive.dto.CommentClick;
 import com.example.sgc109.webtoonlive.dto.EmotionModel;
@@ -270,7 +270,7 @@ public class ReaderLiveActivity extends LiveActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 LiveInfo liveInfo = dataSnapshot.getValue(LiveInfo.class);
                                 if (liveInfo.state.equals(getString(R.string.live_state_over))) {
-                                    Toast.makeText(ReaderLiveActivity.this, "방송이 종료되었습니다!", Toast.LENGTH_LONG).show();
+                                    new LiveEndConfirmDialog(ReaderLiveActivity.this).show();
                                 }
                             }
 

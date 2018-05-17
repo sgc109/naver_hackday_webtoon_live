@@ -33,7 +33,7 @@
                 android:layout_height="match_parent"
                 tools:listitem="@android:layout/simple_list_item_checked"/>
 
-            <com.example.sgc109.webtoonlive.CustomView.CustomScrollView
+            <com.example.sgc109.webtoonlive.custom_view.CustomScrollView
                 android:id="@+id/comment_info_scroll"
                 android:layout_width="5dp"
                 android:layout_height="match_parent"
@@ -46,9 +46,9 @@
 
 
                 </RelativeLayout>
-            </com.example.sgc109.webtoonlive.CustomView.CustomScrollView>
+            </com.example.sgc109.webtoonlive.custom_view.CustomScrollView>
 
-            <com.example.sgc109.webtoonlive.CustomView.CustomScrollView
+            <com.example.sgc109.webtoonlive.custom_view.CustomScrollView
                 android:id="@+id/comment_field_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -60,13 +60,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
-            </com.example.sgc109.webtoonlive.CustomView.CustomScrollView>
+            </com.example.sgc109.webtoonlive.custom_view.CustomScrollView>
 
         </android.support.constraint.ConstraintLayout>
 
     </LinearLayout>
 
-    <com.example.sgc109.webtoonlive.CustomView.EmotionView
+    <com.example.sgc109.webtoonlive.custom_view.EmotionView
         android:id="@+id/emotionView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
