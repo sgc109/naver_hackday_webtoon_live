@@ -14,7 +14,6 @@ import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.example.sgc109.webtoonlive.CustomView.CommentPointView;
@@ -22,7 +21,6 @@ import com.example.sgc109.webtoonlive.data.EmotionType;
 import com.example.sgc109.webtoonlive.dto.Comment;
 import com.example.sgc109.webtoonlive.dto.CommentClick;
 import com.example.sgc109.webtoonlive.dto.EmotionModel;
-import com.example.sgc109.webtoonlive.dto.WriterComment;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -342,9 +340,6 @@ public class ReaderLiveActivity extends LiveActivity {
                                 final Comment comment = dataSnapshot.getValue(Comment.class);
                                 addComment(comment, dataSnapshot.getKey());
 
-                                WriterComment writerComment = dataSnapshot.getValue(WriterComment.class);
-
-
                             }
 
                             @Override
@@ -368,8 +363,8 @@ public class ReaderLiveActivity extends LiveActivity {
                             }
                         });
 
-        mWriterCommentAddedListener =
-                mDatabase.child(getString(R.string.comment_history))
+        mWriterCommentShowListener =
+                mDatabase.child(getString(R.string.firebase_db_comment_click_history))
                         .child(mLiveKey)
                         .addChildEventListener(new ChildEventListener() {
                             @Override
