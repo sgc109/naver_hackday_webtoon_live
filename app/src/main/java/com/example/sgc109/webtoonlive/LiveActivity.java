@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -54,6 +56,8 @@ public class LiveActivity extends AppCompatActivity {
 
     protected int deviceWidth, deviceHeight;
     protected int curX, curY;
+    private View bottomMenu;
+    private Animation menuSlideDownAnim;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -61,7 +65,7 @@ public class LiveActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live);
 
-        setTitle("　");
+        setTitle("유미의 세포");
         mLiveKey = getIntent().getStringExtra(EXTRA_LIVE_KEY);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
@@ -78,6 +82,13 @@ public class LiveActivity extends AppCompatActivity {
         commentFieldScroll = findViewById(R.id.comment_field_scroll);
         commentInfoScroll = findViewById(R.id.comment_info_scroll);
         commentInfo = findViewById(R.id.comment_info);
+
+        bottomMenu = findViewById(R.id.bottom_menu);
+        menuSlideDownAnim = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom);
+        bottomMenu.postOnAnimationDelayed(() -> {
+            bottomMenu.startAnimation(menuSlideDownAnim);
+            bottomMenu.setVisibility(View.GONE);
+        }, 3500);
         setToasty();
         getDeviceSize();
         commentFieldSetting();
@@ -109,7 +120,7 @@ public class LiveActivity extends AppCompatActivity {
     }
 
 
-    private void syncScroll(){
+    private void syncScroll() {
 
         mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -122,10 +133,10 @@ public class LiveActivity extends AppCompatActivity {
 
     }
 
-    private void getDeviceSize(){
+    private void getDeviceSize() {
         SharedPreferencesService.getInstance().load(this);
 
-        if(SharedPreferencesService.getInstance().getPrefIntegerData("deviceWidth") == 0) {
+        if (SharedPreferencesService.getInstance().getPrefIntegerData("deviceWidth") == 0) {
             DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
             int width = dm.widthPixels;
             int height = dm.heightPixels;
@@ -137,13 +148,13 @@ public class LiveActivity extends AppCompatActivity {
         deviceHeight = SharedPreferencesService.getInstance().getPrefIntegerData("deviceHeight");
     }
 
-    private void setToasty(){
+    private void setToasty() {
         Toasty.Config.getInstance()
                 .setTextColor(Color.WHITE)
                 .apply();
     }
 
-    private void commentFieldSetting(){
+    private void commentFieldSetting() {
         commentFieldScroll.setScrollingEnabled(false);
         commentInfoScroll.setScrollingEnabled(false);
         /*FIXME
