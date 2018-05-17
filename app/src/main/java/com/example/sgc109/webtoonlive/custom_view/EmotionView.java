@@ -102,7 +102,6 @@ public class EmotionView extends ConstraintLayout {
     }
 
     private void moveUpAndFadeOut(View view, long duration) {
-
         Animation translateAnimation = new TranslateAnimation(0, 0, 0, -(float) (getResources().getDimension(R.dimen.bottom_emotion_bar_item_size) * 1.5));
         translateAnimation.setFillAfter(true);
         translateAnimation.setDuration(duration);

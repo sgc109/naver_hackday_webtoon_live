@@ -85,9 +85,12 @@ public class LiveActivity extends AppCompatActivity {
 
         bottomMenu = findViewById(R.id.bottom_menu);
         menuSlideDownAnim = AnimationUtils.loadAnimation(this, R.anim.slide_out_bottom);
-        bottomMenu.postOnAnimationDelayed(() -> {
-            bottomMenu.startAnimation(menuSlideDownAnim);
-            bottomMenu.setVisibility(View.GONE);
+        bottomMenu.postOnAnimationDelayed(new Runnable() {
+            @Override
+            public void run() {
+                bottomMenu.startAnimation(menuSlideDownAnim);
+                bottomMenu.setVisibility(View.GONE);
+            }
         }, 3500);
         setToasty();
         getDeviceSize();
