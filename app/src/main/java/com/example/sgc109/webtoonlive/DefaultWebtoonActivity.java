@@ -1,7 +1,7 @@
 package com.example.sgc109.webtoonlive;
 
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.example.sgc109.webtoonlive.CustomView.CommentView;
 import com.example.sgc109.webtoonlive.adapter.WebtoonAdapter;
 import com.example.sgc109.webtoonlive.custom_view.CommentPointView;
 import com.example.sgc109.webtoonlive.custom_view.CustomScrollView;
@@ -192,15 +193,24 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         tmp = comment;
 
         final CommentPointView commentPointView = new CommentPointView(this);
+        final CommentView commentView = new CommentView(this);
         final RelativeLayout infoView = new RelativeLayout(this);
+
         float widthRate = (float) deviceWidth / comment.getDeviceWidth();
         double rate = webtoonRcv.computeVerticalScrollRange()/comment.getScrollLength();
 
         commentPointView.setComment(tmp.getContent());
         commentPointView.setTag(tmpKey);
 
+        commentView.setCommentText(tmp.getContent());
+
         RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         commentPointParams.setMargins( (int)(comment.getPosX() * widthRate)-30
+                ,  (int)(comment.getPosY()*rate)-30
+                ,0,0);
+
+        RelativeLayout.LayoutParams commentParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        commentParams.setMargins( 0
                 ,  (int)(comment.getPosY()*rate)-30
                 ,0,0);
 
@@ -211,12 +221,15 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
         infoView.setLayoutParams(infoViewParams);
         infoView.setTag(tmpKey);
-
-//        setInfoColor(tmpKey, tmp.getLikeCount());
+        infoView.setBackgroundColor(Color.parseColor("#00C73C"));
 
         commentPointView.setLayoutParams(commentPointParams);
-        commentField.addView(commentPointView);
+        commentView.setLayoutParams(commentParams);
+        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-40);
+        commentView.setTag(tmpKey+"&show");
 
+        commentField.addView(commentPointView);
+        commentField.addView(commentView);
         commentInfo.addView(infoView);
 
         commentPointView.setOnClickListener(new View.OnClickListener() {
@@ -224,21 +237,23 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             public void onClick(View view) {
                 likeKey = view.getTag().toString();
 
-                CommentPointView tmp = ((CommentPointView)commentField
-                        .findViewWithTag(likeKey));
+                ((CommentView)commentField.findViewWithTag(likeKey+"&show")).hideOrShowView();
 
-                commentContentDialog = new CommentContentDialog(DefaultWebtoonActivity.this
-                        ,tmp.getComment(),tmp.getLikeCount()
-                        , likeKey);
-
-                commentContentDialog.show();
-                commentPointView.setSelected(true);
-                commentContentDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialogInterface) {
-                        commentPointView.setSelected(false);
-                    }
-                });
+//                CommentPointView tmp = ((CommentPointView)commentField
+//                        .findViewWithTag(likeKey));
+//
+//                commentContentDialog = new CommentContentDialog(DefaultWebtoonActivity.this
+//                        ,tmp.getComment(),tmp.getLikeCount()
+//                        , likeKey);
+//
+//                commentContentDialog.show();
+//                commentPointView.setSelected(true);
+//                commentContentDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                    @Override
+//                    public void onDismiss(DialogInterface dialogInterface) {
+//                        commentPointView.setSelected(false);
+//                    }
+//                });
             }
         });
     }

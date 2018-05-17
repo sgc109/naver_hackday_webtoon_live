@@ -6,9 +6,9 @@ package com.example.sgc109.webtoonlive.CustomView;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,52 +19,49 @@ public class CommentView extends LinearLayout {
 
     private TextView commentText;
     private ImageView arrowImg;
+    private LinearLayout commentShowLayout;
 
 
     public CommentView(Context context){
         this(context, null);
-        Log.d("init?", "1");
     }
 
     public CommentView(Context context, AttributeSet attrs){
         this(context, attrs, 0);
-        Log.d("init?", "2");
-
     }
 
     public CommentView(Context context, AttributeSet attrs, int defStyleAttr){
         super(context, attrs, defStyleAttr);
-        Log.d("init?", "3");
 
         initView();
-//        hideOrShowView();
+        hideOrShowView();
     }
-    private void hideOrShowView(){
-        if(commentText.getVisibility() == GONE){
-            commentText.setVisibility(VISIBLE);
-            arrowImg.setVisibility(VISIBLE);
-        }
-        else{
-            commentText.setVisibility(GONE);
-            arrowImg.setVisibility(GONE);
-        }
+    public void hideOrShowView(){
+        if(commentShowLayout.getVisibility() == GONE)
+            commentShowLayout.setVisibility(VISIBLE);
+        else
+            commentShowLayout.setVisibility(GONE);
     }
 
     private void initView(){
 
-        Log.d("init?", "들어와랑");
         String layoutInfService = Context.LAYOUT_INFLATER_SERVICE;
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(layoutInfService);
         View v = li.inflate(R.layout.comment_view, this, false);
 
         commentText = v.findViewById(R.id.comment_show_field);
         arrowImg = v.findViewById(R.id.comment_arrow);
+        commentShowLayout = v.findViewById(R.id.comment_show_layout);
+
+        LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        commentText.setLayoutParams(layoutParams);
+
         addView(v);
     }
 
     public void setArrowImgPos(int x){
         LinearLayout.LayoutParams arrowParams =(LinearLayout.LayoutParams)arrowImg.getLayoutParams();
-        arrowParams.setMargins(x,40,0,0);
+        arrowParams.setMargins(x,20,0,0);
         arrowImg.setLayoutParams(arrowParams);
     }
 

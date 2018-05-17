@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:id="@+id/comment_show_layout"
     >
 
 
@@ -19,9 +20,10 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="80dp">
+        android:minHeight="40dp">
 
         <TextView
+            android:textColor="#fff"
            android:padding="10dp"
            android:id="@+id/comment_show_field"
            android:layout_width="match_parent"
