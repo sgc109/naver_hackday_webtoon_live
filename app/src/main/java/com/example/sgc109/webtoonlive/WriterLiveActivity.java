@@ -259,6 +259,9 @@ public class WriterLiveActivity extends LiveActivity {
     public void pushScrollPosToDB() {
         int offset = mRecyclerView.computeVerticalScrollOffset();
         Log.d("scroll_debug", "offset : " + offset);
+        Log.d("scroll_range", "" + mRecyclerView.computeVerticalScrollRange());
+        Log.d("scroll_extend", "" + mRecyclerView.computeVerticalScrollExtent());
+        Log.d("scroll_offset", "" + mRecyclerView.computeVerticalScrollOffset());
         double posPercent = (double) offset / mDeviceWidth;
 
         DatabaseReference ref = mDatabase

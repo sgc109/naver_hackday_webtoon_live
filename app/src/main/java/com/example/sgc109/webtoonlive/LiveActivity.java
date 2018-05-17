@@ -59,7 +59,7 @@ public class LiveActivity extends AppCompatActivity {
         mLiveKey = getIntent().getStringExtra(EXTRA_LIVE_KEY);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
-        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager = new MyLayoutManager(this);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         mDeviceWidth = displayMetrics.widthPixels;
@@ -76,11 +76,26 @@ public class LiveActivity extends AppCompatActivity {
         syncScroll();
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {
+            final int VIEW_TYPE_NOT_LAST = 0;
+            final int VIEW_TYPE_LAST = 1;
             @NonNull
             @Override
             public SceneImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_scene, parent, false);
-                return new SceneImageViewHolder(view);
+                if(viewType == VIEW_TYPE_LAST) {
+                    return new SceneImageViewHolder(view, true);
+                }
+                return new SceneImageViewHolder(view, false);
+            }
+
+
+            @Override
+            public int getItemViewType(int position) {
+                if(position == getItemCount() - 1) {
+                    Log.d("mydebug", "last_position!");
+                    return VIEW_TYPE_LAST;
+                }
+                return VIEW_TYPE_NOT_LAST;
             }
 
             @Override
@@ -148,10 +163,10 @@ public class LiveActivity extends AppCompatActivity {
         FixedSizeImageView mImageView;
 
 
-        public SceneImageViewHolder(View itemView) {
+        public SceneImageViewHolder(View itemView, boolean mIsLast) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.list_item_scene_image_view);
-            mImageView.setLastPosition(false);
+            mImageView.setLastPosition(mIsLast);
         }
 
         public void bindImage(int position, int lastPosition) {
@@ -161,11 +176,6 @@ public class LiveActivity extends AppCompatActivity {
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .skipMemoryCache(false))
                     .into(mImageView);
-            if (position == lastPosition) {
-                Log.d("mydebug", "last item bind! set true");
-                mImageView.setLastPosition(true);
-
-            }
         }
     }
 }

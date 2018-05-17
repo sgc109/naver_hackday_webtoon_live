@@ -2,4 +2,5 @@
 <resources>
     <dimen name="bottom_emotion_bar_height">100dp</dimen>
     <dimen name="bottom_emotion_bar_item_size">60dp</dimen>
+    <integer name="entire_image_height">55976</integer>
 </resources>
