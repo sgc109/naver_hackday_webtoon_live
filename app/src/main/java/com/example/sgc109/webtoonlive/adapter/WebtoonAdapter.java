@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.sgc109.webtoonlive.CustomView.FixedSizeImageView;
+import com.example.sgc109.webtoonlive.custom_view.FixedSizeImageView;
 import com.example.sgc109.webtoonlive.R;
 
 import java.util.List;

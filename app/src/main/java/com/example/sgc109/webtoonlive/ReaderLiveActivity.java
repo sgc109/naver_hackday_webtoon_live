@@ -16,8 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.example.sgc109.webtoonlive.CustomView.CommentPointView;
-import com.example.sgc109.webtoonlive.data.EmotionType;
+import com.example.sgc109.webtoonlive.custom_view.CommentPointView;
+import com.example.sgc109.webtoonlive.dialog.LiveEndConfirmDialog;
 import com.example.sgc109.webtoonlive.dto.Comment;
 import com.example.sgc109.webtoonlive.dto.CommentClick;
 import com.example.sgc109.webtoonlive.dto.EmotionModel;
@@ -51,11 +51,9 @@ public class ReaderLiveActivity extends LiveActivity {
         mSeekBar = findViewById(R.id.live_progress_bar);
         mSeekBar.setVisibility(View.VISIBLE);
 
-        // 감정표현 입력 레이아웃 초기화
-        emotionBar.setLiveKey(mLiveKey);
-        emotionBar.setStartedTime(mStartedTime);
         commentFieldScroll.setVisibility(View.VISIBLE);
         commentInfoScroll.setVisibility(View.VISIBLE);
+
 
         mDatabase
                 .child(getString(R.string.firebase_db_live_list))
@@ -67,6 +65,7 @@ public class ReaderLiveActivity extends LiveActivity {
                         mLiveInfo = dataSnapshot.getValue(LiveInfo.class);
                         String STATE_ON_AIR = getString(R.string.live_state_on_air);
 
+
                         if (mLiveInfo != null) {
                             if (mLiveInfo.state.equals(STATE_ON_AIR)) {
                                 addDataChangeListeners();
@@ -75,7 +74,7 @@ public class ReaderLiveActivity extends LiveActivity {
                             } else {
                                 addCommentIndicatorListener();
                                 getRecordingDatas();
-                                emotionBar.setVisibility(View.GONE);
+                                mEmotionView.inputBar.setVisibility(View.GONE);
                             }
                         }
 
@@ -127,10 +126,6 @@ public class ReaderLiveActivity extends LiveActivity {
         commentInfo.addView(infoView);
     }
 
-
-    private void test(EmotionModel emotion){
-        emotionView.showEmotion(emotion);
-    }
 
     private void getRecordingDatas() {
         mDatabase
@@ -232,7 +227,6 @@ public class ReaderLiveActivity extends LiveActivity {
                     }
                 });
 
-        // 감정표현 화면 표시 관련 코드입니다
 
         mDatabase
                 .child(getString(R.string.firebase_db_emotion_history))
@@ -240,37 +234,33 @@ public class ReaderLiveActivity extends LiveActivity {
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        Long latestTime = 0L;
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             final EmotionModel emotionHistory = child.getValue(EmotionModel.class);
-                        //    latestTime = Math.max(latestTime, emotionHistory.timeStamp);
-                        //    Long passedTime = System.currentTimeMillis() - mStartedTime;
-                            Long timeAfter = emotionHistory.timeStamp;
+                            long timeAfter = emotionHistory.timeStamp;
                             if (timeAfter < 0) {
                                 continue;
                             }
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    EmotionType type = emotionHistory.type;
-                                    test(emotionHistory);
+                                    showEmotion(emotionHistory);
                                 }
                             }, timeAfter);
                         }
-                        ObjectAnimator animation = ObjectAnimator.ofInt(mSeekBar, "progress", 10000);
-                        animation.setDuration(latestTime);
-                        animation.setInterpolator(new LinearInterpolator());
-                        animation.start();
                     }
+
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
                 });
+
+
     }
 
     public void addDataChangeListeners() {
+
         mLiveStateChangeListener =
                 mDatabase
                         .child(getString(R.string.firebase_db_live_list))
@@ -280,7 +270,7 @@ public class ReaderLiveActivity extends LiveActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 LiveInfo liveInfo = dataSnapshot.getValue(LiveInfo.class);
                                 if (liveInfo.state.equals(getString(R.string.live_state_over))) {
-                                    Toast.makeText(ReaderLiveActivity.this, "방송이 종료되었습니다!", Toast.LENGTH_LONG).show();
+                                    new LiveEndConfirmDialog(ReaderLiveActivity.this).show();
                                 }
                             }
 
@@ -455,13 +445,14 @@ public class ReaderLiveActivity extends LiveActivity {
         }
     }
 
-    private void setRecyclerView(){
+    private void setRecyclerView() {
         //mRecyclerView.setEnabled(false);
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                    emotionBar.toggleShowing();
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                        && mLiveInfo.state.matches(getResources().getString(R.string.live_state_on_air))) {
+                    mEmotionView.inputBar.toggleShowing();
                 }
                 return true;
             }

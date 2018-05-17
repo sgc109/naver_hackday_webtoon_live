@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.example.sgc109.webtoonlive.CustomView.CommentPointView;
+import com.example.sgc109.webtoonlive.custom_view.CommentPointView;
 import com.example.sgc109.webtoonlive.dto.Comment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
