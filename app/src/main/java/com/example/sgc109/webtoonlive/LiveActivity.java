@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -22,6 +24,8 @@ import com.example.sgc109.webtoonlive.dto.EmotionModel;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.example.sgc109.webtoonlive.CustomView.CustomScrollView;
+import com.example.sgc109.webtoonlive.util.SharedPreferencesService;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -39,9 +43,17 @@ public class LiveActivity extends AppCompatActivity {
     private LinearLayoutManager mLayoutManager;
     protected String mLiveKey;
 
+    protected CustomScrollView commentFieldScroll;
+    protected CustomScrollView commentInfoScroll;
+    protected RelativeLayout commentInfo;
+    protected RelativeLayout commentField;
+
     protected int mDeviceWidth;
     protected EmotionView mEmotionView;
 
+
+    protected int deviceWidth, deviceHeight;
+    protected int curX, curY;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -57,9 +69,19 @@ public class LiveActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         mDeviceWidth = displayMetrics.widthPixels;
+
+
         mEmotionView = findViewById(R.id.emotionView);
-        setToasty();
         getLiveInfo();
+
+        commentField = findViewById(R.id.comment_field);
+        commentFieldScroll = findViewById(R.id.comment_field_scroll);
+        commentInfoScroll = findViewById(R.id.comment_info_scroll);
+        commentInfo = findViewById(R.id.comment_info);
+        setToasty();
+        getDeviceSize();
+        commentFieldSetting();
+        syncScroll();
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {
             @NonNull
@@ -86,10 +108,51 @@ public class LiveActivity extends AppCompatActivity {
         setLiveEmotionListen();
     }
 
-    private void setToasty() {
+
+    private void syncScroll(){
+
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                commentInfoScroll.scrollTo(0, mRecyclerView.computeVerticalScrollOffset());
+                commentFieldScroll.scrollTo(0, mRecyclerView.computeVerticalScrollOffset());
+            }
+        });
+
+    }
+
+    private void getDeviceSize(){
+        SharedPreferencesService.getInstance().load(this);
+
+        if(SharedPreferencesService.getInstance().getPrefIntegerData("deviceWidth") == 0) {
+            DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+            int width = dm.widthPixels;
+            int height = dm.heightPixels;
+
+            SharedPreferencesService.getInstance().setPrefData("deviceWidth", width);
+            SharedPreferencesService.getInstance().setPrefData("deviceHeight", height);
+        }
+        deviceWidth = SharedPreferencesService.getInstance().getPrefIntegerData("deviceWidth");
+        deviceHeight = SharedPreferencesService.getInstance().getPrefIntegerData("deviceHeight");
+    }
+
+    private void setToasty(){
         Toasty.Config.getInstance()
                 .setTextColor(Color.WHITE)
                 .apply();
+    }
+
+    private void commentFieldSetting(){
+        commentFieldScroll.setScrollingEnabled(false);
+        commentInfoScroll.setScrollingEnabled(false);
+        /*FIXME
+         params height 값 메타데이터에서 얻기
+         */
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 116865);
+        commentField.setLayoutParams(layoutParams);
+        commentInfo.setLayoutParams(layoutParams);
+
     }
 
     class SceneImageViewHolder extends RecyclerView.ViewHolder {

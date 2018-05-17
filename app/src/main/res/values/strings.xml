@@ -2,6 +2,7 @@
     <string name="app_name">WebtoonLive</string>
     <string name="firebase_db_scroll_history">scroll_history</string>
     <string name="firebase_db_comment_history">comment_history</string>
+    <string name="firebase_db_comment_click_history">comment_click_history</string>
     <string name="firebase_db_emotion_history">emotion_history</string>
     <string name="firebase_db_live_list">live_list</string>
     <string name="firebase_db_image_size">image_size</string>

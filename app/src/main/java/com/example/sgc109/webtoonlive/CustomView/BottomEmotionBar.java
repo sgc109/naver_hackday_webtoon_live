@@ -189,6 +189,5 @@ public class BottomEmotionBar extends ConstraintLayout implements View.OnTouchLi
     //Todo Sampling 해야함
     private void pushToFirebase(EmotionType emotionType) {
         ((EmotionView)getParent()).pushToFireBase(emotionType);
-
     }
 }

@@ -117,7 +117,7 @@ public class EmotionView extends ConstraintLayout {
 
 
     public void pushToFireBase(EmotionType emotionType) {
-        if (mLiveInfo != null) {
+        if (mLiveInfo.state.matches(getResources().getString(R.string.live_state_on_air))) {
             EmotionModel emotionModel = new EmotionModel(System.currentTimeMillis() - mLiveInfo.startDate, emotionType);
             DatabaseReference ref = mDatabase.child(getContext().getString(R.string.firebase_db_emotion_history)).child(mLiveInfo.key);
             String key = ref.push().getKey();

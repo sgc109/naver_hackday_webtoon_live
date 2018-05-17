@@ -5,21 +5,33 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.example.sgc109.webtoonlive.CustomView.CommentPointView;
+import com.example.sgc109.webtoonlive.dto.Comment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import es.dmoral.toasty.Toasty;
@@ -30,6 +42,7 @@ public class WriterLiveActivity extends LiveActivity {
 
     private Long mStartedTime;
     private CommentWriterDialog commentWriterDialog;
+    private String key, likeKey;
 
     public static Intent newIntent(Context context, String liveKey) {
         Intent intent = new Intent(context, WriterLiveActivity.class);
@@ -54,6 +67,154 @@ public class WriterLiveActivity extends LiveActivity {
         };
         mRecyclerView.addOnScrollListener(scrollListener);
 
+        commentFieldEventSetting();
+        setRealTimeDB();
+    }
+
+    private void commentFieldEventSetting(){
+        commentField.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                switch (motionEvent.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        curX = (int)motionEvent.getX();
+                        curY = (int)motionEvent.getY();
+
+                        handler.postDelayed(longPressed, 1000);
+
+                        return true;
+                    case MotionEvent.ACTION_UP:
+                        handler.removeCallbacks(longPressed);
+
+                        return false;
+                    case MotionEvent.ACTION_CANCEL:
+                        handler.removeCallbacks(longPressed);
+                        return false;
+                }
+
+                return false;
+            }
+        });
+    }
+
+    private void setRealTimeDB(){
+
+        mDatabase
+                .child(getString(R.string.comment_history))
+                .child(mLiveKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> i = dataSnapshot.getChildren().iterator();
+
+                while (i.hasNext()) {
+                    DataSnapshot tmp = i.next();
+                    addComment(tmp.getValue(Comment.class), tmp.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        mDatabase
+                .child(getString(R.string.comment_history))
+                .child(mLiveKey)
+                .addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                addComment(dataSnapshot.getValue(Comment.class), dataSnapshot.getKey());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void addComment(final Comment comment, final String tmpKey){
+        Comment tmp = new Comment();
+        tmp = comment;
+
+        final CommentPointView commentPointView = new CommentPointView(this);
+        final RelativeLayout infoView = new RelativeLayout(this);
+        float widthRate = (float) deviceWidth / comment.getDeviceWidth();
+        double rate = mRecyclerView.computeVerticalScrollRange()/comment.getScrollLength();
+
+        commentPointView.setComment(tmp.getContent());
+        commentPointView.setTag(tmpKey);
+
+        RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        commentPointParams.setMargins( (int)(comment.getPosX() * widthRate)-30
+                ,  (int)(comment.getPosY()*rate)-30
+                ,0,0);
+
+        LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(10, 40);
+        infoViewParams.setMargins( 0
+                ,  (int)(comment.getPosY()*rate)-30
+                ,0,0);
+
+        infoView.setLayoutParams(infoViewParams);
+        infoView.setBackgroundColor(Color.parseColor("#00C73C"));
+
+
+        commentPointView.setLayoutParams(commentPointParams);
+        commentField.addView(commentPointView);
+        commentInfo.addView(infoView);
+
+        commentPointView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                likeKey = view.getTag().toString();
+
+                CommentPointView tmp = ((CommentPointView)commentField
+                        .findViewWithTag(likeKey));
+
+                Toasty.custom(WriterLiveActivity.this, tmp.getComment(), null,
+                        Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
+
+
+                Map<String, Object> map = new HashMap<String, Object>();
+                key = mDatabase
+                        .child(getString(R.string.firebase_db_comment_click_history))
+                        .child(mLiveKey)
+                        .push().getKey();
+
+                mDatabase.child(getString(R.string.firebase_db_comment_click_history))
+                        .child(mLiveKey)
+                        .updateChildren(map);
+
+
+                Map<String, Object> objectMap = new HashMap<String, Object>();
+
+                objectMap.put("commentId", likeKey);
+                objectMap.put("time", System.currentTimeMillis() - mStartedTime);
+
+                mDatabase.child(getString(R.string.firebase_db_comment_click_history))
+                        .child(mLiveKey)
+                        .child(key).updateChildren(objectMap);
+
+            }
+        });
     }
 
     private void askEndLiveOrNot() {
@@ -84,10 +245,16 @@ public class WriterLiveActivity extends LiveActivity {
                 .setNegativeButton(getString(R.string.no), dialogClickListener).show();
     }
 
-    @Override
-    public void onBackPressed() {
-        askEndLiveOrNot();
-    }
+    final Handler handler = new Handler();
+    Runnable longPressed = new Runnable() {
+        @Override
+        public void run() {
+            commentWriterDialog = new CommentWriterDialog(WriterLiveActivity.this, onClickListener);
+            commentWriterDialog.show();
+        }
+    };
+
+
 
     public void pushScrollPosToDB() {
         int offset = mRecyclerView.computeVerticalScrollOffset();
@@ -109,13 +276,25 @@ public class WriterLiveActivity extends LiveActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        askEndLiveOrNot();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.write_comment) {
-            commentWriterDialog = new CommentWriterDialog(WriterLiveActivity.this, onClickListener);
-            commentWriterDialog.show();
-        }
+            if(id == R.id.write_comment){
+                if(commentFieldScroll.getVisibility() == View.GONE) {
+                    commentFieldScroll.scrollTo(0, mRecyclerView.computeVerticalScrollOffset());
+                    commentFieldScroll.setVisibility(View.VISIBLE);
+                    commentInfoScroll.setVisibility(View.GONE);
+                }
+                else {
+                    commentFieldScroll.setVisibility(View.GONE);
+                    commentInfoScroll.setVisibility(View.VISIBLE);
+                }
+            }
 
 
         return super.onOptionsItemSelected(item);
@@ -124,8 +303,8 @@ public class WriterLiveActivity extends LiveActivity {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String content = ((EditText) commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
-            String key;
+            String writer = ((EditText)commentWriterDialog.findViewById(R.id.writer_edit)).getText().toString();
+            String content = ((EditText)commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
 
             Map<String, Object> map = new HashMap<String, Object>();
             key = mDatabase
@@ -138,7 +317,14 @@ public class WriterLiveActivity extends LiveActivity {
                     .updateChildren(map);
 
             Map<String, Object> objectMap = new HashMap<String, Object>();
+
+            objectMap.put("writer", writer);
             objectMap.put("content", content);
+            objectMap.put("scrollLength", mRecyclerView.computeVerticalScrollRange());
+            objectMap.put("posX", curX);
+            objectMap.put("posY", curY);
+            objectMap.put("deviceWidth", deviceWidth);
+            objectMap.put("deviceHeight", deviceHeight);
             objectMap.put("time", System.currentTimeMillis() - mStartedTime);
 
             mDatabase.child(getString(R.string.comment_history))
@@ -146,11 +332,6 @@ public class WriterLiveActivity extends LiveActivity {
                     .child(key).updateChildren(objectMap);
 
             commentWriterDialog.dismiss();
-
-            Toasty.custom(WriterLiveActivity.this, content, null,
-                    Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
-
-
         }
     };
 

@@ -9,12 +9,18 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
-import android.widget.SeekBar;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+
+import com.example.sgc109.webtoonlive.CustomView.CommentPointView;
+import com.example.sgc109.webtoonlive.dto.Comment;
+import com.example.sgc109.webtoonlive.dto.CommentClick;
 import com.example.sgc109.webtoonlive.dto.EmotionModel;
-import com.example.sgc109.webtoonlive.dto.WriterComment;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,11 +29,12 @@ import com.google.firebase.database.ValueEventListener;
 import es.dmoral.toasty.Toasty;
 
 public class ReaderLiveActivity extends LiveActivity {
-    private SeekBar mSeekBar;
+    private ProgressBar mSeekBar;
     private LiveInfo mLiveInfo;
     private ChildEventListener mNewScrollAddedListener;
     private ValueEventListener mLiveStateChangeListener;
     private ChildEventListener mWriterCommentAddedListener;
+    private ChildEventListener mWriterCommentShowListener;
     private Long mStartedTime;
 
     public static Intent newIntent(Context context, String liveKey) {
@@ -41,8 +48,11 @@ public class ReaderLiveActivity extends LiveActivity {
         super.onCreate(savedInstanceState);
 
         mStartedTime = System.currentTimeMillis();
-        mSeekBar = findViewById(R.id.live_seek_bar);
+        mSeekBar = findViewById(R.id.live_progress_bar);
         mSeekBar.setVisibility(View.VISIBLE);
+
+        commentFieldScroll.setVisibility(View.VISIBLE);
+        commentInfoScroll.setVisibility(View.VISIBLE);
 
 
         mDatabase
@@ -62,6 +72,7 @@ public class ReaderLiveActivity extends LiveActivity {
                                 settingCommentListeners();
                                 mSeekBar.setVisibility(View.GONE);
                             } else {
+                                addCommentIndicatorListener();
                                 getRecordingDatas();
                                 mEmotionView.inputBar.setVisibility(View.GONE);
                             }
@@ -77,6 +88,42 @@ public class ReaderLiveActivity extends LiveActivity {
 
 
         setRecyclerView();
+    }
+
+    private void addCommentIndicatorListener(){
+        mDatabase
+                .child(getString(R.string.comment_history))
+                .child(mLiveKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            final Comment comment = child.getValue(Comment.class);
+                            addIndicator(comment);
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+    private void addIndicator(Comment comment){
+        final RelativeLayout infoView = new RelativeLayout(this);
+        double rate = mRecyclerView.computeVerticalScrollRange()/comment.getScrollLength();
+
+        LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(10, 40);
+        infoViewParams.setMargins( 0
+                ,  (int)(comment.getPosY()*rate)-30
+                ,0,0);
+
+        infoView.setLayoutParams(infoViewParams);
+        infoView.setBackgroundColor(Color.parseColor("#00C73C"));
+
+        commentInfo.addView(infoView);
     }
 
 
@@ -126,19 +173,49 @@ public class ReaderLiveActivity extends LiveActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Long latestTime = 0L;
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            final WriterComment commentHistory = child.getValue(WriterComment.class);
-                            latestTime = Math.max(latestTime, commentHistory.getTime());
+                        for (final DataSnapshot child : dataSnapshot.getChildren()) {
+                            final Comment comment = child.getValue(Comment.class);
+                            latestTime = Math.max(latestTime, comment.getTime());
                             Long passedTime = System.currentTimeMillis() - mStartedTime;
-                            Long timeAfter = commentHistory.getTime() - passedTime;
+                            Long timeAfter = comment.getTime() - passedTime;
                             if (timeAfter < 0) {
                                 continue;
                             }
                             new Handler().postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toasty.custom(ReaderLiveActivity.this, commentHistory.getContent(), null,
-                                            Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
+                                   addComment(comment, child.getKey());
+                                }
+                            }, timeAfter);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+
+        mDatabase
+                .child(getString(R.string.firebase_db_comment_click_history))
+                .child(mLiveKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Long latestTime = 0L;
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            final CommentClick clickInfo = child.getValue(CommentClick.class);
+                            latestTime = Math.max(latestTime, clickInfo.getTime());
+                            Long passedTime = System.currentTimeMillis() - mStartedTime;
+                            Long timeAfter = clickInfo.getTime() - passedTime;
+                            if (timeAfter < 0) {
+                                continue;
+                            }
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    showToast(clickInfo);
                                 }
                             }, timeAfter);
                         }
@@ -250,10 +327,9 @@ public class ReaderLiveActivity extends LiveActivity {
                         .addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                WriterComment writerComment = dataSnapshot.getValue(WriterComment.class);
+                                final Comment comment = dataSnapshot.getValue(Comment.class);
+                                addComment(comment, dataSnapshot.getKey());
 
-                                Toasty.custom(ReaderLiveActivity.this, writerComment.getContent(), null,
-                                        Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
                             }
 
                             @Override
@@ -277,6 +353,63 @@ public class ReaderLiveActivity extends LiveActivity {
                             }
                         });
 
+        mWriterCommentShowListener =
+                mDatabase.child(getString(R.string.firebase_db_comment_click_history))
+                        .child(mLiveKey)
+                        .addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                                final CommentClick clickInfo = dataSnapshot.getValue(CommentClick.class);
+                                showToast(clickInfo);
+                            }
+
+                            @Override
+                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+    }
+
+    private void showToast(CommentClick clickInfo){
+       String comment = ((CommentPointView)commentField.findViewWithTag(clickInfo.getCommentId())).getComment();
+
+        Toasty.custom(ReaderLiveActivity.this, comment, null,
+                Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
+    }
+
+    private void addComment(final Comment comment, final String tmpKey){
+        Comment tmp = new Comment();
+        tmp = comment;
+
+        final CommentPointView commentPointView = new CommentPointView(this);
+        float widthRate = (float) deviceWidth / comment.getDeviceWidth();
+        double rate = mRecyclerView.computeVerticalScrollRange()/comment.getScrollLength();
+
+        commentPointView.setComment(tmp.getContent());
+        commentPointView.setTag(tmpKey);
+
+        RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        commentPointParams.setMargins( (int)(comment.getPosX() * widthRate)-30
+                ,  (int)(comment.getPosY()*rate)-30
+                ,0,0);
+
+        commentPointView.setLayoutParams(commentPointParams);
+        commentField.addView(commentPointView);
 
     }
 
@@ -305,6 +438,11 @@ public class ReaderLiveActivity extends LiveActivity {
                     .child(mLiveKey)
                     .removeEventListener(mWriterCommentAddedListener);
         }
+        if (mWriterCommentShowListener != null) {
+            mDatabase.child(getString(R.string.firebase_db_comment_click_history))
+                    .child(mLiveKey)
+                    .removeEventListener(mWriterCommentShowListener);
+        }
     }
 
     private void setRecyclerView() {
@@ -312,7 +450,8 @@ public class ReaderLiveActivity extends LiveActivity {
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
+                        && mLiveInfo.state.matches(getResources().getString(R.string.live_state_on_air))) {
                     mEmotionView.inputBar.toggleShowing();
                 }
                 return true;
