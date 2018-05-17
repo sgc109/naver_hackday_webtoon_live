@@ -3,4 +3,6 @@
     <dimen name="bottom_emotion_bar_height">100dp</dimen>
     <dimen name="bottom_emotion_bar_item_size">60dp</dimen>
     <integer name="entire_image_height">55976</integer>
+    <integer name="comic1_cuts_cnt">25</integer>
+    <integer name="comic2_cuts_cnt">13</integer>
 </resources>

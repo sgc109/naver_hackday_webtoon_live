@@ -133,10 +133,13 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
     private void settingList(){
         imgList = new ArrayList<Integer>();
-        TypedArray typedArray = getResources().obtainTypedArray(R.array.imgArray);
-        for(int i=0; i<typedArray.length(); i++)
-            imgList.add(typedArray.getResourceId(i,-1));
-        typedArray.recycle();
+        for(int i = 0; i < getResources().getInteger(R.integer.comic2_cuts_cnt); i++){
+            imgList.add(getResources().getIdentifier("comic2_" + (i + 1), "drawable", getPackageName()));
+        }
+//        TypedArray typedArray = getResources().obtainTypedArray(R.array.imgArray);
+//        for(int i=0; i<typedArray.length(); i++)
+//            imgList.add(typedArray.getResourceId(i,-1));
+//        typedArray.recycle();
     }
 
     private void setRealTimeDB(){

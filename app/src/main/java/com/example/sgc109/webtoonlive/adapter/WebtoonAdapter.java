@@ -51,6 +51,7 @@ public class WebtoonAdapter extends RecyclerView.Adapter {
         public WebtoonHolder(View itemView) {
             super(itemView);
             webtoonImg = itemView.findViewById(R.id.list_item_scene_image_view);
+            webtoonImg.setCutSize(690, 1600);
         }
 
         public void bindImage(Integer img) {

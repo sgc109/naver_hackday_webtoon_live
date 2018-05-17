@@ -59,7 +59,7 @@ public class LiveActivity extends AppCompatActivity {
         mLiveKey = getIntent().getStringExtra(EXTRA_LIVE_KEY);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mRecyclerView = findViewById(R.id.activity_live_recycler_view);
-        mLayoutManager = new MyLayoutManager(this);
+        mLayoutManager = new LinearLayoutManager(this);
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         mDeviceWidth = displayMetrics.widthPixels;
@@ -105,7 +105,7 @@ public class LiveActivity extends AppCompatActivity {
 
             @Override
             public int getItemCount() {
-                return 35;
+                return getResources().getInteger(R.integer.comic1_cuts_cnt);
             }
         };
 
@@ -166,12 +166,13 @@ public class LiveActivity extends AppCompatActivity {
         public SceneImageViewHolder(View itemView, boolean mIsLast) {
             super(itemView);
             mImageView = itemView.findViewById(R.id.list_item_scene_image_view);
-            mImageView.setLastPosition(mIsLast);
+//            mImageView.setLastPosition(mIsLast);
+            mImageView.setCutSize(600, 1600);
         }
 
         public void bindImage(int position, int lastPosition) {
             Glide.with(LiveActivity.this)
-                    .load(getResources().getIdentifier("cut" + (position + 1), "drawable", getPackageName()))
+                    .load(getResources().getIdentifier("comic1_" + (position + 1), "drawable", getPackageName()))
                     .apply(new RequestOptions()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .skipMemoryCache(false))

@@ -18,43 +18,4 @@
     <string name="live_list_empty_message">웹툰 라이브가 없습니다!</string>
     <string name="menu_title_live_list">라이브 목록</string>
     <string name="menu_title_create_live">새 라이브 만들기</string>
-
-
-    <array name="imgArray">
-        <item>@drawable/cut1</item>
-        <item>@drawable/cut2</item>
-        <item>@drawable/cut3</item>
-        <item>@drawable/cut4</item>
-        <item>@drawable/cut5</item>
-        <item>@drawable/cut6</item>
-        <item>@drawable/cut7</item>
-        <item>@drawable/cut8</item>
-        <item>@drawable/cut9</item>
-        <item>@drawable/cut10</item>
-        <item>@drawable/cut11</item>
-        <item>@drawable/cut12</item>
-        <item>@drawable/cut13</item>
-        <item>@drawable/cut14</item>
-        <item>@drawable/cut15</item>
-        <item>@drawable/cut16</item>
-        <item>@drawable/cut17</item>
-        <item>@drawable/cut18</item>
-        <item>@drawable/cut19</item>
-        <item>@drawable/cut20</item>
-        <item>@drawable/cut21</item>
-        <item>@drawable/cut22</item>
-        <item>@drawable/cut23</item>
-        <item>@drawable/cut24</item>
-        <item>@drawable/cut25</item>
-        <item>@drawable/cut26</item>
-        <item>@drawable/cut27</item>
-        <item>@drawable/cut28</item>
-        <item>@drawable/cut29</item>
-        <item>@drawable/cut30</item>
-        <item>@drawable/cut31</item>
-        <item>@drawable/cut32</item>
-        <item>@drawable/cut33</item>
-        <item>@drawable/cut34</item>
-        <item>@drawable/cut35</item>
-    </array>
 </resources>

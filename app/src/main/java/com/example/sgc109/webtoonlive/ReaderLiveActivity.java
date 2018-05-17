@@ -302,8 +302,8 @@ public class ReaderLiveActivity extends LiveActivity {
 
                                 int nextY = (int) (percentage * mDeviceWidth);
                                 int curY = mRecyclerView.computeVerticalScrollOffset();
+                                Log.d("scroll_debug", " percentage : "+ percentage + " ,  nextY : " + nextY + ", curY : " + curY + "diff" + (nextY - curY));
                                 mRecyclerView.smoothScrollBy(0, nextY - curY);
-                                Log.d("scroll_debug", "nextY : " + nextY + ", curY : " + curY);
                             }
 
                             @Override
