@@ -1,9 +1,5 @@
 package com.example.sgc109.webtoonlive;
 
-import android.content.res.Resources;
-
-import java.util.Date;
-
 /**
  * Created by sgc109 on 2018-05-15.
  */
@@ -16,6 +12,7 @@ public class LiveInfo {
     public Long endDate;
 
     LiveInfo() {
+
     }
 
     LiveInfo(String key, String title, String state) {

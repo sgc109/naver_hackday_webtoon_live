@@ -1,4 +1,4 @@
-package com.example.sgc109.webtoonlive.CustomView;
+package com.example.sgc109.webtoonlive.custom_view;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
