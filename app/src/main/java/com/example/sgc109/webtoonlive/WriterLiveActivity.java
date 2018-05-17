@@ -273,7 +273,6 @@ public class WriterLiveActivity extends LiveActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        setTitle("　");
         getMenuInflater().inflate(R.menu.writer_menu, menu);
         return true;
     }
