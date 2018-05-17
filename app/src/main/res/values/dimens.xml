@@ -2,4 +2,5 @@
 <resources>
     <dimen name="bottom_emotion_bar_height">100dp</dimen>
     <dimen name="bottom_emotion_bar_item_size">60dp</dimen>
+    <dimen name="bottom_margin">8dp</dimen>
 </resources>

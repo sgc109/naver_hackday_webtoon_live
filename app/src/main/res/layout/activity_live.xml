@@ -35,15 +35,6 @@
                 android:layout_height="match_parent"
                 tools:listitem="@android:layout/simple_list_item_checked" />
 
-            <com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar
-                android:id="@+id/emotionBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
 
         </android.support.constraint.ConstraintLayout>
 

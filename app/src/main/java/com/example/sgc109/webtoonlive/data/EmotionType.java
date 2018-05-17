@@ -52,7 +52,8 @@ public enum EmotionType {
             case WINK:
                 return R.raw.emoji_wink;
             case SHOCK:
-                return R.raw.emoji_shock;
+                return R.raw.emoji_wink;
+                //return R.raw.emoji_shock;
             case STAR:
                 return R.raw.favourite_app_icon;
         }

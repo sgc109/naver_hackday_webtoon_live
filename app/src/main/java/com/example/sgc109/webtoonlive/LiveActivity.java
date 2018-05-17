@@ -16,11 +16,15 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.sgc109.webtoonlive.CustomView.BottomEmotionBar;
 import com.example.sgc109.webtoonlive.CustomView.EmotionView;
 import com.example.sgc109.webtoonlive.CustomView.FixedSizeImageView;
+import com.example.sgc109.webtoonlive.dto.EmotionModel;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import es.dmoral.toasty.Toasty;
 
@@ -28,14 +32,16 @@ public class LiveActivity extends AppCompatActivity {
     private static final String TAG = "LiveActivity";
     protected static final String EXTRA_LIVE_KEY = "extra_live_key";
 
+    private LiveInfo liveInfo;
+
     protected RecyclerView mRecyclerView;
     protected DatabaseReference mDatabase;
     private LinearLayoutManager mLayoutManager;
     protected String mLiveKey;
 
     protected int mDeviceWidth;
-    protected BottomEmotionBar emotionBar;
     protected EmotionView mEmotionView;
+
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -51,9 +57,9 @@ public class LiveActivity extends AppCompatActivity {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         mDeviceWidth = displayMetrics.widthPixels;
-        emotionBar = findViewById(R.id.emotionBar);
         mEmotionView = findViewById(R.id.emotionView);
         setToasty();
+        getLiveInfo();
 
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {
             @NonNull
@@ -76,9 +82,11 @@ public class LiveActivity extends AppCompatActivity {
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setAdapter(adapter);
+
+        setLiveEmotionListen();
     }
 
-    private void setToasty(){
+    private void setToasty() {
         Toasty.Config.getInstance()
                 .setTextColor(Color.WHITE)
                 .apply();
@@ -86,7 +94,6 @@ public class LiveActivity extends AppCompatActivity {
 
     class SceneImageViewHolder extends RecyclerView.ViewHolder {
         FixedSizeImageView mImageView;
-
 
         public SceneImageViewHolder(View itemView) {
             super(itemView);
@@ -108,4 +115,66 @@ public class LiveActivity extends AppCompatActivity {
             }
         }
     }
+
+    protected void showEmotion(EmotionModel emotion) {
+        mEmotionView.showEmotion(emotion, false);
+    }
+
+    private void setLiveEmotionListen() {
+        // 감정표현 관련 코드입니다.
+        mDatabase.child(getString(R.string.firebase_db_emotion_history))
+                .child(mLiveKey).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                EmotionModel emotion = dataSnapshot.getValue(EmotionModel.class);
+                long pastTime = System.currentTimeMillis() - liveInfo.startDate;
+                long diff = pastTime - emotion.timeStamp;
+                long oneSec = 1000;
+                Log.d("AA", "diff: "+ diff);
+                if (!mEmotionView.keySet.contains(dataSnapshot.getKey()) && diff < oneSec) {
+                    showEmotion(emotion);
+                }
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getLiveInfo() {
+        mDatabase
+                .child(getString(R.string.firebase_db_live_list))
+                .child(mLiveKey)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        liveInfo = dataSnapshot.getValue(LiveInfo.class);
+                        // 감정표현 입력 레이아웃 초기화
+                        mEmotionView.setLiveInfo(liveInfo);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+    }
+
+
 }
