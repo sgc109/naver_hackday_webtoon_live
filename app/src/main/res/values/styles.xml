@@ -13,4 +13,7 @@
         <attr name="text" format="reference|integer" />
     </declare-styleable>
 
+    <declare-styleable name="CommentView">
+    </declare-styleable>
+
 </resources>
