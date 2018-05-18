@@ -165,7 +165,7 @@ public class WriterLiveActivity extends LiveActivity {
 
         RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         commentPointParams.setMargins(0
-                ,  (int)(comment.getPosY()*rate) -110
+                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(150,this)
                 ,0,0);
 
 
@@ -179,7 +179,7 @@ public class WriterLiveActivity extends LiveActivity {
         infoView.setBackgroundColor(Color.parseColor("#00C73C"));
 
         commentView.setLayoutParams(commentPointParams);
-        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(40,this));
+        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(80,this));
         commentView.hideOrShowView();
 
         commentField.addView(commentView);

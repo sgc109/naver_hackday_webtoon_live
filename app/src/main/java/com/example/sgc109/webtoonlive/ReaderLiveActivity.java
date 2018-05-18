@@ -332,11 +332,11 @@ public class ReaderLiveActivity extends LiveActivity {
         commentPointView.setCommentText(tmp.getContent());
         commentPointView.setTag(tmpKey);
         commentPointView.hideOrShowView();
-        commentPointView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(40,this));
+        commentPointView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(80,this));
 
         RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         commentPointParams.setMargins( 0
-                ,  (int)(comment.getPosY()*rate) -110
+                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(150,this)
                 ,0,0);
 
         commentPointView.setLayoutParams(commentPointParams);
