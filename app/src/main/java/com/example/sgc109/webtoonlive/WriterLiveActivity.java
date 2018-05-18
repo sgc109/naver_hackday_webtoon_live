@@ -81,7 +81,7 @@ public class WriterLiveActivity extends LiveActivity {
                         curX = (int)motionEvent.getX();
                         curY = (int)motionEvent.getY();
 
-                        handler.postDelayed(longPressed, 1000);
+                        handler.postDelayed(longPressed, 300);
 
                         return true;
                     case MotionEvent.ACTION_UP:
@@ -258,13 +258,13 @@ public class WriterLiveActivity extends LiveActivity {
         int id = item.getItemId();
 
             if(id == R.id.write_comment){
-                if(commentFieldScroll.getVisibility() == View.GONE) {
+                if(commentFieldScroll.getVisibility() == View.INVISIBLE) {
                     commentFieldScroll.scrollTo(0, mRecyclerView.computeVerticalScrollOffset());
                     commentFieldScroll.setVisibility(View.VISIBLE);
                     commentInfoScroll.setVisibility(View.GONE);
                 }
                 else {
-                    commentFieldScroll.setVisibility(View.GONE);
+                    commentFieldScroll.setVisibility(View.INVISIBLE);
                     commentInfoScroll.setVisibility(View.VISIBLE);
                 }
             }
@@ -276,7 +276,8 @@ public class WriterLiveActivity extends LiveActivity {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String writer = ((EditText)commentWriterDialog.findViewById(R.id.writer_edit)).getText().toString();
+            String writer = "";
+            //FIXME 실서비스 사용자 고유 값
             String content = ((EditText)commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
 
             Map<String, Object> map = new HashMap<String, Object>();
