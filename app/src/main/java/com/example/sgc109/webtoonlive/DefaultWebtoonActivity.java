@@ -96,12 +96,11 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
                         curX = (int)motionEvent.getX();
                         curY = (int)motionEvent.getY();
 
-                        handler.postDelayed(longPressed, 1000);
+                        handler.postDelayed(longPressed, 300);
 
                         return true;
                     case MotionEvent.ACTION_UP:
                         handler.removeCallbacks(longPressed);
-
                         return false;
                     case MotionEvent.ACTION_CANCEL:
                         handler.removeCallbacks(longPressed);
