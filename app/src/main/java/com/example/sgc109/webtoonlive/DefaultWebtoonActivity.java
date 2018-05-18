@@ -88,6 +88,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         commentField.setLayoutParams(layoutParams);
         commentInfo.setLayoutParams(layoutParams);
 
+
         commentField.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
