@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.support.constraint.ConstraintLayout;
+import android.transition.ChangeBounds;
+import android.transition.Scene;
+import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -107,20 +110,52 @@ public class BottomEmotionBar extends ConstraintLayout implements View.OnTouchLi
      * View 를 보여준다.
      */
     public void showView() {
+
         Log.d(TAG, "show," + isShowing);
+
+        ChangeBounds showingTransition = new ChangeBounds();
+        showingTransition.addListener(new Transition.TransitionListener() {
+            @Override
+            public void onTransitionStart(Transition transition) {
+                Log.d(TAG, "onTransitionStart," + isShowing);
+            }
+
+            @Override
+            public void onTransitionEnd(Transition transition) {
+                isShowing = true;
+                Log.d(TAG, "onTransitionEnd," + isShowing);
+            }
+
+            @Override
+            public void onTransitionCancel(Transition transition) {
+                Log.d(TAG, "onTransitionCancel," + isShowing);
+            }
+
+            @Override
+            public void onTransitionPause(Transition transition) {
+                Log.d(TAG, "onTransitionPause," + isShowing);
+            }
+
+            @Override
+            public void onTransitionResume(Transition transition) {
+                Log.d(TAG, "onTransitionResume," + isShowing);
+            }
+        });
+
+        TransitionManager.go(new Scene(this), showingTransition);
         TransitionManager.beginDelayedTransition(this);
         this.setVisibility(View.VISIBLE);
-        isShowing = true;
+
     }
 
     /**
      * View 를 가려준다.
      */
     public void hideView() {
+        isShowing = false;
         Log.d(TAG, "hide," + isShowing);
         TransitionManager.beginDelayedTransition(this);
         this.setVisibility(View.GONE);
-        isShowing = false;
     }
 
 
@@ -151,8 +186,8 @@ public class BottomEmotionBar extends ConstraintLayout implements View.OnTouchLi
                 // 영역 안에서 손을 뗏을 경우
                 if (isShowing &&  rect.contains(view.getLeft() + (int) motionEvent.getX(), view.getTop() + (int) motionEvent.getY())) {
                     //push top Firebase // sampling하고 보내야 한다
-                    pushToFirebase(EmotionType.fromCode((int) view.getTag()));
                     hideView();
+                    pushToFirebase(EmotionType.fromCode((int) view.getTag()));
                     return true;
                 }
                 return true;
