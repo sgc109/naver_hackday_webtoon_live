@@ -14,19 +14,15 @@ import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.example.sgc109.webtoonlive.custom_view.CommentPointView;
+import com.example.sgc109.webtoonlive.CustomView.CommentView;
 import com.example.sgc109.webtoonlive.dialog.LiveEndConfirmDialog;
 import com.example.sgc109.webtoonlive.dto.Comment;
-import com.example.sgc109.webtoonlive.dto.CommentClick;
 import com.example.sgc109.webtoonlive.dto.EmotionModel;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-
-import es.dmoral.toasty.Toasty;
 
 public class ReaderLiveActivity extends LiveActivity {
     private ProgressBar mSeekBar;
@@ -136,7 +132,6 @@ public class ReaderLiveActivity extends LiveActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             final VerticalPositionChanged scrollHistory = child.getValue(VerticalPositionChanged.class);
-//                            mScrollHistories.add(scrollHistory);
                             Long passedTime = System.currentTimeMillis() - mStartedTime;
                             Long timeAfter = scrollHistory.time - passedTime;
                             if (timeAfter < 0) {
@@ -185,37 +180,6 @@ public class ReaderLiveActivity extends LiveActivity {
                                 @Override
                                 public void run() {
                                    addComment(comment, child.getKey());
-                                }
-                            }, timeAfter);
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
-
-
-        mDatabase
-                .child(getString(R.string.firebase_db_comment_click_history))
-                .child(mLiveKey)
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        Long latestTime = 0L;
-                        for (DataSnapshot child : dataSnapshot.getChildren()) {
-                            final CommentClick clickInfo = child.getValue(CommentClick.class);
-                            latestTime = Math.max(latestTime, clickInfo.getTime());
-                            Long passedTime = System.currentTimeMillis() - mStartedTime;
-                            Long timeAfter = clickInfo.getTime() - passedTime;
-                            if (timeAfter < 0) {
-                                continue;
-                            }
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    showToast(clickInfo);
                                 }
                             }, timeAfter);
                         }
@@ -353,59 +317,25 @@ public class ReaderLiveActivity extends LiveActivity {
                             }
                         });
 
-        mWriterCommentShowListener =
-                mDatabase.child(getString(R.string.firebase_db_comment_click_history))
-                        .child(mLiveKey)
-                        .addChildEventListener(new ChildEventListener() {
-                            @Override
-                            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                                final CommentClick clickInfo = dataSnapshot.getValue(CommentClick.class);
-                                showToast(clickInfo);
-                            }
-
-                            @Override
-                            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                            }
-
-                            @Override
-                            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                            }
-
-                            @Override
-                            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
     }
 
-    private void showToast(CommentClick clickInfo){
-       String comment = ((CommentPointView)commentField.findViewWithTag(clickInfo.getCommentId())).getComment();
-
-        Toasty.custom(ReaderLiveActivity.this, comment, null,
-                Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
-    }
 
     private void addComment(final Comment comment, final String tmpKey){
         Comment tmp = new Comment();
         tmp = comment;
 
-        final CommentPointView commentPointView = new CommentPointView(this);
+        final CommentView commentPointView = new CommentView(this);
         float widthRate = (float) deviceWidth / comment.getDeviceWidth();
         double rate = mRecyclerView.computeVerticalScrollRange()/comment.getScrollLength();
 
-        commentPointView.setComment(tmp.getContent());
+        commentPointView.setCommentText(tmp.getContent());
         commentPointView.setTag(tmpKey);
+        commentPointView.hideOrShowView();
+        commentPointView.setArrowImgPos((int)(comment.getPosX() * widthRate)-30);
 
-        RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        commentPointParams.setMargins( (int)(comment.getPosX() * widthRate)-30
-                ,  (int)(comment.getPosY()*rate)-30
+        RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        commentPointParams.setMargins( -30
+                ,  (int)(comment.getPosY()*rate) -110
                 ,0,0);
 
         commentPointView.setLayoutParams(commentPointParams);

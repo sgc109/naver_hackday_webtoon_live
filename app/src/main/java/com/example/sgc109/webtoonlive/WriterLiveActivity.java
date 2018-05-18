@@ -18,9 +18,8 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
-import com.example.sgc109.webtoonlive.custom_view.CommentPointView;
+import com.example.sgc109.webtoonlive.CustomView.CommentView;
 import com.example.sgc109.webtoonlive.dto.Comment;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -33,8 +32,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
-import es.dmoral.toasty.Toasty;
 
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
@@ -131,7 +128,6 @@ public class WriterLiveActivity extends LiveActivity {
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-
             }
 
             @Override
@@ -155,66 +151,37 @@ public class WriterLiveActivity extends LiveActivity {
         Comment tmp = new Comment();
         tmp = comment;
 
-        final CommentPointView commentPointView = new CommentPointView(this);
+        final CommentView commentView = new CommentView(this);
         final RelativeLayout infoView = new RelativeLayout(this);
+
         float widthRate = (float) deviceWidth / comment.getDeviceWidth();
         double rate = mRecyclerView.computeVerticalScrollRange()/comment.getScrollLength();
 
-        commentPointView.setComment(tmp.getContent());
-        commentPointView.setTag(tmpKey);
+        commentView.setCommentText(tmp.getContent());
 
-        RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        commentPointParams.setMargins( (int)(comment.getPosX() * widthRate)-30
-                ,  (int)(comment.getPosY()*rate)-30
+        RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        commentPointParams.setMargins(-30
+                ,  (int)(comment.getPosY()*rate) -110
                 ,0,0);
+
 
         LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(10, 40);
         infoViewParams.setMargins( 0
-                ,  (int)(comment.getPosY()*rate)-30
+                ,  (int)(comment.getPosY()*rate)
                 ,0,0);
 
         infoView.setLayoutParams(infoViewParams);
+        infoView.setTag(tmpKey);
         infoView.setBackgroundColor(Color.parseColor("#00C73C"));
 
+        commentView.setLayoutParams(commentPointParams);
+        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-40);
+        commentView.hideOrShowView();
 
-        commentPointView.setLayoutParams(commentPointParams);
-        commentField.addView(commentPointView);
+        commentField.addView(commentView);
         commentInfo.addView(infoView);
 
-        commentPointView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                likeKey = view.getTag().toString();
 
-                CommentPointView tmp = ((CommentPointView)commentField
-                        .findViewWithTag(likeKey));
-
-                Toasty.custom(WriterLiveActivity.this, tmp.getComment(), null,
-                        Color.parseColor("#00C73C"), Toast.LENGTH_SHORT, false, true).show();
-
-
-                Map<String, Object> map = new HashMap<String, Object>();
-                key = mDatabase
-                        .child(getString(R.string.firebase_db_comment_click_history))
-                        .child(mLiveKey)
-                        .push().getKey();
-
-                mDatabase.child(getString(R.string.firebase_db_comment_click_history))
-                        .child(mLiveKey)
-                        .updateChildren(map);
-
-
-                Map<String, Object> objectMap = new HashMap<String, Object>();
-
-                objectMap.put("commentId", likeKey);
-                objectMap.put("time", System.currentTimeMillis() - mStartedTime);
-
-                mDatabase.child(getString(R.string.firebase_db_comment_click_history))
-                        .child(mLiveKey)
-                        .child(key).updateChildren(objectMap);
-
-            }
-        });
     }
 
     private void askEndLiveOrNot() {
