@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="#2f2f2f"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/like"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        android:drawableLeft="@drawable/like_bt"
+        android:drawablePadding="5dp"
+        android:text="23,020"
+        android:textColor="#ffffff"
+        android:textSize="16dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/comment" />
+
+    <TextView
+        android:id="@+id/comment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:background="#00000000"
+        android:drawableLeft="@drawable/comment_default"
+        android:drawablePadding="5dp"
+        android:text="55,020"
+        android:textColor="#ffffff"
+        android:textSize="16dp"
+        app:layout_constraintLeft_toRightOf="@id/like" />
+
+    <ImageView
+        android:id="@+id/next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:src="@drawable/next_bt"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/ep"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="35ep"
+        android:textColor="#FFF"
+        android:textSize="16dp"
+        app:layout_constraintRight_toLeftOf="@id/next" />
+
+    <ImageView
+        android:id="@+id/prev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:src="@drawable/before_bt"
+        app:layout_constraintRight_toLeftOf="@id/ep" />
+
+
+</android.support.constraint.ConstraintLayout>

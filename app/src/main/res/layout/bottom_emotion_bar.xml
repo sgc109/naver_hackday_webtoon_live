@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/bottom_emotion_bar_item_size"
+    android:background="@drawable/emotion_bubble"
+    android:gravity="center_horizontal|bottom"
+    android:orientation="horizontal">
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_00"
+        android:layout_width="@dimen/bottom_emotion_bar_item_size"
+        android:layout_height="@dimen/bottom_emotion_bar_item_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/lottie_01"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/like" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_01"
+        android:layout_width="@dimen/bottom_emotion_bar_item_size"
+        android:layout_height="@dimen/bottom_emotion_bar_item_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/lottie_02"
+        app:layout_constraintStart_toEndOf="@id/lottie_00"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/emoji_tongue" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_02"
+        android:layout_width="@dimen/bottom_emotion_bar_item_size"
+        android:layout_height="@dimen/bottom_emotion_bar_item_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/lottie_03"
+        app:layout_constraintStart_toEndOf="@id/lottie_01"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/emoji_wink" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_03"
+        android:layout_width="@dimen/bottom_emotion_bar_item_size"
+        android:layout_height="@dimen/bottom_emotion_bar_item_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/lottie_04"
+        app:layout_constraintStart_toEndOf="@id/lottie_02"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/emoji_shock" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_04"
+        android:layout_width="@dimen/bottom_emotion_bar_item_size"
+        android:layout_height="@dimen/bottom_emotion_bar_item_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/lottie_03"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/favourite_app_icon" />
+
+</android.support.constraint.ConstraintLayout>

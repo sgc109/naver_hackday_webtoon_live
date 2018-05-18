@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nested_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DefaultWebtoonActivity">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/webtoon_rcv"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:nestedScrollingEnabled="false">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <com.example.sgc109.webtoonlive.custom_view.CustomScrollView
+            android:id="@+id/comment_info_scroll"
+            android:scrollbars="none"
+            android:layout_width="5dp"
+            android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/comment_info"
+                    android:layout_width="5dp"
+                    android:layout_height="wrap_content">
+
+
+                </RelativeLayout>
+        </com.example.sgc109.webtoonlive.custom_view.CustomScrollView>
+
+        <com.example.sgc109.webtoonlive.custom_view.CustomScrollView
+            android:id="@+id/comment_field_scroll"
+            android:visibility="invisible"
+            android:background="#22000000"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:id="@+id/comment_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"></RelativeLayout>
+
+        </com.example.sgc109.webtoonlive.custom_view.CustomScrollView>
+
+
+</RelativeLayout>
