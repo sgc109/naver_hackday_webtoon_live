@@ -258,13 +258,13 @@ public class WriterLiveActivity extends LiveActivity {
         int id = item.getItemId();
 
             if(id == R.id.write_comment){
-                if(commentFieldScroll.getVisibility() == View.GONE) {
+                if(commentFieldScroll.getVisibility() == View.INVISIBLE) {
                     commentFieldScroll.scrollTo(0, mRecyclerView.computeVerticalScrollOffset());
                     commentFieldScroll.setVisibility(View.VISIBLE);
                     commentInfoScroll.setVisibility(View.GONE);
                 }
                 else {
-                    commentFieldScroll.setVisibility(View.GONE);
+                    commentFieldScroll.setVisibility(View.INVISIBLE);
                     commentInfoScroll.setVisibility(View.VISIBLE);
                 }
             }

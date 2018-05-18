@@ -112,7 +112,6 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             }
         });
 
-        commentFieldScroll.setVisibility(View.GONE);
     }
 
     private void syncScroll(){
@@ -339,13 +338,13 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if(id == R.id.write_comment){
-            if(commentFieldScroll.getVisibility() == View.GONE) {
+            if(commentFieldScroll.getVisibility() == View.INVISIBLE) {
                 commentFieldScroll.scrollTo(0,webtoonRcv.computeVerticalScrollOffset());
                 commentFieldScroll.setVisibility(View.VISIBLE);
                 commentInfoScroll.setVisibility(View.GONE);
             }
             else {
-                commentFieldScroll.setVisibility(View.GONE);
+                commentFieldScroll.setVisibility(View.INVISIBLE);
                 commentInfoScroll.setVisibility(View.VISIBLE);
             }
         }
