@@ -51,6 +51,8 @@ public class ReaderLiveActivity extends LiveActivity {
 
         commentFieldScroll.setVisibility(View.VISIBLE);
         commentInfoScroll.setVisibility(View.VISIBLE);
+        commentFieldScroll.setBackgroundColor(Color.alpha(0));
+
 
 
         mDatabase
@@ -352,7 +354,7 @@ public class ReaderLiveActivity extends LiveActivity {
 
         RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         commentPointParams.setMargins( 0
-                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(150,this)
+                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(130,this)
                 ,0,0);
 
         commentPointView.setLayoutParams(commentPointParams);
