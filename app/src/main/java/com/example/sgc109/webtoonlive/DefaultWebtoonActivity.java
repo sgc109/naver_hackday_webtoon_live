@@ -82,9 +82,10 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         /*FIXME
          params height 값 메타데이터에서 얻기
          */
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 116865);
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)(20800 / 690.0 * deviceWidth));
         commentField.setLayoutParams(layoutParams);
         commentInfo.setLayoutParams(layoutParams);
+
 
         commentField.setOnTouchListener(new View.OnTouchListener() {
             @Override
