@@ -47,12 +47,11 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
     private RelativeLayout commentField;
 
     private int curX, curY;
-    private String key, likeKey;
+    private String key, likeKey, lastPosKey ="";
     private int deviceWidth, deviceHeight;
     private DatabaseReference commentRef;
 
     private List<Integer> imgList;
-    private CommentContentDialog commentContentDialog;
     private CommentWriterDialog commentWriterDialog;
 
     @Override
@@ -113,7 +112,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             }
         });
 
-
+        commentFieldScroll.setVisibility(View.GONE);
     }
 
     private void syncScroll(){
@@ -232,7 +231,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
         commentPointView.setLayoutParams(commentPointParams);
         commentView.setLayoutParams(commentParams);
-        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(40,this));
+        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(50,this));
         commentView.setTag(tmpKey+"&show");
 
         commentField.addView(commentPointView);
@@ -244,23 +243,32 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             public void onClick(View view) {
                 likeKey = view.getTag().toString();
 
-                ((CommentView)commentField.findViewWithTag(likeKey+"&show")).hideOrShowView();
+                if(likeKey == lastPosKey){
+                    if(((CommentView)commentField.findViewWithTag(likeKey+"&show")).getCommentVisibility()) {
+                        ((CommentPointView) commentField.findViewWithTag(likeKey)).setSelected(false);
+                        ((CommentView) commentField.findViewWithTag(likeKey + "&show")).hideOrShowView();
+                    }
+                    else {
+                        ((CommentPointView) commentField.findViewWithTag(likeKey)).setSelected(true);
+                        ((CommentView) commentField.findViewWithTag(likeKey + "&show")).hideOrShowView();
+                    }
+                }
+                else if (lastPosKey.equals("")){
+                    ((CommentPointView)commentField.findViewWithTag(likeKey)).setSelected(true);
+                    ((CommentView)commentField.findViewWithTag(likeKey+"&show")).hideOrShowView();
+                    lastPosKey = likeKey;
+                }
+                else {
+                    ((CommentPointView)commentField.findViewWithTag(likeKey)).setSelected(true);
+                    ((CommentView)commentField.findViewWithTag(likeKey+"&show")).hideOrShowView();
 
-//                CommentPointView tmp = ((CommentPointView)commentField
-//                        .findViewWithTag(likeKey));
-//
-//                commentContentDialog = new CommentContentDialog(DefaultWebtoonActivity.this
-//                        ,tmp.getComment(),tmp.getLikeCount()
-//                        , likeKey);
-//
-//                commentContentDialog.show();
-//                commentPointView.setSelected(true);
-//                commentContentDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//                    @Override
-//                    public void onDismiss(DialogInterface dialogInterface) {
-//                        commentPointView.setSelected(false);
-//                    }
-//                });
+                    ((CommentPointView)commentField.findViewWithTag(lastPosKey)).setSelected(false);
+                    if(((CommentView)commentField.findViewWithTag(lastPosKey+"&show")).getCommentVisibility())
+                    ((CommentView)commentField.findViewWithTag(lastPosKey+"&show")).hideOrShowView();
+
+                    lastPosKey = likeKey;
+                }
+
             }
         });
     }
@@ -293,7 +301,8 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String writer = ((EditText)commentWriterDialog.findViewById(R.id.writer_edit)).getText().toString();
+            String writer = "";
+            //FIXME 실서비스 사용자 고유 값
             String content = ((EditText)commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
 
             Map<String, Object> map = new HashMap<String, Object>();

@@ -276,7 +276,8 @@ public class WriterLiveActivity extends LiveActivity {
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String writer = ((EditText)commentWriterDialog.findViewById(R.id.writer_edit)).getText().toString();
+            String writer = "";
+            //FIXME 실서비스 사용자 고유 값
             String content = ((EditText)commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
 
             Map<String, Object> map = new HashMap<String, Object>();
