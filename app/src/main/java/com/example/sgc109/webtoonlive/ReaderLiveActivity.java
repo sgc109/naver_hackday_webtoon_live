@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
@@ -87,7 +86,7 @@ public class ReaderLiveActivity extends LiveActivity {
                 });
 
 
-        setRecyclerView();
+        setEmotionView();
     }
 
     private void addCommentIndicatorListener(){
@@ -445,19 +444,15 @@ public class ReaderLiveActivity extends LiveActivity {
         }
     }
 
-    private void setRecyclerView() {
-        //mRecyclerView.setEnabled(false);
-        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+    private void setEmotionView() {
+        mEmotionView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
-                        && mLiveInfo.state.matches(getResources().getString(R.string.live_state_on_air))) {
+            public void onClick(View view) {
+                if (mLiveInfo.state.matches(getResources().getString(R.string.live_state_on_air))) {
                     mEmotionView.inputBar.toggleShowing();
                 }
-                return true;
             }
         });
-
     }
 
 }
