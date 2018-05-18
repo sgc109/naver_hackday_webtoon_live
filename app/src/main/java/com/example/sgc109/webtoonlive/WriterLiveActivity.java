@@ -3,12 +3,14 @@ package com.example.sgc109.webtoonlive;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -160,7 +162,7 @@ public class WriterLiveActivity extends LiveActivity {
         commentView.setCommentText(tmp.getContent());
 
         RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        commentPointParams.setMargins(-30
+        commentPointParams.setMargins(0
                 ,  (int)(comment.getPosY()*rate) -110
                 ,0,0);
 
@@ -175,7 +177,7 @@ public class WriterLiveActivity extends LiveActivity {
         infoView.setBackgroundColor(Color.parseColor("#00C73C"));
 
         commentView.setLayoutParams(commentPointParams);
-        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-40);
+        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(40,this));
         commentView.hideOrShowView();
 
         commentField.addView(commentView);
@@ -304,4 +306,11 @@ public class WriterLiveActivity extends LiveActivity {
         }
     };
 
+
+    public static float convertPixelsToDp(float px, Context context){
+        Resources resources = context.getResources();
+        DisplayMetrics metrics = resources.getDisplayMetrics();
+        float dp = px / (metrics.densityDpi / 160f);
+        return dp;
+    }
 }

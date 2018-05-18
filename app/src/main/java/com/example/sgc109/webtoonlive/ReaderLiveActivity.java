@@ -24,6 +24,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
+import static com.example.sgc109.webtoonlive.WriterLiveActivity.convertPixelsToDp;
+
 public class ReaderLiveActivity extends LiveActivity {
     private ProgressBar mSeekBar;
     private LiveInfo mLiveInfo;
@@ -331,10 +333,10 @@ public class ReaderLiveActivity extends LiveActivity {
         commentPointView.setCommentText(tmp.getContent());
         commentPointView.setTag(tmpKey);
         commentPointView.hideOrShowView();
-        commentPointView.setArrowImgPos((int)(comment.getPosX() * widthRate)-30);
+        commentPointView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(40,this));
 
         RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        commentPointParams.setMargins( -30
+        commentPointParams.setMargins( 0
                 ,  (int)(comment.getPosY()*rate) -110
                 ,0,0);
 

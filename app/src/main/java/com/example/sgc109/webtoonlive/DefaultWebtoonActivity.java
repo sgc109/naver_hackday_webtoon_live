@@ -1,6 +1,5 @@
 package com.example.sgc109.webtoonlive;
 
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -36,6 +35,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static com.example.sgc109.webtoonlive.WriterLiveActivity.convertPixelsToDp;
 
 
 public class DefaultWebtoonActivity extends AppCompatActivity {
@@ -211,18 +212,18 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         commentView.setCommentText(tmp.getContent());
 
         RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        commentPointParams.setMargins( (int)(comment.getPosX() * widthRate)-30
-                ,  (int)(comment.getPosY()*rate)-30
+        commentPointParams.setMargins( (int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(30,this)
+                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(30,this)
                 ,0,0);
 
         RelativeLayout.LayoutParams commentParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         commentParams.setMargins( 0
-                ,  (int)(comment.getPosY()*rate)-30
+                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(30,this)
                 ,0,0);
 
         LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(10, 40);
         infoViewParams.setMargins( 0
-                ,  (int)(comment.getPosY()*rate)-30
+                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(30,this)
                 ,0,0);
 
         infoView.setLayoutParams(infoViewParams);
@@ -231,7 +232,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
         commentPointView.setLayoutParams(commentPointParams);
         commentView.setLayoutParams(commentParams);
-        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-40);
+        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(40,this));
         commentView.setTag(tmpKey+"&show");
 
         commentField.addView(commentPointView);
