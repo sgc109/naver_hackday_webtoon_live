@@ -86,6 +86,7 @@ public class ReaderLiveActivity extends LiveActivity {
                                         }
                                     }
                                 }, timeAfter);
+                                findViewById(R.id.blink_live).setVisibility(View.GONE);
                             }
                         }
 
