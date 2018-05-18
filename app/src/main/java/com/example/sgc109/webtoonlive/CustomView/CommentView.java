@@ -69,6 +69,9 @@ public class CommentView extends LinearLayout {
         commentText.setText(comment);
     }
 
+    public boolean getCommentVisibility(){
+        return commentShowLayout.getVisibility() == VISIBLE ? true : false;
+    }
 
 
 }

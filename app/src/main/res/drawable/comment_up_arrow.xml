@@ -16,7 +16,7 @@
                 <size android:height="30dp"
                     android:width="30dp"/>
 
-                <solid android:color="#000"/>
+                <solid android:color="#3333"/>
 
                 <padding
 
