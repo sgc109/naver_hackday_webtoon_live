@@ -47,7 +47,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
     private RelativeLayout commentField;
 
     private int curX, curY;
-    private String key, likeKey, lastPosKey ="";
+    private String key, likeKey, lastPosKey = "";
     private int deviceWidth, deviceHeight;
     private DatabaseReference commentRef;
 
@@ -58,13 +58,11 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webtoon_default);
-        if(getActionBar() != null) {
-            getActionBar().setTitle("유미의 세포들");
-        }
+        setTitle("유미의 세포들");
         init();
     }
 
-    private void initView(){
+    private void initView() {
         webtoonRcv = findViewById(R.id.webtoon_rcv);
         commentField = findViewById(R.id.comment_field);
         commentFieldScroll = findViewById(R.id.comment_field_scroll);
@@ -72,7 +70,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         commentInfo = findViewById(R.id.comment_info);
     }
 
-    private void init(){
+    private void init() {
         initView();
         getDeviceSize();
         setRealTimeDB();
@@ -91,10 +89,10 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         commentField.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()){
+                switch (motionEvent.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        curX = (int)motionEvent.getX();
-                        curY = (int)motionEvent.getY();
+                        curX = (int) motionEvent.getX();
+                        curY = (int) motionEvent.getY();
 
                         handler.postDelayed(longPressed, 300);
 
@@ -113,7 +111,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
     }
 
-    private void syncScroll(){
+    private void syncScroll() {
 
         webtoonRcv.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -126,16 +124,16 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
     }
 
-    private void setRecyclerView(){
+    private void setRecyclerView() {
         settingList();
         webtoonRcv.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         webtoonRcv.setAdapter(new WebtoonAdapter(imgList));
 
     }
 
-    private void settingList(){
+    private void settingList() {
         imgList = new ArrayList<Integer>();
-        for(int i = 0; i < getResources().getInteger(R.integer.comic2_cuts_cnt); i++){
+        for (int i = 0; i < getResources().getInteger(R.integer.comic2_cuts_cnt); i++) {
             imgList.add(getResources().getIdentifier("comic2_" + (i + 1), "drawable", getPackageName()));
         }
 //        TypedArray typedArray = getResources().obtainTypedArray(R.array.imgArray);
@@ -144,7 +142,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 //        typedArray.recycle();
     }
 
-    private void setRealTimeDB(){
+    private void setRealTimeDB() {
         commentRef = FirebaseDatabase.getInstance().getReference().child("comment");
 
         commentRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -192,7 +190,8 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             }
         });
     }
-    private void addComment(final Comment comment, final String tmpKey){
+
+    private void addComment(final Comment comment, final String tmpKey) {
         Comment tmp = new Comment();
         tmp = comment;
 
@@ -201,7 +200,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         final RelativeLayout infoView = new RelativeLayout(this);
 
         float widthRate = (float) deviceWidth / comment.getDeviceWidth();
-        double rate = webtoonRcv.computeVerticalScrollRange()/comment.getScrollLength();
+        double rate = webtoonRcv.computeVerticalScrollRange() / comment.getScrollLength();
 
         commentPointView.setComment(tmp.getContent());
         commentPointView.setTag(tmpKey);
@@ -209,19 +208,19 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         commentView.setCommentText(tmp.getContent());
 
         RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        commentPointParams.setMargins( (int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(30,this)
-                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(30,this)
-                ,0,0);
+        commentPointParams.setMargins((int) (comment.getPosX() * widthRate) - (int) convertPixelsToDp(30, this)
+                , (int) (comment.getPosY() * rate) - (int) convertPixelsToDp(30, this)
+                , 0, 0);
 
         RelativeLayout.LayoutParams commentParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        commentParams.setMargins( 0
-                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(30,this)
-                ,0,0);
+        commentParams.setMargins(0
+                , (int) (comment.getPosY() * rate) - (int) convertPixelsToDp(30, this)
+                , 0, 0);
 
         LinearLayout.LayoutParams infoViewParams = new LinearLayout.LayoutParams(10, 40);
-        infoViewParams.setMargins( 0
-                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(30,this)
-                ,0,0);
+        infoViewParams.setMargins(0
+                , (int) (comment.getPosY() * rate) - (int) convertPixelsToDp(30, this)
+                , 0, 0);
 
         infoView.setLayoutParams(infoViewParams);
         infoView.setTag(tmpKey);
@@ -229,8 +228,8 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
 
         commentPointView.setLayoutParams(commentPointParams);
         commentView.setLayoutParams(commentParams);
-        commentView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(50,this));
-        commentView.setTag(tmpKey+"&show");
+        commentView.setArrowImgPos((int) (comment.getPosX() * widthRate) - (int) convertPixelsToDp(50, this));
+        commentView.setTag(tmpKey + "&show");
 
         commentField.addView(commentPointView);
         commentField.addView(commentView);
@@ -241,28 +240,25 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
             public void onClick(View view) {
                 likeKey = view.getTag().toString();
 
-                if(likeKey == lastPosKey){
-                    if(((CommentView)commentField.findViewWithTag(likeKey+"&show")).getCommentVisibility()) {
+                if (likeKey == lastPosKey) {
+                    if (((CommentView) commentField.findViewWithTag(likeKey + "&show")).getCommentVisibility()) {
                         ((CommentPointView) commentField.findViewWithTag(likeKey)).setSelected(false);
                         ((CommentView) commentField.findViewWithTag(likeKey + "&show")).hideOrShowView();
-                    }
-                    else {
+                    } else {
                         ((CommentPointView) commentField.findViewWithTag(likeKey)).setSelected(true);
                         ((CommentView) commentField.findViewWithTag(likeKey + "&show")).hideOrShowView();
                     }
-                }
-                else if (lastPosKey.equals("")){
-                    ((CommentPointView)commentField.findViewWithTag(likeKey)).setSelected(true);
-                    ((CommentView)commentField.findViewWithTag(likeKey+"&show")).hideOrShowView();
+                } else if (lastPosKey.equals("")) {
+                    ((CommentPointView) commentField.findViewWithTag(likeKey)).setSelected(true);
+                    ((CommentView) commentField.findViewWithTag(likeKey + "&show")).hideOrShowView();
                     lastPosKey = likeKey;
-                }
-                else {
-                    ((CommentPointView)commentField.findViewWithTag(likeKey)).setSelected(true);
-                    ((CommentView)commentField.findViewWithTag(likeKey+"&show")).hideOrShowView();
+                } else {
+                    ((CommentPointView) commentField.findViewWithTag(likeKey)).setSelected(true);
+                    ((CommentView) commentField.findViewWithTag(likeKey + "&show")).hideOrShowView();
 
-                    ((CommentPointView)commentField.findViewWithTag(lastPosKey)).setSelected(false);
-                    if(((CommentView)commentField.findViewWithTag(lastPosKey+"&show")).getCommentVisibility())
-                    ((CommentView)commentField.findViewWithTag(lastPosKey+"&show")).hideOrShowView();
+                    ((CommentPointView) commentField.findViewWithTag(lastPosKey)).setSelected(false);
+                    if (((CommentView) commentField.findViewWithTag(lastPosKey + "&show")).getCommentVisibility())
+                        ((CommentView) commentField.findViewWithTag(lastPosKey + "&show")).hideOrShowView();
 
                     lastPosKey = likeKey;
                 }
@@ -272,10 +268,10 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
     }
 
 
-    private void getDeviceSize(){
+    private void getDeviceSize() {
         SharedPreferencesService.getInstance().load(this);
 
-        if(SharedPreferencesService.getInstance().getPrefIntegerData("deviceWidth") == 0) {
+        if (SharedPreferencesService.getInstance().getPrefIntegerData("deviceWidth") == 0) {
             DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
             int width = dm.widthPixels;
             int height = dm.heightPixels;
@@ -301,7 +297,7 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
         public void onClick(View view) {
             String writer = "";
             //FIXME 실서비스 사용자 고유 값
-            String content = ((EditText)commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
+            String content = ((EditText) commentWriterDialog.findViewById(R.id.content_edit)).getText().toString();
 
             Map<String, Object> map = new HashMap<String, Object>();
             key = commentRef.push().getKey();
@@ -325,7 +321,6 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
     };
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.writer_menu, menu);
@@ -336,13 +331,12 @@ public class DefaultWebtoonActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if(id == R.id.write_comment){
-            if(commentFieldScroll.getVisibility() == View.INVISIBLE) {
-                commentFieldScroll.scrollTo(0,webtoonRcv.computeVerticalScrollOffset());
+        if (id == R.id.write_comment) {
+            if (commentFieldScroll.getVisibility() == View.INVISIBLE) {
+                commentFieldScroll.scrollTo(0, webtoonRcv.computeVerticalScrollOffset());
                 commentFieldScroll.setVisibility(View.VISIBLE);
                 commentInfoScroll.setVisibility(View.GONE);
-            }
-            else {
+            } else {
                 commentFieldScroll.setVisibility(View.INVISIBLE);
                 commentInfoScroll.setVisibility(View.VISIBLE);
             }

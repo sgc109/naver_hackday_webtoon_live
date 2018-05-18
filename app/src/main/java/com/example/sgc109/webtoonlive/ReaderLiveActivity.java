@@ -71,7 +71,19 @@ public class ReaderLiveActivity extends LiveActivity {
                             } else {
                                 addCommentIndicatorListener();
                                 getRecordingDatas();
+
                                 mEmotionView.inputBar.setVisibility(View.GONE);
+
+                                Long timeAfter = mLiveInfo.endDate - mLiveInfo.startDate;
+//                                mEndHandle
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(this != null && !isDestroyed() && !isFinishing()) {
+                                            new LiveEndConfirmDialog(ReaderLiveActivity.this).show();
+                                        }
+                                    }
+                                }, timeAfter);
                             }
                         }
 
@@ -135,6 +147,7 @@ public class ReaderLiveActivity extends LiveActivity {
                             final VerticalPositionChanged scrollHistory = child.getValue(VerticalPositionChanged.class);
                             Long passedTime = System.currentTimeMillis() - mStartedTime;
                             Long timeAfter = scrollHistory.time - passedTime;
+
                             if (timeAfter < 0) {
                                 continue;
                             }
