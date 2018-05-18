@@ -93,7 +93,7 @@ public class LiveActivity extends AppCompatActivity {
             }
         }, 3500);
 
-        findViewById(R.id.blink_live).startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink_animation));
+
         setToasty();
         getDeviceSize();
         commentFieldSetting();
@@ -221,7 +221,7 @@ public class LiveActivity extends AppCompatActivity {
                 EmotionModel emotion = dataSnapshot.getValue(EmotionModel.class);
                 long pastTime = System.currentTimeMillis() - liveInfo.startDate;
                 long diff = pastTime - emotion.timeStamp;
-                long oneSec = 1000;
+                long oneSec = 5000;
                 Log.d("AA", "diff: " + diff);
                 if (!mEmotionView.keySet.contains(dataSnapshot.getKey()) && diff < oneSec) {
                     showEmotion(emotion);

@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -70,6 +71,7 @@ public class WriterLiveActivity extends LiveActivity {
         setRealTimeDB();
         commentFieldScroll.scrollTo(0, mRecyclerView.computeVerticalScrollOffset());
 
+        findViewById(R.id.blink_live).startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink_animation));
     }
 
     private void commentFieldEventSetting(){
