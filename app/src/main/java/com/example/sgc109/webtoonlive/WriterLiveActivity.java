@@ -68,6 +68,8 @@ public class WriterLiveActivity extends LiveActivity {
 
         commentFieldEventSetting();
         setRealTimeDB();
+        commentFieldScroll.scrollTo(0, mRecyclerView.computeVerticalScrollOffset());
+
     }
 
     private void commentFieldEventSetting(){
