@@ -20,14 +20,14 @@ import android.widget.RelativeLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.sgc109.webtoonlive.custom_view.CustomScrollView;
 import com.example.sgc109.webtoonlive.custom_view.EmotionView;
 import com.example.sgc109.webtoonlive.custom_view.FixedSizeImageView;
 import com.example.sgc109.webtoonlive.dto.EmotionModel;
+import com.example.sgc109.webtoonlive.util.SharedPreferencesService;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.example.sgc109.webtoonlive.custom_view.CustomScrollView;
-import com.example.sgc109.webtoonlive.util.SharedPreferencesService;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -92,6 +92,8 @@ public class LiveActivity extends AppCompatActivity {
                 bottomMenu.setVisibility(View.GONE);
             }
         }, 3500);
+
+        findViewById(R.id.blink_live).startAnimation(AnimationUtils.loadAnimation(this, R.anim.blink_animation));
         setToasty();
         getDeviceSize();
         commentFieldSetting();
@@ -100,11 +102,12 @@ public class LiveActivity extends AppCompatActivity {
         RecyclerView.Adapter<SceneImageViewHolder> adapter = new RecyclerView.Adapter<SceneImageViewHolder>() {
             final int VIEW_TYPE_NOT_LAST = 0;
             final int VIEW_TYPE_LAST = 1;
+
             @NonNull
             @Override
             public SceneImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
                 View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_scene, parent, false);
-                if(viewType == VIEW_TYPE_LAST) {
+                if (viewType == VIEW_TYPE_LAST) {
                     return new SceneImageViewHolder(view, true);
                 }
                 return new SceneImageViewHolder(view, false);
@@ -113,7 +116,7 @@ public class LiveActivity extends AppCompatActivity {
 
             @Override
             public int getItemViewType(int position) {
-                if(position == getItemCount() - 1) {
+                if (position == getItemCount() - 1) {
                     Log.d("mydebug", "last_position!");
                     return VIEW_TYPE_LAST;
                 }
@@ -178,7 +181,7 @@ public class LiveActivity extends AppCompatActivity {
         /*FIXME
          params height 값 메타데이터에서 얻기
          */
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int)(40000 / 600.0 * mDeviceWidth));
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (int) (40000 / 600.0 * mDeviceWidth));
         commentField.setLayoutParams(layoutParams);
         commentInfo.setLayoutParams(layoutParams);
 
@@ -219,7 +222,7 @@ public class LiveActivity extends AppCompatActivity {
                 long pastTime = System.currentTimeMillis() - liveInfo.startDate;
                 long diff = pastTime - emotion.timeStamp;
                 long oneSec = 1000;
-                Log.d("AA", "diff: "+ diff);
+                Log.d("AA", "diff: " + diff);
                 if (!mEmotionView.keySet.contains(dataSnapshot.getKey()) && diff < oneSec) {
                     showEmotion(emotion);
                 }
