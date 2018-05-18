@@ -26,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import static com.example.sgc109.webtoonlive.WriterLiveActivity.convertPixelsToDp;
 
 public class ReaderLiveActivity extends LiveActivity {
-    private ProgressBar mSeekBar;
+    private ProgressBar mProgressBar;
     private LiveInfo mLiveInfo;
     private ChildEventListener mNewScrollAddedListener;
     private ValueEventListener mLiveStateChangeListener;
@@ -45,8 +45,8 @@ public class ReaderLiveActivity extends LiveActivity {
         super.onCreate(savedInstanceState);
 
         mStartedTime = System.currentTimeMillis();
-        mSeekBar = findViewById(R.id.live_progress_bar);
-        mSeekBar.setVisibility(View.VISIBLE);
+        mProgressBar = findViewById(R.id.live_progress_bar);
+        mProgressBar.setVisibility(View.VISIBLE);
 
         commentFieldScroll.setVisibility(View.VISIBLE);
         commentInfoScroll.setVisibility(View.VISIBLE);
@@ -67,7 +67,7 @@ public class ReaderLiveActivity extends LiveActivity {
                             if (mLiveInfo.state.equals(STATE_ON_AIR)) {
                                 addDataChangeListeners();
                                 settingCommentListeners();
-                                mSeekBar.setVisibility(View.GONE);
+                                mProgressBar.setVisibility(View.GONE);
                             } else {
                                 addCommentIndicatorListener();
                                 getRecordingDatas();
@@ -150,7 +150,7 @@ public class ReaderLiveActivity extends LiveActivity {
                             }, timeAfter);
                         }
                         Long latestTime = mLiveInfo.endDate - mLiveInfo.startDate;
-                        ObjectAnimator animation = ObjectAnimator.ofInt(mSeekBar, "progress", 10000);
+                        ObjectAnimator animation = ObjectAnimator.ofInt(mProgressBar, "progress", 10000);
                         animation.setDuration(latestTime);
                         animation.setInterpolator(new LinearInterpolator());
                         animation.start();
