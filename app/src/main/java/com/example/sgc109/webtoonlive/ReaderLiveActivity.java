@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
@@ -85,7 +84,7 @@ public class ReaderLiveActivity extends LiveActivity {
                 });
 
 
-        setRecyclerView();
+        setEmotionView();
     }
 
     private void addCommentIndicatorListener(){
@@ -333,11 +332,11 @@ public class ReaderLiveActivity extends LiveActivity {
         commentPointView.setCommentText(tmp.getContent());
         commentPointView.setTag(tmpKey);
         commentPointView.hideOrShowView();
-        commentPointView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(40,this));
+        commentPointView.setArrowImgPos((int)(comment.getPosX() * widthRate)-(int)convertPixelsToDp(80,this));
 
         RelativeLayout.LayoutParams commentPointParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         commentPointParams.setMargins( 0
-                ,  (int)(comment.getPosY()*rate) -110
+                ,  (int)(comment.getPosY()*rate)-(int)convertPixelsToDp(150,this)
                 ,0,0);
 
         commentPointView.setLayoutParams(commentPointParams);
@@ -377,19 +376,15 @@ public class ReaderLiveActivity extends LiveActivity {
         }
     }
 
-    private void setRecyclerView() {
-        //mRecyclerView.setEnabled(false);
-        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+    private void setEmotionView() {
+        mEmotionView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN
-                        && mLiveInfo.state.matches(getResources().getString(R.string.live_state_on_air))) {
+            public void onClick(View view) {
+                if (mLiveInfo.state.matches(getResources().getString(R.string.live_state_on_air))) {
                     mEmotionView.inputBar.toggleShowing();
                 }
-                return true;
             }
         });
-
     }
 
 }

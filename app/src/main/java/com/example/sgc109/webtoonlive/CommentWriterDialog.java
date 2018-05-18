@@ -17,7 +17,7 @@ public class CommentWriterDialog extends Dialog {
     private View.OnClickListener yesClickListener;
 
     public CommentWriterDialog(Context context,
-                               View.OnClickListener yesClickListener){
+                               View.OnClickListener yesClickListener) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
         this.yesClickListener = yesClickListener;
     }
