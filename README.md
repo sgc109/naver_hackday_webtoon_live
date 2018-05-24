@@ -1,6 +1,4 @@
-﻿<img src="https://firebasestorage.googleapis.com/v0/b/nwebtoonlive.appspot.com/o/github_gif1.gif?alt=media&token=ab4b7670-79cb-4aa5-93ec-61117bcadd33" />
-
-# Webtoon live
+﻿# Webtoon live
 RealTime DB 를 활용한 Webtoon Live
 
 혼자 감상하는 Webtoon 도 좋지만, 게임이나 온라인 방송 처럼 실시간 사용자들과 함께 하는 웹툰을 만들 순 없을까요?
