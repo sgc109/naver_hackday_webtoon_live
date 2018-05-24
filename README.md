@@ -1,4 +1,4 @@
-﻿<img src="https://firebasestorage.googleapis.com/v0/b/nwebtoonlive.appspot.com/o/webtoon_live_gif1.gif?alt=media&token=07d95221-d3d1-4958-be3d-2262c6262194" width="40" height="40" />
+﻿<img src="https://firebasestorage.googleapis.com/v0/b/nwebtoonlive.appspot.com/o/github_gif1.gif?alt=media&token=ab4b7670-79cb-4aa5-93ec-61117bcadd33" width="40" height="40" />
 
 # Webtoon live
 RealTime DB 를 활용한 Webtoon Live
@@ -25,4 +25,4 @@ https://github.com/NAVER-CAMPUS-HACKDAY/common/issues/5#issue-309371649
 ## 공지사항
 - 새로운 아이디어 환영합니다.
 - 안드로이드 프로젝트다 보니 언어 선택이 가장 민감할 수 있어 별도 project로 구성하지 않았습니다.
-별도로 연락드리고 의견 나누어 Java, Kotlin 을 선택해서 진행 하겠습니다.
+  별도로 연락드리고 의견 나누어 Java, Kotlin 을 선택해서 진행 하겠습니다.
