@@ -1,4 +1,4 @@
-﻿<img src="https://firebasestorage.googleapis.com/v0/b/nwebtoonlive.appspot.com/o/github_gif1.gif?alt=media&token=ab4b7670-79cb-4aa5-93ec-61117bcadd33" width="40" height="40" />
+﻿<img src="https://firebasestorage.googleapis.com/v0/b/nwebtoonlive.appspot.com/o/github_gif1.gif?alt=media&token=ab4b7670-79cb-4aa5-93ec-61117bcadd33" />
 
 # Webtoon live
 RealTime DB 를 활용한 Webtoon Live
